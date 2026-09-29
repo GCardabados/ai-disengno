@@ -17,8 +17,8 @@ import { renderManifestReview } from './report/review-md.ts';
 
 const USAGE = `pcb <comando> [opciones]
 
-  read-request   --file-key K --node-id N [--out F]      Genera la petición use_figma de SOLO LECTURA
-  ingest         --raw F --file-key K --node-id N --source mcp|mock --out DIR
+  read-request   --file-key K --node-id N [--root-type FRAME] [--out F]   Petición use_figma de SOLO LECTURA
+  ingest         --raw F --file-key K --node-id N --source mcp|mock [--root-type FRAME] --out DIR
   mock-read      --fixture base|missing-font|read-error --out DIR    (MOCK)
   inventory      --snapshot F --config F --out DIR       Manifiesto borrador + review.md + plantilla
   review-apply   --manifest F --review F --config F --out F
@@ -29,6 +29,7 @@ const USAGE = `pcb <comando> [opciones]
 const opts = {
   'file-key': { type: 'string' },
   'node-id': { type: 'string' },
+  'root-type': { type: 'string' },
   out: { type: 'string' },
   raw: { type: 'string' },
   source: { type: 'string' },
@@ -73,7 +74,7 @@ async function main(argv: string[]): Promise<number> {
 
   switch (cmd) {
     case 'read-request': {
-      const req = buildReadRequest(need(a['file-key'], 'file-key'), need(a['node-id'], 'node-id'));
+      const req = buildReadRequest(need(a['file-key'], 'file-key'), need(a['node-id'], 'node-id'), a['root-type'] ?? 'FRAME');
       if (a.out) await writeJson(a.out, req);
       else process.stdout.write(`${JSON.stringify(req, null, 2)}\n`);
       return 0;
@@ -103,6 +104,7 @@ async function main(argv: string[]): Promise<number> {
         rawText: await readFile(rawPath, 'utf8'),
         fileKey: need(a['file-key'], 'file-key'),
         expectedRootNodeId: need(a['node-id'], 'node-id'),
+        expectedRootType: a['root-type'] ?? 'FRAME',
         source: source === 'mock' ? 'MOCK' : 'FIGMA_MCP_USE_FIGMA',
         rawResponsePath: keptRaw,
       });

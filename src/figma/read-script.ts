@@ -4,7 +4,11 @@
 // ESTADO: probado solo contra el `figma` falso de src/figma/mock (MOCK). No se ha ejecutado en Figma real.
 import { SHA256_JS_SOURCE } from './sha256-js.ts';
 
-export const READ_SCRIPT_VERSION = 'pcb.read-script.v1';
+export const READ_SCRIPT_VERSION = 'pcb.read-script.v2';
+
+/** Tipo exigido para la raíz de la maestra. El MVP solo acepta frames: nunca una página ni otro tipo. */
+export const DEFAULT_ROOT_TYPE = 'FRAME';
+const ROOT_TYPE_PATTERN = /^[A-Z_]+$/;
 
 /** IDs de nodo de escena de nivel superior ("123:456" o "123-456"). Nada de IDs de instancia internos. */
 const ROOT_ID_PATTERN = /^\d+[:-]\d+$/;
@@ -169,7 +173,9 @@ figma.skipInvisibleInstanceChildren = false;
 
 var root = await figma.getNodeByIdAsync(ROOT_ID);
 if (!root) throw new Error('PCB_ROOT_NOT_FOUND ' + ROOT_ID);
-if (root.type === 'PAGE' || root.type === 'DOCUMENT') throw new Error('PCB_ROOT_MUST_BE_SCENE_NODE');
+if (root.type === 'PAGE' || root.type === 'DOCUMENT') throw new Error('PCB_ROOT_MUST_BE_SCENE_NODE ' + root.type);
+// Se comprueba ANTES de leer nada más: si la raíz no es del tipo exigido, no se inventaría.
+if (root.type !== REQUIRED_ROOT_TYPE) throw new Error('PCB_ROOT_TYPE_MISMATCH expected=' + REQUIRED_ROOT_TYPE + ' actual=' + root.type);
 var page = root.parent;
 while (page && page.type !== 'PAGE') page = page.parent;
 if (!page) throw new Error('PCB_ROOT_NOT_ON_PAGE');
@@ -214,24 +220,26 @@ export interface ReadRequest {
 
 const FILE_KEY_PATTERN = /^[0-9a-zA-Z]{22,128}$/;
 
-export function buildReadScript(rootNodeId: string): string {
+export function buildReadScript(rootNodeId: string, requiredRootType: string = DEFAULT_ROOT_TYPE): string {
   const id = normalizeNodeId(rootNodeId);
+  if (!ROOT_TYPE_PATTERN.test(requiredRootType)) throw new Error(`Invalid root type: ${JSON.stringify(requiredRootType)}`);
   return [
     `var ROOT_ID = ${JSON.stringify(id)};`,
+    `var REQUIRED_ROOT_TYPE = ${JSON.stringify(requiredRootType)};`,
     `var SCRIPT_VERSION = ${JSON.stringify(READ_SCRIPT_VERSION)};`,
     SHA256_JS_SOURCE,
     BODY,
   ].join('\n');
 }
 
-export function buildReadRequest(fileKey: string, rootNodeId: string): ReadRequest {
+export function buildReadRequest(fileKey: string, rootNodeId: string, requiredRootType: string = DEFAULT_ROOT_TYPE): ReadRequest {
   if (!FILE_KEY_PATTERN.test(fileKey)) throw new Error(`Invalid file key: ${JSON.stringify(fileKey)}`);
-  const code = buildReadScript(rootNodeId);
+  const code = buildReadScript(rootNodeId, requiredRootType);
   if (code.length > 50_000) throw new Error(`Read script exceeds use_figma limit: ${code.length} chars`);
   return {
     tool: 'use_figma',
     fileKey,
-    description: `PCB read-only inventory of node ${normalizeNodeId(rootNodeId)} (no mutations)`,
+    description: `PCB read-only inventory of ${requiredRootType} ${normalizeNodeId(rootNodeId)} (no mutations)`,
     code,
     expects: 'pcb.read.envelope.v1',
     readOnly: true,

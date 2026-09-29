@@ -78,3 +78,10 @@ test('MOCK: propiedades ilegibles quedan en readErrors, sin valores inventados',
   const txt = r.snapshot.nodes.find((n) => n.id === '30:3')!;
   assert.equal(txt.text!.segmentFields, 'minimal');
 });
+
+test('MOCK: la ingesta también exige el tipo de raíz (defensa en profundidad)', async () => {
+  const { rawText } = await mockReadRaw(baseMasterSpec());
+  const r = ingest(rawText, { expectedRootType: 'COMPONENT' });
+  assert.equal(r.ok, false);
+  if (!r.ok) assert.ok(r.errors.some((e) => e.code === 'ROOT_TYPE_MISMATCH'));
+});

@@ -21,6 +21,8 @@ export interface IngestInput {
   rawText: string;
   fileKey: string;
   expectedRootNodeId: string;
+  /** Tipo exigido para la raíz (por defecto FRAME). Se comprueba también aquí, no solo en el script. */
+  expectedRootType?: string;
   source: 'FIGMA_MCP_USE_FIGMA' | 'MOCK';
   rawResponsePath: string | null;
   now?: () => string;
@@ -120,6 +122,10 @@ export function ingestReadResponse(input: IngestInput): IngestResult {
     expectedRoot = normalizeNodeId(input.expectedRootNodeId);
   } catch (e) {
     return { ok: false, errors: [{ code: 'BAD_ROOT_ID', message: (e as Error).message }] };
+  }
+  const expectedType = input.expectedRootType ?? 'FRAME';
+  if (payload.nodes[0] && payload.nodes[0].type !== expectedType) {
+    errors.push({ code: 'ROOT_TYPE_MISMATCH', message: `Se esperaba ${expectedType}, llegó ${payload.nodes[0].type}.` });
   }
   if (payload.rootNodeId !== expectedRoot) {
     errors.push({ code: 'ROOT_MISMATCH', message: `Se esperaba ${expectedRoot}, llegó ${payload.rootNodeId}.` });

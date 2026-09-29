@@ -338,6 +338,25 @@ Necesarias antes de H2 y siguientes:
 
 ---
 
+### 5.1 Pendientes técnicos registrados (sin ampliar alcance)
+
+- **T1.** Validar `npm ci` y `npm run check` en Node 24.21.0, la versión declarada. Hasta ahora solo se han ejecutado en 25.6.1.
+- **T2.** Separar los **hashes de integridad**, que deben ir sin redondeo deliberado, de las **comparaciones geométricas con tolerancia**. Hoy `canonical.ts` redondea todos los números a 4 decimales, también en las huellas de la maestra. Eso puede ocultar cambios reales menores de 1e-4 (así ocurrió con las tolerancias en la huella de reglas, §8). **Debe revisarse antes de aprobar un manifiesto real o de confiar en `verify-master`.**
+
+### 5.2 Primera lectura real (2026-09-29)
+
+- Una única llamada a `use_figma` sobre `PNVvElNrs9t2ShZNq72Sst` / `4:90`, con el script `pcb.read-script.v1` (SHA-256 del enviado = SHA-256 del guardado).
+- Resultado: el script **se detuvo en su propia validación**, `PCB_ROOT_MUST_BE_SCENE_NODE`. `4:90` es una **página**, no el frame de la maestra. No se generó payload ni se ejecutó la ingesta. No se modificó el documento.
+- Hallazgo: con el asiento actual, `use_figma` **sí ejecuta** el script en este archivo y `getNodeByIdAsync` resuelve el nodo. Queda sin verificar la lectura completa de propiedades.
+- Evidencia en `runs/2026-09-29-read-4-90/`, fuera de git: script, petición, llamada y resultado originales extraídos del registro de la sesión.
+
+### 5.3 Segundo intento de lectura (2026-09-29)
+
+- Antes de la llamada se añadió al script una **condición más estricta**, `pcb.read-script.v2`: la raíz debe ser `FRAME` y, si no lo es, el script se detiene antes de leer nada e informa del tipo real (`PCB_ROOT_TYPE_MISMATCH`). La ingesta comprueba lo mismo (`ROOT_TYPE_MISMATCH`). No se amplía lo que se acepta: solo se restringe.
+- Una única llamada sobre `PNVvElNrs9t2ShZNq72Sst` / `4:141` (SHA-256 del script enviado = SHA-256 del guardado).
+- Resultado: `PCB_ROOT_TYPE_MISMATCH expected=FRAME actual=SECTION`. `4:141` es una **SECTION**. No se leyó ningún nodo ni se ejecutó la ingesta.
+- Evidencia en `runs/2026-09-29-read-4-141/`.
+
 ## 6. Limitaciones declaradas de H1
 
 - Sin OCR: ninguna imagen puede ser `image_no_text_detected` ni `image_embedded_text` salvo por **declaración humana**, que queda registrada como evidencia `human_statement`.

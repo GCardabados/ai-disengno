@@ -44,3 +44,22 @@ test('MOCK: raíz inexistente produce error explícito', async () => {
   const fake = createFakeFigma(fakeOptions(baseMasterSpec()));
   await assert.rejects(runScriptInMock(buildReadScript('99:99'), fake), /PCB_ROOT_NOT_FOUND/);
 });
+
+test('MOCK: raíz de tipo distinto al exigido → se detiene antes de leer e informa del tipo real', async () => {
+  const group = { id: '40:1', type: 'GROUP', name: 'No es un frame', width: 100, height: 100, children: [
+    { id: '40:2', type: 'RECTANGLE', name: 'R', width: 10, height: 10 },
+  ] };
+  const fake = createFakeFigma(fakeOptions(group));
+  await assert.rejects(runScriptInMock(buildReadScript('40:1'), fake), /PCB_ROOT_TYPE_MISMATCH expected=FRAME actual=GROUP/);
+  assert.deepEqual(fake.violations, []);
+});
+
+test('MOCK: una página como raíz se rechaza e informa de su tipo', async () => {
+  const fake = createFakeFigma(fakeOptions(baseMasterSpec()));
+  await assert.rejects(runScriptInMock(buildReadScript('1:1'), fake), /PCB_ROOT_MUST_BE_SCENE_NODE PAGE/);
+});
+
+test('el tipo exigido se valida al generar el script (sin inyección)', () => {
+  assert.throws(() => buildReadScript('10:1', 'FRAME"; figma.root.remove(); "'));
+  assert.match(buildReadScript('10:1'), /var REQUIRED_ROOT_TYPE = "FRAME";/);
+});
