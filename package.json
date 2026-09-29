@@ -1,0 +1,15 @@
+{
+  "name": "paid-creative-builder",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Adaptación verificable de maestras estáticas de Figma a destinos publicitarios. H0+H1: inventario y manifiesto, sin escritura en Figma.",
+  "type": "module",
+  "engines": {
+    "node": ">=23.6"
+  },
+  "scripts": {
+    "test": "node --test \"test/**/*.test.ts\"",
+    "pcb": "node src/cli.ts",
+    "typecheck": "echo 'Requiere instalar typescript (pendiente de autorización): npx tsc --noEmit' && exit 1"
+  }
+}

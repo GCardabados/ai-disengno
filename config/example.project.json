@@ -1,0 +1,26 @@
+{
+  "schema": "pcb.project.v1",
+  "status": "proposal",
+  "projectId": "ejemplo",
+  "taxonomy": {
+    "id": "paid-static-default",
+    "version": "0.1.0-propuesta",
+    "roles": [
+      { "id": "logo", "label": "Logo", "multiplicity": { "min": 1, "max": 1 }, "protection": "logo", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["logo", "brand", "marca"] },
+      { "id": "headline", "label": "Titular", "multiplicity": { "min": 1, "max": 1 }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["titular", "headline", "title"] },
+      { "id": "body", "label": "Cuerpo", "multiplicity": { "min": 0, "max": null }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["body", "cuerpo", "copy"] },
+      { "id": "cta", "label": "CTA", "multiplicity": { "min": 0, "max": 1 }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["cta", "boton", "botón", "button"] },
+      { "id": "cta_label", "label": "Texto del CTA", "multiplicity": { "min": 0, "max": 1 }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["cta/label"] },
+      { "id": "legal", "label": "Legal", "multiplicity": { "min": 0, "max": null }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["legal", "disclaimer"] },
+      { "id": "product_image", "label": "Imagen de producto", "multiplicity": { "min": 0, "max": null }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["producto", "product", "packshot"] },
+      { "id": "price", "label": "Precio", "multiplicity": { "min": 0, "max": null }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["precio", "price"] },
+      { "id": "background", "label": "Fondo", "multiplicity": { "min": 0, "max": 2 }, "protection": "flexible", "mustBeInSafeZone": false, "defaultAllowOps": [], "nameHints": ["fondo", "background", "bg"] },
+      { "id": "decorative", "label": "Decorativo", "multiplicity": { "min": 0, "max": null }, "protection": "decorative", "mustBeInSafeZone": false, "defaultAllowOps": ["translate"], "nameHints": [] }
+    ]
+  },
+  "tolerances": { "linear": 1e-6, "px": 0.01 },
+  "approvers": [],
+  "ocr": { "enabled": false, "engine": "tesseract-local", "langs": [] },
+  "visualReview": { "modelMayInspectScreenshots": false },
+  "heuristics": { "vectorGlyphMinCount": 3 }
+}
