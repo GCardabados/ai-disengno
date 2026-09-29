@@ -12,6 +12,7 @@ import {
 import { hashOf, shortId } from '../hash/canonical.ts';
 import { diffNodes, type NodeChange } from '../hash/fingerprint.ts';
 import { CLASSIFIER, DEFAULT_CONSTRAINTS, type Classification } from './classify.ts';
+import { RULES_FINGERPRINT_COVERS, rulesFingerprint } from './rules.ts';
 
 export function snapshotHash(s: MasterSnapshot): string {
   return hashOf('snapshot', { rootNodeId: s.rootNodeId, fileKey: s.fileKey, nodes: s.nodes });
@@ -50,6 +51,7 @@ export function buildDraftManifest(
     },
     taxonomy: { id: config.taxonomy.id, version: config.taxonomy.version },
     classifier: { id: CLASSIFIER.id, version: CLASSIFIER.version },
+    rules: { fingerprint: rulesFingerprint(config), covers: [...RULES_FINGERPRINT_COVERS] },
     detectors: { ocr: 'not_run' },
     entities: cls.entities,
     dispositions: cls.dispositions,
@@ -93,6 +95,9 @@ export function applyReview(
 ): { ok: true; manifest: Manifest } | { ok: false; issues: ReviewIssue[] } {
   const issues: ReviewIssue[] = [];
   if (m.approval.status !== 'draft') issues.push({ code: 'NOT_DRAFT', message: 'Solo se revisan manifiestos en borrador.' });
+  if (rulesFingerprint(config) !== m.rules.fingerprint) {
+    issues.push({ code: 'RULES_CHANGED_SINCE_INVENTORY', message: 'Las reglas del proyecto no son las del inventario (huella distinta).' });
+  }
   if (review.manifestHash !== m.manifestHash) {
     issues.push({ code: 'REVIEW_FOR_OTHER_MANIFEST', message: 'La revisión corresponde a otro manifiesto (hash distinto).' });
   }
@@ -245,7 +250,10 @@ export function approvalIssues(m: Manifest, current: MasterSnapshot, config: Pro
   const issues: ReviewIssue[] = [];
   if (!verifyManifestHash(m)) issues.push({ code: 'MANIFEST_HASH_INVALID', message: 'Manifiesto alterado.' });
   if (m.approval.status !== 'draft') issues.push({ code: 'NOT_DRAFT', message: 'Ya aprobado.' });
-  if (!by.trim()) issues.push({ code: 'APPROVER_MISSING', message: 'Falta la persona que aprueba.' });
+  if (!by.trim()) issues.push({ code: 'APPROVER_MISSING', message: 'Falta el nombre declarado de quien aprueba.' });
+  if (rulesFingerprint(config) !== m.rules.fingerprint) {
+    issues.push({ code: 'RULES_CHANGED_SINCE_INVENTORY', message: 'Las reglas del proyecto han cambiado desde el inventario (huella distinta).' });
+  }
   if (config.approvers.length > 0 && !config.approvers.includes(by)) {
     issues.push({ code: 'APPROVER_NOT_AUTHORIZED', message: 'La persona no figura en config.approvers.' });
   }

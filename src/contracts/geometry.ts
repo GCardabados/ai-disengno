@@ -1,21 +1,21 @@
-import { s, type Infer } from './schema.ts';
+import { z } from 'zod';
 
-export const RectSchema = s.object({
-  x: s.number(),
-  y: s.number(),
-  width: s.number({ min: 0 }),
-  height: s.number({ min: 0 }),
+export const RectSchema = z.strictObject({
+  x: z.number(),
+  y: z.number(),
+  width: z.number().min(0),
+  height: z.number().min(0),
 });
-export type Rect = Infer<typeof RectSchema>;
+export type Rect = z.infer<typeof RectSchema>;
 
-const row = s.tuple([s.number(), s.number(), s.number()]);
+const row = z.tuple([z.number(), z.number(), z.number()]);
 /** Transformación afín 2×3 de Figma: [[a, b, tx], [c, d, ty]]. */
-export const TransformSchema = s.tuple([row, row]);
+export const TransformSchema = z.tuple([row, row]);
 export type Transform = [[number, number, number], [number, number, number]];
 
 /** Unión de rectángulos en px del destino. Intervalos semiabiertos [x, x+w). */
-export const RegionSchema = s.object({ rects: s.array(RectSchema) });
-export type Region = Infer<typeof RegionSchema>;
+export const RegionSchema = z.strictObject({ rects: z.array(RectSchema) });
+export type Region = z.infer<typeof RegionSchema>;
 
 export const IDENTITY: Transform = [
   [1, 0, 0],

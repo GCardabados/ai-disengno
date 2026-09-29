@@ -16,10 +16,12 @@ export function renderManifestReview(m: Manifest, snap: MasterSnapshot): string 
   const pending = m.dispositions.filter((d) => d.kind === 'pending');
   const structural = m.dispositions.filter((d) => d.kind === 'structural');
 
-  L.push('# Revisión de inventario');
+  const isMock = m.source === 'MOCK';
+  L.push(isMock ? '# [MOCK] Revisión de inventario' : '# Revisión de inventario');
   L.push('');
-  if (m.source === 'MOCK') {
+  if (isMock) {
     L.push('> **MOCK — datos sintéticos. No procede de ningún archivo real de Figma.**');
+    L.push('> Esta procedencia se conserva tras la aprobación: un manifiesto MOCK aprobado sigue siendo MOCK.');
     L.push('');
   }
   L.push('> Los nombres de capa y los textos proceden del archivo y se muestran como **datos literales**.');
@@ -28,6 +30,11 @@ export function renderManifestReview(m: Manifest, snap: MasterSnapshot): string 
   L.push(`- Origen: \`${m.source}\` · fileKey \`${m.master.fileKey}\` · raíz \`${m.master.rootNodeId}\` · página ${u(snap.page.name)}`);
   L.push(`- Huella de la maestra: \`${m.master.fingerprints.master}\``);
   L.push(`- Manifiesto: \`${m.manifestId}\` · hash \`${m.manifestHash}\` · estado **${m.approval.status}**`);
+  if (m.approval.status === 'approved') {
+    L.push(`- Aprobado por ${u(m.approval.approvedBy ?? '')} (nombre declarado; no autentica a ninguna persona) · ${m.approval.approvedAt ?? ''}`);
+  }
+  L.push(`- Huella de reglas: \`${m.rules.fingerprint}\``);
+  L.push('- Integridad: los SHA-256 detectan alteraciones del contenido transportado; no autentican por sí solos que proceda de Figma.');
   L.push(`- Clasificador: \`${m.classifier.id}@${m.classifier.version}\` · OCR: **${m.detectors.ocr}**`);
   L.push(`- Nodos: ${snap.nodes.length} · entidades: ${m.entities.length} · estructurales: ${structural.length} · **pendientes: ${pending.length}**`);
   if (snap.environment.nodesWithMissingFont.length > 0) {
@@ -97,6 +104,11 @@ export function renderManifestReview(m: Manifest, snap: MasterSnapshot): string 
   L.push('3. Acepte o rechace cada composición.');
   L.push('4. `pcb review-apply` y después `pcb approve --by "<nombre>"`. La aprobación se rechaza si la maestra ha cambiado,');
   L.push('   si quedan pendientes, naturalezas sin determinar, fuentes ausentes o restricciones que relajan invariantes.');
-  L.push('');
+  if (isMock) {
+    L.push('---');
+    L.push('');
+    L.push('**[MOCK] Fin del informe. Datos sintéticos; no utilizar como inventario de una pieza real.**');
+    L.push('');
+  }
   return L.join('\n');
 }

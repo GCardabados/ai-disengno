@@ -5,11 +5,31 @@
   "description": "Adaptación verificable de maestras estáticas de Figma a destinos publicitarios. H0+H1: inventario y manifiesto, sin escritura en Figma.",
   "type": "module",
   "engines": {
-    "node": ">=23.6"
+    "node": ">=24.21.0 <25"
   },
   "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node --test \"test/**/*.test.ts\"",
-    "pcb": "node src/cli.ts",
-    "typecheck": "echo 'Requiere instalar typescript (pendiente de autorización): npx tsc --noEmit' && exit 1"
+    "check": "npm run typecheck && npm test",
+    "pcb": "node src/cli.ts"
+  },
+  "dependencies": {
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.0",
+    "typescript": "7.0.2"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=24.21.0 <25",
+      "onFail": "warn"
+    },
+    "packageManager": {
+      "name": "npm",
+      "version": ">=11",
+      "onFail": "warn"
+    }
   }
 }

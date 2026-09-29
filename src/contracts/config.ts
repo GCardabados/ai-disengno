@@ -1,4 +1,4 @@
-import { s, type Infer } from './schema.ts';
+import { z } from 'zod';
 
 /** Única lista de operaciones por entidad (compartida por allowOps y por el contrato de Operation). */
 export const ENTITY_OPS = ['translate', 'resize_text_box', 'recrop_background'] as const;
@@ -25,42 +25,42 @@ export const NUMERIC_TOLERANCE_MAX = { linear: 1e-6, px: 0.01 } as const;
 
 export const PROTECTION_LEVELS = ['logo', 'protected', 'flexible', 'decorative'] as const;
 
-export const RoleDefinitionSchema = s.object({
-  id: s.string({ pattern: /^[a-z][a-z0-9_]*$/ }),
-  label: s.string({ min: 1 }),
-  multiplicity: s.object({ min: s.number({ int: true, min: 0 }), max: s.nullable(s.number({ int: true, min: 0 })) }),
-  protection: s.enumOf(PROTECTION_LEVELS),
-  mustBeInSafeZone: s.boolean(),
-  defaultAllowOps: s.array(s.enumOf(ENTITY_OPS)),
+export const RoleDefinitionSchema = z.strictObject({
+  id: z.string().regex(/^[a-z][a-z0-9_]*$/),
+  label: z.string().min(1),
+  multiplicity: z.strictObject({ min: z.number().int().min(0), max: z.number().int().min(0).nullable() }),
+  protection: z.enum(PROTECTION_LEVELS),
+  mustBeInSafeZone: z.boolean(),
+  defaultAllowOps: z.array(z.enum(ENTITY_OPS)),
   /** Pistas débiles: comparación de subcadenas contra el nombre de capa. Nunca determinan la naturaleza del contenido. */
-  nameHints: s.array(s.string({ min: 2 })),
+  nameHints: z.array(z.string().min(2)),
 });
-export type RoleDefinition = Infer<typeof RoleDefinitionSchema>;
+export type RoleDefinition = z.infer<typeof RoleDefinitionSchema>;
 
-export const ProjectConfigSchema = s.object({
-  schema: s.literal('pcb.project.v1'),
-  status: s.enumOf(['proposal', 'approved'] as const),
-  projectId: s.string({ min: 1 }),
-  taxonomy: s.object({
-    id: s.string({ min: 1 }),
-    version: s.string({ min: 1 }),
-    roles: s.array(RoleDefinitionSchema, { min: 1 }),
+export const ProjectConfigSchema = z.strictObject({
+  schema: z.literal('pcb.project.v1'),
+  status: z.enum(['proposal', 'approved']),
+  projectId: z.string().min(1),
+  taxonomy: z.strictObject({
+    id: z.string().min(1),
+    version: z.string().min(1),
+    roles: z.array(RoleDefinitionSchema).min(1),
   }),
-  tolerances: s.object({ linear: s.number({ min: 0 }), px: s.number({ min: 0 }) }),
+  tolerances: z.strictObject({ linear: z.number().min(0), px: z.number().min(0) }),
   /** Personas autorizadas a aprobar manifiestos. Vacío = cualquiera con nombre (pendiente de decisión). */
-  approvers: s.array(s.string({ min: 1 })),
-  ocr: s.object({
-    enabled: s.boolean(),
-    engine: s.literal('tesseract-local'),
-    langs: s.array(s.string()),
+  approvers: z.array(z.string().min(1)),
+  ocr: z.strictObject({
+    enabled: z.boolean(),
+    engine: z.literal('tesseract-local'),
+    langs: z.array(z.string()),
   }),
-  visualReview: s.object({ modelMayInspectScreenshots: s.boolean() }),
-  heuristics: s.object({
+  visualReview: z.strictObject({ modelMayInspectScreenshots: z.boolean() }),
+  heuristics: z.strictObject({
     /** Mínimo de vectores hermanos alineados para marcar "posible texto vectorizado". */
-    vectorGlyphMinCount: s.number({ int: true, min: 2 }),
+    vectorGlyphMinCount: z.number().int().min(2),
   }),
 });
-export type ProjectConfig = Infer<typeof ProjectConfigSchema>;
+export type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
 
 export interface ConfigIssue {
   code: string;

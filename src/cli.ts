@@ -23,6 +23,7 @@ const USAGE = `pcb <comando> [opciones]
   inventory      --snapshot F --config F --out DIR       Manifiesto borrador + review.md + plantilla
   review-apply   --manifest F --review F --config F --out F
   approve        --manifest F --snapshot F --config F --by NOMBRE --out F
+                 (--by registra un nombre declarado; NO autentica a la persona)
   verify-master  --manifest F --approved-snapshot F --current-snapshot F`;
 
 const opts = {
@@ -62,6 +63,7 @@ async function loadConfig(path: string): Promise<ProjectConfig> {
 }
 
 const loadSnapshot = async (p: string): Promise<MasterSnapshot> => parseOrThrow(MasterSnapshotSchema, await readJson(p), 'snapshot');
+const tag = (source: string): string => (source === 'MOCK' ? '[MOCK] ' : '');
 const loadManifest = async (p: string): Promise<Manifest> => parseOrThrow(ManifestSchema, await readJson(p), 'manifest');
 
 async function main(argv: string[]): Promise<number> {
@@ -110,7 +112,7 @@ async function main(argv: string[]): Promise<number> {
       }
       await writeJson(join(out, 'snapshot.json'), r.snapshot);
       r.warnings.forEach((w) => console.warn(`AVISO: ${w}`));
-      console.log(`Instantánea ${r.snapshot.source}: ${r.snapshot.nodes.length} nodos · ${r.snapshot.fingerprints.master}`);
+      console.log(`${tag(r.snapshot.source)}Instantánea ${r.snapshot.source}: ${r.snapshot.nodes.length} nodos · ${r.snapshot.fingerprints.master}`);
       return 0;
     }
     case 'inventory': {
@@ -123,7 +125,7 @@ async function main(argv: string[]): Promise<number> {
       await writeJson(join(out, 'review.template.json'), buildReviewTemplate(manifest));
       await writeFile(join(out, 'review.md'), renderManifestReview(manifest, snap), 'utf8');
       const pending = manifest.dispositions.filter((d) => d.kind === 'pending').length;
-      console.log(`${snap.source}: ${manifest.entities.length} entidades, ${pending} nodos pendientes, ${manifest.compositions.length} composiciones → ${out}`);
+      console.log(`${tag(snap.source)}${snap.source}: ${manifest.entities.length} entidades, ${pending} nodos pendientes, ${manifest.compositions.length} composiciones → ${out}`);
       return 0;
     }
     case 'review-apply': {
@@ -150,15 +152,15 @@ async function main(argv: string[]): Promise<number> {
         return 2;
       }
       await writeJson(need(a.out, 'out'), r.manifest);
-      console.log(`Aprobado: ${r.manifest.manifestHash}`);
+      console.log(`${tag(r.manifest.source)}Aprobado (origen ${r.manifest.source}) por el nombre declarado ${JSON.stringify(r.manifest.approval.approvedBy)}: ${r.manifest.manifestHash}`);
+      console.log('Nota: --by registra un nombre; no autentica a ninguna persona.');
       return 0;
     }
     case 'verify-master': {
-      const v = verifyMasterUnchanged(
-        await loadManifest(need(a.manifest, 'manifest')),
-        await loadSnapshot(need(a['approved-snapshot'], 'approved-snapshot')),
-        await loadSnapshot(need(a['current-snapshot'], 'current-snapshot')),
-      );
+      const manifest = await loadManifest(need(a.manifest, 'manifest'));
+      const current = await loadSnapshot(need(a['current-snapshot'], 'current-snapshot'));
+      const v = verifyMasterUnchanged(manifest, await loadSnapshot(need(a['approved-snapshot'], 'approved-snapshot')), current);
+      console.log(`${tag(manifest.source)}manifiesto ${manifest.source} · lectura actual ${current.source}`);
       console.log(JSON.stringify(v, null, 2));
       return v.unchanged ? 0 : 3;
     }

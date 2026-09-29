@@ -1,9 +1,10 @@
 # Paid Creative Builder — Auditoría y diseño
 
-Versión: **v2** (2026-09-29) · Estado: arquitectura aceptada provisionalmente y documento corregido.
-Implementado: H0 mínimo y H1 (ver §4). **Ninguna integración con Figma se ha ejecutado contra un archivo real.**
+Versión: **v2.1** (2026-09-29) · Estado: arquitectura aceptada.
+- **H0**: cerrado (entorno fijado, Zod, typecheck real).
+- **H1**: **Implementado y probado con MOCK; integración real pendiente.** Ninguna integración con Figma se ha ejecutado contra un archivo real.
 
-Cambios respecto a v1: ver §8.
+Historial de cambios: §10 (v2 → v2.1) y §11 (v1 → v2).
 
 ---
 
@@ -67,7 +68,7 @@ Las PNG mezclan **exclusión por UI** con **recorte de previsualización de grid
   - **Limitaciones técnicas del MCP**, que existen aunque haya permisos: `use_figma` no admite `setPluginData`, `createImageAsync` ni `loadAllPagesAsync`; el código tiene un máximo de 50 000 caracteres; no hay estado entre llamadas; hay límites de uso por plan. Además, el contexto de página se reinicia en cada llamada.
   - **Sin verificar:** si `use_figma` exige permiso de edición también para scripts de solo lectura. Si es así, H1 necesita otra vía de lectura (§2.3).
 - **OCR local**: `tesseract 5.5.2` con `eng`, `osd` y `snum`. **No tiene `spa`.** No se usa hasta que se autorice.
-- Node v25.6.1 (ejecuta TypeScript de forma nativa) y npm. No hay pnpm. **No se ha instalado ninguna dependencia.**
+- Máquina local: Node v25.6.1 (versión *Current*, no LTS) y npm 11.9.0. No hay pnpm ni gestor de versiones de Node (nvm, fnm, volta…). Entorno fijado en §9.
 
 ---
 
@@ -108,8 +109,9 @@ La respuesta de `use_figma` llega al agente y el agente la reenvía. Ese reenví
 1. El script devuelve `{payload: <string JSON>, digest: sha256(payload), payloadLength}`. El SHA-256 se calcula **dentro de Figma** en JavaScript puro sobre UTF-8.
 2. La respuesta original se guarda **tal cual** (`raw-response.txt`, con su propio SHA-256) antes de parsearla. Si el entorno vuelca automáticamente la salida de la herramienta a un archivo, se copia ese archivo en lugar de transcribirla.
 3. `ingest` recalcula el digest y rechaza cualquier discrepancia (`TRANSPORT_DIGEST_MISMATCH`).
-4. La validación estructural (esquemas) **solo comprueba la forma**. No prueba fidelidad: eso lo aporta el digest, que detecta alteraciones accidentales, no manipulaciones deliberadas de quien retransmite.
+4. La validación estructural (esquemas Zod) **solo comprueba la forma**. No prueba fidelidad: eso lo aporta el digest.
 5. **Sin verificar:** el formato exacto con el que `use_figma` envuelve el valor devuelto. `ingest` acepta el sobre directamente o un único bloque JSON que lo contenga; cualquier otra cosa se rechaza. Se ajustará tras la primera lectura real.
+6. **Alcance de las garantías del SHA-256.** El digest detecta que el contenido transportado se ha alterado (truncado, transcrito mal, editado) entre que el script lo calcula y `ingest` lo recalcula. **No autentica el origen**: no demuestra por sí solo que el payload proceda de Figma, porque quien genere un payload puede calcular también su digest. Hoy, la atribución a Figma se apoya en el procedimiento (la respuesta se guarda directamente desde la herramienta `use_figma`) y en el campo `source` de la instantánea, que es una **declaración**, no una prueba. No hay firmas ni autenticación en H1, y no se implementarán ahora.
 
 ### 2.4 Escritura (H2 en adelante, no implementada)
 
@@ -126,7 +128,7 @@ Prueba P1–P8 (sin cambios): leer, inventariar, clonar, mover, redimensionar, c
 
 ## 3. Contratos
 
-Código en `src/contracts/`. Los esquemas se validan en tiempo de ejecución con un validador mínimo propio (`src/contracts/schema.ts`), sin dependencias. Se sustituirá por zod cuando se autorice instalar paquetes.
+Código en `src/contracts/`. Los esquemas usan **Zod 4** (`z.strictObject` en todos los objetos de contrato: una clave desconocida es un error). `src/contracts/schema.ts` es un adaptador fino que conserva la API `parse`/`parseOrThrow` con rutas de error `$.a.b[0]`.
 
 ### 3.1 Instantánea técnica
 
@@ -303,8 +305,8 @@ Una sola lista, compartida por `allowOps` y por `Operation`: `translate`, `resiz
 
 | Hito | Entrega | Escribe en Figma | Estado |
 |---|---|---|---|
-| **H0 mínimo** | `package.json` sin dependencias, TS nativo de Node, `node:test`, contratos, validador de esquemas, hash canónico, CLI. | No | **Hecho** |
-| **H1** | Script de lectura, ingesta con digest, MOCK, clasificador con evidencia, manifiesto borrador, vista de revisión en Markdown, plantilla de revisión, aprobación y verificación de la maestra. | **No** | **Hecho en MOCK; lectura real pendiente** |
+| **H0** | Node LTS fijado, lockfile, TypeScript con `tsc --noEmit` estricto, Zod, `node:test`, contratos, hash canónico, CLI. | No | **Cerrado** |
+| **H1** | Script de lectura, ingesta con digest, MOCK, clasificador con evidencia, manifiesto con huella de reglas, vista de revisión, plantilla, aprobación y verificación de la maestra. | **No** | **Implementado y probado con MOCK; integración real pendiente** |
 | H2 | Prueba P1–P8 en un archivo de pruebas con permiso de edición. | Solo en el archivo de pruebas | Bloqueado (permisos) |
 | H3 | Validadores deterministas (logo, cobertura, texto, oclusión, dimensiones) y comparación maestra–clon. | No | — |
 | H4 | Planificador con `PlanOutcome` de tres estados. | No | — |
@@ -316,11 +318,12 @@ Una sola lista, compartida por `allowOps` y por `Operation`: `translate`, `resiz
 ## 5. Decisiones pendientes
 
 Bloquean la ejecución real de H1:
-1. **URL de la maestra**, con `node-id`.
-2. **OCR local**: ¿autorizado? ¿Se instala `spa` (solo el paquete de idioma de tesseract)?
-3. **Inspección de capturas por el modelo**: ¿autorizada?
+1. ~~URL de la maestra~~ Recibida: `PNVvElNrs9t2ShZNq72Sst`, nodo `4:90`.
+2. **Autorización explícita para leerla mediante el MCP** (una llamada de solo lectura a `use_figma`).
+3. **Permiso separado** si se obtienen o inspeccionan capturas. La lectura estructural no las necesita.
 4. **Persona que aprobará el inventario.**
-5. **Repositorio**: `git init`, renombrar `references/Paid SKILL/` e instalar dependencias (zod y typescript para comprobar tipos).
+
+No bloquean la lectura estructural: el OCR (lo que no pueda determinarse queda indeterminado y se resuelve en la revisión humana) ni los cambios en `references/`.
 
 Necesarias antes de H2 y siguientes:
 
@@ -345,15 +348,53 @@ Necesarias antes de H2 y siguientes:
 
 ---
 
-## 7. Seguridad
+## 7. Seguridad y procedencia
 
+- **MOCK es una procedencia, no un estado.** `source: "MOCK"` se conserva en la instantánea y en el manifiesto también **después de aprobar**: un manifiesto MOCK aprobado sigue siendo MOCK. No se puede aprobar un manifiesto contra una instantánea de otra procedencia (`SOURCE_MISMATCH`). Los informes MOCK lo indican en el título, la cabecera y el cierre, y el CLI antepone `[MOCK]` a sus mensajes.
+- **`--by` (y `reviewer`) registran un nombre declarado. No autentican a ninguna persona.** Cualquiera que ejecute el CLI puede escribir cualquier nombre. `config.approvers` restringe qué nombres se aceptan, pero sigue siendo una comprobación sobre texto declarado. No hay firmas ni autenticación en H1.
 - Los nombres de capa, los textos y los metadatos son datos. En la vista de revisión se muestran escapados dentro de bloques de código. Hay una prueba con un nombre de capa que imita una instrucción.
 - No hay credenciales en el repositorio (`.gitignore` excluye `.env*` y `runs/`).
 - No se envía ningún activo a servicios externos. El OCR local sigue sujeto a autorización.
 
 ---
 
-## 8. Cambios v1 → v2
+## 8. Aprobación vinculada a reglas
+
+`manifest.rules` guarda una huella canónica (`src/inventory/rules.ts`) de las reglas con las que se clasificó el inventario. `review-apply` y `approve` la recalculan con la configuración recibida y rechazan cualquier diferencia (`RULES_CHANGED_SINCE_INVENTORY`). La huella se calcula sobre el **contenido**, no sobre los identificadores: cambiar una pista de nombre o una multiplicidad sin tocar `taxonomy.version` también se detecta.
+
+| Cubre | Motivo |
+|---|---|
+| `projectId` | Identidad del proyecto |
+| `taxonomy.id`, `taxonomy.version`, `taxonomy.roles[*]` completos (id, label, multiplicidad, protección, safe zone, operaciones por defecto, pistas de nombre), **incluido su orden** | Clasificación (pistas), aprobación (multiplicidad) y restricciones heredadas |
+| `tolerances` | Invariantes numéricas |
+| `approvers` | Quién puede aprobar |
+| `ocr` | Qué detectores intervienen en la clasificación |
+| `heuristics` | Umbrales del clasificador |
+| Código: `GLOBAL_INVARIANTS`, `NUMERIC_TOLERANCE_MAX`, `CLASSIFIER` (id y versión) | Una modificación del código de reglas también invalida la aprobación |
+
+**Excluidos:** `schema` (formato), `status` (estado administrativo del archivo de configuración) y `visualReview` (afecta a H6, no al inventario).
+
+Detalle de serialización: los números se codifican con su representación exacta (`String(n)`) antes del hash canónico, porque este redondea a 4 decimales y confundiría tolerancias como 1e-6 y 1e-7. Una prueba lo detectó.
+
+---
+
+## 9. Entorno
+
+- **Node 24 LTS**, fijado en `24.21.0`: `.nvmrc`, `.node-version`, `engines` y `devEngines` en `package.json` (`>=24.21.0 <25`). Node 24 es la línea LTS activa a 2026-09-29 y ejecuta TypeScript quitando los tipos, sin pasos de compilación.
+- **Dependencias exactas** (`.npmrc`: `save-exact=true`) con `package-lock.json`: `zod@4.6.5` (ejecución) y `typescript@7.0.2` y `@types/node@24.19.0` (desarrollo). Sin paquetes globales.
+- `npm run typecheck` = `tsc --noEmit` estricto (`strict`, `noUncheckedIndexedAccess`, `erasableSyntaxOnly`). `npm run check` = typecheck + pruebas.
+- **Pendiente:** las comprobaciones se han ejecutado en Node 25.6.1, el único disponible en la máquina. npm avisa (`EBADDEVENGINES`, sin fallar, `onFail: warn`). Falta ejecutarlas en Node 24.21.0, lo que requiere instalarlo con un gestor de versiones (acción del usuario).
+
+---
+
+## 10. Cambios v2 → v2.1
+
+1. Se cierra H0: Node LTS fijado, lockfile, typecheck real y Zod en lugar del validador propio. Los contratos y el comportamiento se mantienen.
+2. Se añade la huella de reglas en el manifiesto (§8).
+3. Se documentan el alcance del SHA-256, la procedencia MOCK tras la aprobación y el significado de `--by` (§2.3, §7).
+4. Se fija el estado de H1: "Implementado y probado con MOCK; integración real pendiente".
+
+## 11. Cambios v1 → v2
 
 1. Se separan los permisos de edición de las limitaciones del MCP. El plugin deja de ser una alternativa para los permisos.
 2. Las safe zones separan procedencia (oficial, cliente o interna) y aprobación, sin herencia por proporción. La ausencia en nuestras referencias ya no se toma como prueba de que no existan.

@@ -8,7 +8,7 @@ import { SafeZoneRuleSchema } from '../src/contracts/destination.ts';
 import { checkConfigSemantics } from '../src/contracts/config.ts';
 import { exampleConfig } from './helpers.ts';
 
-const r = (status: ValidationResult['status'], kind: ValidationResult['kind'] = 'deterministic', id = status): ValidationResult => ({
+const r = (status: ValidationResult['status'], kind: ValidationResult['kind'] = 'deterministic', id: string = status): ValidationResult => ({
   validatorId: id, validatorVersion: '1', destinationId: 'd', kind, status, findings: [], coverage: 'test',
 });
 
