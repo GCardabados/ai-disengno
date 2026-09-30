@@ -81,6 +81,25 @@ export function readErrorMasterSpec(): MockNodeSpec {
   };
 }
 
+/**
+ * Sección con varias composiciones (MOCK): la buscada, otra con nombre parecido (solo tras normalizar
+ * la "x"), un componente suelto y un grupo con el mismo nombre dentro de otra composición.
+ */
+export const SECTION_TARGET_NAME = '960×1200_Marca_SVA2';
+export function sectionEntrySpec(): MockNodeSpec {
+  const master = { ...baseMasterSpec(), id: '50:10', name: SECTION_TARGET_NAME, x: 0, y: 0, width: 960, height: 1200 };
+  return {
+    id: '50:1', type: 'SECTION', name: 'Maestras campaña', width: 4000, height: 2000,
+    children: [
+      master,
+      { id: '50:20', type: 'FRAME', name: '1080×1080_Marca_SVA2', x: 1100, y: 0, width: 1080, height: 1080, fills: [solid(1, 1, 1)],
+        children: [{ id: '50:21', type: 'GROUP', name: 'Logo', x: 10, y: 10, width: 50, height: 50,
+          children: [{ id: '50:22', type: 'VECTOR', name: 'v', width: 50, height: 50, fills: [solid(0, 0, 0)] }] }] },
+      { id: '50:30', type: 'COMPONENT', name: 'Botón CTA', x: 2300, y: 0, width: 300, height: 80, fills: [solid(1, 0, 0)] },
+    ],
+  };
+}
+
 export function fakeOptions(root: MockNodeSpec): FakeFigmaOptions {
   return { fileKey: MOCK_FILE_KEY, page: MOCK_PAGE, roots: [root] };
 }
@@ -97,4 +116,5 @@ export const MOCK_FIXTURES: Record<string, () => MockNodeSpec> = {
   base: baseMasterSpec,
   'missing-font': missingFontMasterSpec,
   'read-error': readErrorMasterSpec,
+  section: sectionEntrySpec,
 };

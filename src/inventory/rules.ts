@@ -32,22 +32,11 @@ export const RULES_FINGERPRINT_COVERS = [
 export const RULES_FINGERPRINT_EXCLUDES = ['config.schema', 'config.status', 'config.visualReview'] as const;
 
 /**
- * La serialización canónica redondea los números a 4 decimales (adecuado para geometría).
- * Las reglas contienen valores más finos (p. ej. tolerancia lineal 1e-6), así que aquí cada número
- * se codifica con su representación exacta de JavaScript (String(n)) antes de calcular el hash.
- * Los campos tienen tipos fijos, de modo que no hay ambigüedad entre el número 1 y la cadena "1".
+ * Los números se hashean con su valor exacto (pcb.hash.v2 no redondea), así que tolerancias como 1e-6 y 1e-7
+ * producen huellas distintas.
  */
-function exactNumbers(v: unknown): unknown {
-  if (typeof v === 'number') return String(v);
-  if (Array.isArray(v)) return v.map(exactNumbers);
-  if (v !== null && typeof v === 'object') {
-    return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, exactNumbers(x)]));
-  }
-  return v;
-}
-
 export function rulesFingerprint(cfg: ProjectConfig): string {
-  return hashOf('rules', exactNumbers({
+  return hashOf('rules', {
     projectId: cfg.projectId,
     taxonomy: cfg.taxonomy,
     tolerances: cfg.tolerances,
@@ -57,5 +46,5 @@ export function rulesFingerprint(cfg: ProjectConfig): string {
     globalInvariants: GLOBAL_INVARIANTS,
     numericToleranceMax: NUMERIC_TOLERANCE_MAX,
     classifier: CLASSIFIER,
-  }));
+  });
 }

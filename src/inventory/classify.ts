@@ -18,7 +18,22 @@ import {
 import { intersectionArea, type Rect } from '../contracts/geometry.ts';
 import { shortId } from '../hash/canonical.ts';
 
-export const CLASSIFIER = { id: 'pcb.classifier.heuristic', version: '1' } as const;
+// v2: los descendientes de una máscara son estructurales ('mask'); pistas de rol por palabras completas.
+export const CLASSIFIER = { id: 'pcb.classifier.heuristic', version: '2' } as const;
+
+/** Tokens de un nombre (dato no confiable) para comparar pistas por palabras completas, no subcadenas. */
+export function nameTokens(s: string): string[] {
+  return s.normalize('NFKC').toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((t) => t.length > 0);
+}
+
+/** La pista coincide si sus tokens aparecen contiguos en el nombre ("cta/label" ↔ "CTA / Label"; "cta" ✗ "Rectangle"). */
+export function hintMatches(name: string, hint: string): boolean {
+  const n = nameTokens(name);
+  const h = nameTokens(hint);
+  if (h.length === 0) return false;
+  for (let i = 0; i + h.length <= n.length; i++) if (h.every((t, j) => n[i + j] === t)) return true;
+  return false;
+}
 
 type PendingReason = (typeof PENDING_REASONS)[number];
 type ReviewReason = (typeof REVIEW_REASONS)[number];
@@ -79,6 +94,7 @@ export function classify(snapshot: MasterSnapshot, config: ProjectConfig): Class
   const nodes = snapshot.nodes;
   const byId = new Map(nodes.map((n) => [n.id, n]));
   const rootId = snapshot.rootNodeId;
+  const missingFont = new Set(snapshot.environment.nodesWithMissingFont);
 
   const effectivelyVisible = (n: NodeSnapshot): boolean => {
     let cur: NodeSnapshot | undefined = n;
@@ -121,6 +137,21 @@ export function classify(snapshot: MasterSnapshot, config: ProjectConfig): Class
       });
       continue;
     }
+    const maskAncestor = (() => {
+      let cur = parent;
+      while (cur && cur.id !== rootId) {
+        if (cur.isMask) return cur;
+        cur = cur.parentId ? byId.get(cur.parentId) : undefined;
+      }
+      return undefined;
+    })();
+    if (maskAncestor) {
+      structural.set(n.id, {
+        justification: 'mask',
+        evidence: [ev('mask_flag', `Forma parte de la geometría de la máscara ${maskAncestor.id}; no se pinta como contenido`, 'high', [n.id, maskAncestor.id])],
+      });
+      continue;
+    }
     if (n.isMask) {
       structural.set(n.id, {
         justification: 'mask',
@@ -136,7 +167,7 @@ export function classify(snapshot: MasterSnapshot, config: ProjectConfig): Class
 
     if (n.type === 'TEXT' && n.text) {
       const reasons: ReviewReason[] = [];
-      if (n.text.hasMissingFont) reasons.push('FONT_MISSING');
+      if (missingFont.has(n.id)) reasons.push('FONT_MISSING');
       if (n.text.segmentFields !== 'full') reasons.push('TEXT_SEGMENTS_INCOMPLETE');
       addDraft(
         n,
@@ -317,7 +348,7 @@ export function classify(snapshot: MasterSnapshot, config: ProjectConfig): Class
     const roleHints: SemanticEntity['roleHints'] = [];
     for (const role of config.taxonomy.roles) {
       for (const hint of role.nameHints) {
-        const hitNode = namesFrom.find((nid) => byId.get(nid)!.name.toLowerCase().includes(hint.toLowerCase()));
+        const hitNode = namesFrom.find((nid) => hintMatches(byId.get(nid)!.name, hint));
         if (hitNode && !roleHints.some((h) => h.roleId === role.id)) {
           roleHints.push({
             roleId: role.id,

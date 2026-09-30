@@ -155,3 +155,26 @@ test('MOCK: un manifiesto alterado a mano se detecta por su hash', async () => {
   tampered.entities[0]!.role = 'logo';
   assert.equal(verifyManifestHash(tampered), false);
 });
+
+test('MOCK [T2]: un desplazamiento de 1e-5 px en la maestra invalida la aprobación; la tolerancia solo lo describe', async () => {
+  const { s, reviewed } = await reviewedBase();
+  const approved = approveManifest(reviewed, s, cfg, 'Revisora MOCK', AT);
+  assert.ok(approved.ok);
+  if (!approved.ok) return;
+  const nudged = await snap(mapSpec(baseMasterSpec(), '10:10', (n) => ({ ...n, x: (n.x ?? 0) + 1e-5 })));
+  const v = verifyMasterUnchanged(approved.manifest, s, nudged);
+  assert.equal(v.unchanged, false, 'la huella exacta detecta el cambio');
+  const legal = v.changes.find((c) => c.nodeId === '10:10' && c.category === 'layout');
+  assert.ok(legal);
+  assert.ok(legal.maxNumericDelta !== null && legal.maxNumericDelta !== undefined && legal.maxNumericDelta < 1e-4, 'magnitud informativa');
+});
+
+test('MOCK: huellas de versiones distintas no se comparan', async () => {
+  const { s, reviewed } = await reviewedBase();
+  const approved = approveManifest(reviewed, s, cfg, 'Revisora MOCK', AT);
+  assert.ok(approved.ok);
+  if (!approved.ok) return;
+  const old = structuredClone(approved.manifest);
+  (old.master.fingerprints as { version: string }).version = 'pcb.fingerprint.v1';
+  assert.throws(() => verifyMasterUnchanged(old, s, s), /no son comparables/);
+});

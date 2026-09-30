@@ -2,6 +2,7 @@
 // `name` y `characters` son DATOS NO CONFIABLES: nunca se interpretan como instrucciones.
 import { z } from 'zod';
 import { RectSchema, TransformSchema } from './geometry.ts';
+import { EntryRefSchema } from './discovery.ts';
 
 export const MIXED = 'MIXED' as const;
 
@@ -107,10 +108,16 @@ export const NodeSnapshotSchema = z.strictObject({
 });
 export type NodeSnapshot = z.infer<typeof NodeSnapshotSchema>;
 
-export const READ_PAYLOAD_SCHEMA_ID = 'pcb.read.v1';
-export const READ_ENVELOPE_SCHEMA_ID = 'pcb.read.envelope.v1';
+export const READ_PAYLOAD_SCHEMA_ID = 'pcb.read.v3';
+export const READ_CHUNK_ENVELOPE_SCHEMA_ID = 'pcb.read.chunk.envelope.v2';
 
-/** Lo que el script de lectura serializa dentro de Figma. */
+/**
+ * Contenido ESTABLE que el script serializa dentro de Figma. No contiene marcas de tiempo ni metadatos de la
+ * llamada: dos lecturas del mismo documento sin cambios producen el mismo texto y, por tanto, el mismo hash.
+ * (v1 incluía `runtime`, que podía variar entre llamadas; ahora va en el sobre de cada fragmento.)
+ * v3: `text.hasMissingFont` es SIEMPRE null en el payload. En real se observó que alterna entre llamadas (depende
+ * de la disponibilidad de fuentes en el entorno de ejecución): se informa por llamada en `call.missingFontNodeIds`.
+ */
 export const ReadPayloadSchema = z.strictObject({
   schema: z.literal(READ_PAYLOAD_SCHEMA_ID),
   scriptVersion: z.string(),
@@ -118,24 +125,49 @@ export const ReadPayloadSchema = z.strictObject({
   page: z.strictObject({ id: z.string(), name: z.string() }),
   fileKey: z.string().nullable(),
   editorType: z.string().nullable(),
-  runtime: z.strictObject({ skipInvisibleInstanceChildrenBefore: z.boolean().nullable() }),
   nodeCount: z.number().int().min(1),
   nodes: z.array(NodeSnapshotSchema).min(1),
 });
 export type ReadPayload = z.infer<typeof ReadPayloadSchema>;
 
-/** Sobre devuelto por el script: el payload va como string para poder verificar su digest byte a byte. */
-export const ReadEnvelopeSchema = z.strictObject({
-  schema: z.literal(READ_ENVELOPE_SCHEMA_ID),
-  payload: z.string().min(2),
-  digest: z.string().regex(/^sha256:[0-9a-f]{64}$/),
-  payloadLength: z.number().int().min(0),
-});
-export type ReadEnvelope = z.infer<typeof ReadEnvelopeSchema>;
+const Sha256 = z.string().regex(/^sha256:[0-9a-f]{64}$/);
 
-export const SNAPSHOT_SCHEMA_ID = 'pcb.snapshot.v1';
+/**
+ * Sobre de UNA llamada: un fragmento del payload estable más metadatos de esa llamada.
+ * Cada llamada relee la maestra completa (use_figma no conserva estado) y devuelve el fragmento pedido.
+ */
+export const ReadChunkEnvelopeSchema = z.strictObject({
+  schema: z.literal(READ_CHUNK_ENVELOPE_SCHEMA_ID),
+  /** Identificador del conjunto: deriva del hash del payload completo y del presupuesto de bytes. */
+  setId: z.string().regex(/^set_[0-9a-f]{16}_b\d+$/),
+  rootNodeId: z.string(),
+  payloadSchema: z.literal(READ_PAYLOAD_SCHEMA_ID),
+  payloadSha256: Sha256,
+  payloadBytes: z.number().int().min(1),
+  payloadChars: z.number().int().min(1),
+  byteBudget: z.number().int().min(256),
+  chunkIndex: z.number().int().min(0),
+  chunkCount: z.number().int().min(1),
+  chunk: z.string().min(1),
+  chunkSha256: Sha256,
+  chunkBytes: z.number().int().min(1),
+  chunkChars: z.number().int().min(1),
+  /** Metadatos de la llamada: pueden variar entre llamadas y NO forman parte del payload ni de su hash. */
+  call: z.strictObject({
+    scriptVersion: z.string(),
+    skipInvisibleInstanceChildrenBefore: z.boolean().nullable(),
+    /** Textos con fuente ausente EN ESTA LLAMADA (propiedad del entorno de ejecución). */
+    missingFontNodeIds: z.array(z.string()),
+    responseBytes: z.number().int().min(1),
+  }),
+});
+export type ReadChunkEnvelope = z.infer<typeof ReadChunkEnvelopeSchema>;
+
+export const SNAPSHOT_SCHEMA_ID = 'pcb.snapshot.v2';
 
 export const FingerprintsSchema = z.strictObject({
+  /** Versión del significado de las huellas (ver src/hash/fingerprint.ts). */
+  version: z.literal('pcb.fingerprint.v2'),
   master: z.string(),
   structure: z.string(),
   content: z.string(),
@@ -157,14 +189,39 @@ export const MasterSnapshotSchema = z.strictObject({
   editorType: z.string().nullable(),
   scriptVersion: z.string(),
   ingestedAt: z.string(),
+  /** Metadatos de transporte (variables por llamada). No forman parte de las huellas. */
   transport: z.strictObject({
-    rawResponseSha256: z.string(),
-    rawResponsePath: z.string().nullable(),
-    payloadDigest: z.string(),
-    envelopeExtraction: z.enum(['direct', 'embedded_json_block']),
+    mode: z.literal('chunked'),
+    setId: z.string(),
+    payloadSha256: z.string(),
+    payloadBytes: z.number().int().min(1),
+    byteBudget: z.number().int(),
+    chunkCount: z.number().int().min(1),
+    calls: z
+      .array(
+        z.strictObject({
+          chunkIndex: z.number().int().min(0),
+          rawResponseSha256: z.string(),
+          rawResponsePath: z.string().nullable(),
+          envelopeExtraction: z.enum(['direct', 'embedded_json_block']),
+          skipInvisibleInstanceChildrenBefore: z.boolean().nullable(),
+          missingFontNodeIds: z.array(z.string()),
+          responseBytes: z.number().int(),
+        }),
+      )
+      .min(1),
+    duplicatesDiscarded: z.number().int().min(0),
   }),
-  /** Entorno de render: NO forma parte de las huellas (depende de la máquina). */
-  environment: z.strictObject({ nodesWithMissingFont: z.array(z.string()) }),
+  /** entryNodeId → masterNodeId. No forma parte de las huellas: no es contenido de la maestra. */
+  entry: EntryRefSchema.nullable(),
+  /** Entorno de render: NO forma parte de las huellas (depende de la máquina y puede variar entre llamadas). */
+  environment: z.strictObject({
+    /** Unión de todas las llamadas: basta con que una llamada observe la fuente ausente. */
+    nodesWithMissingFont: z.array(z.string()),
+    missingFontByCall: z.array(z.strictObject({ chunkIndex: z.number().int(), nodeIds: z.array(z.string()) })),
+    /** false si las llamadas no coinciden entre sí (disponibilidad de fuentes intermitente). */
+    missingFontStable: z.boolean(),
+  }),
   nodes: z.array(NodeSnapshotSchema).min(1),
   fingerprints: FingerprintsSchema,
 });

@@ -11,8 +11,13 @@ test('el orden de claves no afecta al hash', () => {
   assert.equal(hashOf('k', { a: 1, b: 2 }), hashOf('k', { b: 2, a: 1 }));
 });
 
-test('números: redondeo a 4 decimales y -0 → 0', () => {
-  assert.equal(canonicalize([0.1 + 0.2, -0, 1e-9, 12.00004999]), '[0.3,0,0,12]');
+test('números EXACTOS (pcb.hash.v2): sin redondeo; solo -0 → 0', () => {
+  assert.equal(canonicalize([0.1 + 0.2, -0, 1e-9, 12.00004999]), '[0.30000000000000004,0,1e-9,12.00004999]');
+});
+
+test('T2: un cambio minúsculo cambia el hash de integridad (antes quedaba oculto por el redondeo)', () => {
+  assert.notEqual(hashOf('t', { x: 100 }), hashOf('t', { x: 100.00001 }));
+  assert.notEqual(hashOf('t', { m: 0.9999999710603369 }), hashOf('t', { m: 1 }));
 });
 
 test('NaN, Infinity y undefined se rechazan', () => {

@@ -24,13 +24,15 @@ test('la petición cabe en el límite de use_figma y valida fileKey e ID', () =>
 
 test('MOCK: el script se ejecuta sin ninguna escritura sobre el documento', async () => {
   const fake = createFakeFigma(fakeOptions(baseMasterSpec()));
-  const { returned } = await runScriptInMock(buildReadScript('10:1'), fake);
+  const { returned } = await runScriptInMock(buildReadScript('10:1', { byteBudget: 5_000_000, maxResponseBytes: 6_000_000 }), fake);
   assert.deepEqual(fake.violations, []);
-  const env = returned as { schema: string; payload: string };
-  assert.equal(env.schema, 'pcb.read.envelope.v1');
-  const payload = JSON.parse(env.payload);
+  const env = returned as { schema: string; chunk: string; chunkCount: number; call: { skipInvisibleInstanceChildrenBefore: boolean } };
+  assert.equal(env.schema, 'pcb.read.chunk.envelope.v2');
+  assert.equal(env.chunkCount, 1);
+  const payload = JSON.parse(env.chunk);
   assert.equal(payload.nodeCount, 20);
-  assert.equal(payload.runtime.skipInvisibleInstanceChildrenBefore, true);
+  assert.equal(payload.runtime, undefined, 'el payload estable no lleva metadatos de la llamada');
+  assert.equal(env.call.skipInvisibleInstanceChildrenBefore, true);
 });
 
 test('MOCK: el `figma` falso rechaza escrituras (el guardián funciona)', async () => {
@@ -62,4 +64,21 @@ test('MOCK: una página como raíz se rechaza e informa de su tipo', async () =>
 test('el tipo exigido se valida al generar el script (sin inyección)', () => {
   assert.throws(() => buildReadScript('10:1', 'FRAME"; figma.root.remove(); "'));
   assert.match(buildReadScript('10:1'), /var REQUIRED_ROOT_TYPE = "FRAME";/);
+});
+
+test('MOCK: modo diagnóstico node-digests — hash por nodo estable, registros pedidos y sin escrituras', async () => {
+  const run = async () => {
+    const fake = createFakeFigma(fakeOptions(baseMasterSpec()));
+    const { returned } = await runScriptInMock(buildReadScript('10:1', { mode: 'node-digests', fullNodeIds: ['10:6'] }), fake);
+    assert.deepEqual(fake.violations, []);
+    return returned as { schema: string; nodeDigests: Array<[string, string]>; full: Record<string, { id: string }> };
+  };
+  const a = await run();
+  const b = await run();
+  assert.equal(a.schema, 'pcb.read.nodedigests.v1');
+  assert.equal(a.nodeDigests.length, 20);
+  assert.deepEqual(a.nodeDigests, b.nodeDigests);
+  assert.deepEqual(Object.keys(a.full), ['10:6']);
+  assert.deepEqual(staticReadOnlyViolations(buildReadScript('10:1', { mode: 'node-digests', fullNodeIds: ['10:6'] })), []);
+  assert.throws(() => buildReadScript('10:1', { mode: 'node-digests', fullNodeIds: ['10:6"]; x'] }));
 });

@@ -132,3 +132,21 @@ test('MOCK: la plantilla de revisión no contiene decisiones prerrellenadas', as
   assert.equal(t.reviewer, '');
   assert.ok(Object.values(t.entities).every((e) => e.status === null));
 });
+
+test('[clasificador v2] pistas de rol por palabras completas: "Rectangle" no activa "cta"', async () => {
+  const { hintMatches } = await import('../src/inventory/classify.ts');
+  assert.equal(hintMatches('Rectangle 203', 'cta'), false);
+  assert.equal(hintMatches('CTA / Label', 'cta/label'), true);
+  assert.equal(hintMatches('BOTÓN', 'botón'), true);
+  assert.equal(hintMatches('Logo_principal', 'logo'), true);
+  assert.equal(hintMatches('Logotipo', 'logo'), false);
+});
+
+test('MOCK [clasificador v2]: los descendientes de una máscara son estructurales, no contenido', async () => {
+  const spec = mapSpec(baseMasterSpec(), '10:15', (n) => ({ ...n, isMask: true, type: 'FRAME' }));
+  const { m } = await draft(spec);
+  const d = m.dispositions.find((x) => x.nodeId === '10:16')!;
+  assert.equal(d.kind, 'structural');
+  if (d.kind === 'structural') assert.equal(d.justification, 'mask');
+  assert.ok(!m.entities.some((e) => e.nodeIds.includes('10:16')));
+});

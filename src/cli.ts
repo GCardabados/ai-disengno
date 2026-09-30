@@ -7,8 +7,11 @@ import { parseOrThrow } from './contracts/schema.ts';
 import { ProjectConfigSchema, checkConfigSemantics, type ProjectConfig } from './contracts/config.ts';
 import { MasterSnapshotSchema, type MasterSnapshot } from './contracts/snapshot.ts';
 import { ManifestSchema, ReviewDecisionsSchema, type Manifest } from './contracts/manifest.ts';
-import { buildReadRequest } from './figma/read-script.ts';
-import { ingestReadResponse } from './figma/ingest.ts';
+import { buildReadRequest, DEFAULT_CHUNK_BYTE_BUDGET } from './figma/read-script.ts';
+import { buildDiscoverRequest } from './figma/discover-script.ts';
+import { resolveFromDiscovery } from './figma/resolve-master.ts';
+import { EntryRefSchema, type EntryRef } from './contracts/discovery.ts';
+import { ingestReadResponses } from './figma/ingest.ts';
 import { mockReadRaw } from './figma/mock/mock-relay.ts';
 import { MOCK_FIXTURES, MOCK_FILE_KEY } from './figma/mock/fixtures.ts';
 import { classify } from './inventory/classify.ts';
@@ -17,9 +20,11 @@ import { renderManifestReview } from './report/review-md.ts';
 
 const USAGE = `pcb <comando> [opciones]
 
-  read-request   --file-key K --node-id N [--root-type FRAME] [--out F]   Petición use_figma de SOLO LECTURA
-  ingest         --raw F --file-key K --node-id N --source mcp|mock [--root-type FRAME] --out DIR
-  mock-read      --fixture base|missing-font|read-error --out DIR    (MOCK)
+  read-request   --file-key K --node-id N [--root-type FRAME] [--chunk-index I] [--byte-budget B] [--out F]\n                 Petición use_figma de SOLO LECTURA para un fragmento
+  discover-request --file-key K --entry-node-id E --target-name NOMBRE [--out F]   Descubrimiento de SOLO LECTURA
+  resolve        --raw F --file-key K --entry-node-id E --target-name NOMBRE --out F   entryNodeId → masterNodeId
+  ingest         --raw F [--raw F2 ...] --file-key K --node-id N --source mcp|mock [--root-type FRAME] [--discovery F] --out DIR\n                 (una --raw por fragmento, en cualquier orden)
+  mock-read      --fixture base|missing-font|read-error|section [--byte-budget B] --out DIR    (MOCK)
   inventory      --snapshot F --config F --out DIR       Manifiesto borrador + review.md + plantilla
   review-apply   --manifest F --review F --config F --out F
   approve        --manifest F --snapshot F --config F --by NOMBRE --out F
@@ -30,8 +35,15 @@ const opts = {
   'file-key': { type: 'string' },
   'node-id': { type: 'string' },
   'root-type': { type: 'string' },
+  'entry-node-id': { type: 'string' },
+  'target-name': { type: 'string' },
+  discovery: { type: 'string' },
   out: { type: 'string' },
-  raw: { type: 'string' },
+  raw: { type: 'string', multiple: true },
+  'chunk-index': { type: 'string' },
+  'byte-budget': { type: 'string' },
+  mode: { type: 'string' },
+  'full-node-id': { type: 'string', multiple: true },
   source: { type: 'string' },
   fixture: { type: 'string' },
   snapshot: { type: 'string' },
@@ -64,6 +76,12 @@ async function loadConfig(path: string): Promise<ProjectConfig> {
 }
 
 const loadSnapshot = async (p: string): Promise<MasterSnapshot> => parseOrThrow(MasterSnapshotSchema, await readJson(p), 'snapshot');
+async function loadResolvedEntry(path: string): Promise<EntryRef> {
+  const d = (await readJson(path)) as { resolution?: { status?: string; entry?: unknown } };
+  if (d.resolution?.status !== 'resolved') throw new Error('El descubrimiento no está resuelto; no se puede enlazar la entrada.');
+  return parseOrThrow(EntryRefSchema, d.resolution.entry, 'discovery.entry');
+}
+
 const tag = (source: string): string => (source === 'MOCK' ? '[MOCK] ' : '');
 const loadManifest = async (p: string): Promise<Manifest> => parseOrThrow(ManifestSchema, await readJson(p), 'manifest');
 
@@ -74,10 +92,38 @@ async function main(argv: string[]): Promise<number> {
 
   switch (cmd) {
     case 'read-request': {
-      const req = buildReadRequest(need(a['file-key'], 'file-key'), need(a['node-id'], 'node-id'), a['root-type'] ?? 'FRAME');
+      const req = buildReadRequest(need(a['file-key'], 'file-key'), need(a['node-id'], 'node-id'), {
+        requiredRootType: a['root-type'] ?? 'FRAME',
+        chunkIndex: a['chunk-index'] ? Number(a['chunk-index']) : 0,
+        byteBudget: a['byte-budget'] ? Number(a['byte-budget']) : DEFAULT_CHUNK_BYTE_BUDGET,
+        mode: a.mode === 'node-digests' ? 'node-digests' : 'chunk',
+        fullNodeIds: a['full-node-id'] ?? [],
+      });
       if (a.out) await writeJson(a.out, req);
       else process.stdout.write(`${JSON.stringify(req, null, 2)}\n`);
       return 0;
+    }
+    case 'discover-request': {
+      const req = buildDiscoverRequest(need(a['file-key'], 'file-key'), need(a['entry-node-id'], 'entry-node-id'), need(a['target-name'], 'target-name'));
+      if (a.out) await writeJson(a.out, req);
+      else process.stdout.write(`${JSON.stringify(req, null, 2)}\n`);
+      return 0;
+    }
+    case 'resolve': {
+      const r = resolveFromDiscovery({
+        rawText: await readFile(need(a.raw?.[0], 'raw'), 'utf8'),
+        fileKey: need(a['file-key'], 'file-key'),
+        entryNodeId: need(a['entry-node-id'], 'entry-node-id'),
+        targetName: need(a['target-name'], 'target-name'),
+        requiredRootType: a['root-type'] ?? 'FRAME',
+      });
+      if (!r.ok) {
+        console.error(r.errors.map((e) => `${e.code}: ${e.message}`).join('\n'));
+        return 2;
+      }
+      await writeJson(need(a.out, 'out'), { resolution: r.resolution, discovery: r.payload, digest: r.digest, rawSha256: r.rawSha256 });
+      console.log(`Resolución: ${r.resolution.status}${r.resolution.status === 'resolved' ? ` → masterNodeId ${r.resolution.entry.masterNodeId} (${r.resolution.entry.method})` : ''}`);
+      return r.resolution.status === 'resolved' ? 0 : 4;
     }
     case 'mock-read': {
       const name = need(a.fixture, 'fixture');
@@ -85,10 +131,10 @@ async function main(argv: string[]): Promise<number> {
       if (!spec) throw new Error(`Fixture desconocido: ${name}`);
       const out = need(a.out, 'out');
       await mkdir(out, { recursive: true });
-      const { rawText, violations } = await mockReadRaw(spec);
+      const { rawTexts, violations } = await mockReadRaw(spec, a['byte-budget'] ? { byteBudget: Number(a['byte-budget']) } : {});
       if (violations.length > 0) throw new Error(`El script intentó escribir (MOCK): ${violations.join('; ')}`);
-      await writeFile(join(out, 'raw-response.MOCK.txt'), rawText, 'utf8');
-      console.log(`MOCK: respuesta escrita en ${join(out, 'raw-response.MOCK.txt')} (fileKey ${MOCK_FILE_KEY}, raíz ${spec.id})`);
+      for (const [i, text] of rawTexts.entries()) await writeFile(join(out, `raw-response-${i}.MOCK.txt`), text, 'utf8');
+      console.log(`[MOCK] ${rawTexts.length} respuesta(s) escritas en ${out} (fileKey ${MOCK_FILE_KEY}, raíz ${spec.id})`);
       return 0;
     }
     case 'ingest': {
@@ -96,17 +142,23 @@ async function main(argv: string[]): Promise<number> {
       if (source !== 'mcp' && source !== 'mock') throw new Error('--source debe ser mcp o mock');
       const out = need(a.out, 'out');
       await mkdir(out, { recursive: true });
-      const rawPath = resolve(need(a.raw, 'raw'));
-      // Conserva la respuesta original byte a byte junto a la instantánea.
-      const keptRaw = join(out, source === 'mock' ? 'raw-response.MOCK.txt' : 'raw-response.txt');
-      if (resolve(keptRaw) !== rawPath) await copyFile(rawPath, keptRaw);
-      const r = ingestReadResponse({
-        rawText: await readFile(rawPath, 'utf8'),
+      const raws = a.raw ?? [];
+      if (raws.length === 0) throw new Error(`Falta --raw (una por fragmento)\n\n${USAGE}`);
+      // Conserva cada respuesta original byte a byte junto a la instantánea.
+      const responses = [];
+      for (const [i, p] of raws.entries()) {
+        const rawPath = resolve(p);
+        const kept = join(out, source === 'mock' ? `raw-response-${i}.MOCK.txt` : `raw-response-${i}.txt`);
+        if (resolve(kept) !== rawPath) await copyFile(rawPath, kept);
+        responses.push({ rawText: await readFile(rawPath, 'utf8'), rawResponsePath: kept });
+      }
+      const r = ingestReadResponses({
+        responses,
         fileKey: need(a['file-key'], 'file-key'),
         expectedRootNodeId: need(a['node-id'], 'node-id'),
         expectedRootType: a['root-type'] ?? 'FRAME',
+        entry: a.discovery ? await loadResolvedEntry(a.discovery) : null,
         source: source === 'mock' ? 'MOCK' : 'FIGMA_MCP_USE_FIGMA',
-        rawResponsePath: keptRaw,
       });
       if (!r.ok) {
         console.error(r.errors.map((e) => `${e.code}: ${e.message}`).join('\n'));

@@ -29,6 +29,11 @@ export function renderManifestReview(m: Manifest, snap: MasterSnapshot): string 
   L.push('');
   L.push(`- Origen: \`${m.source}\` · fileKey \`${m.master.fileKey}\` · raíz \`${m.master.rootNodeId}\` · página ${u(snap.page.name)}`);
   L.push(`- Huella de la maestra: \`${m.master.fingerprints.master}\``);
+  if (m.master.entry) {
+    const e = m.master.entry;
+    L.push(`- Punto de entrada del usuario: \`${e.entryNodeId}\` (${e.entryType}) → maestra resuelta \`${e.masterNodeId}\` por \`${e.method}\` con el nombre ${u(e.targetName)}` +
+      (e.dimensionsFromNameMatch === null ? '' : ` · dimensiones del nombre ${e.dimensionsFromNameMatch ? 'coinciden' : '**NO coinciden**'} con el nodo`));
+  }
   L.push(`- Manifiesto: \`${m.manifestId}\` · hash \`${m.manifestHash}\` · estado **${m.approval.status}**`);
   if (m.approval.status === 'approved') {
     L.push(`- Aprobado por ${u(m.approval.approvedBy ?? '')} (nombre declarado; no autentica a ninguna persona) · ${m.approval.approvedAt ?? ''}`);
@@ -38,7 +43,10 @@ export function renderManifestReview(m: Manifest, snap: MasterSnapshot): string 
   L.push(`- Clasificador: \`${m.classifier.id}@${m.classifier.version}\` · OCR: **${m.detectors.ocr}**`);
   L.push(`- Nodos: ${snap.nodes.length} · entidades: ${m.entities.length} · estructurales: ${structural.length} · **pendientes: ${pending.length}**`);
   if (snap.environment.nodesWithMissingFont.length > 0) {
-    L.push(`- ⚠️ **Fuentes ausentes** en ${snap.environment.nodesWithMissingFont.length} nodo(s): no se puede aprobar hasta instalarlas y volver a leer.`);
+    L.push(`- ⚠️ **Fuentes ausentes** en ${snap.environment.nodesWithMissingFont.length} nodo(s) en al menos una llamada: no se puede aprobar hasta que estén disponibles de forma estable y se vuelva a leer.`);
+    if (!snap.environment.missingFontStable) {
+      L.push(`  - La disponibilidad **varió entre llamadas**: ${snap.environment.missingFontByCall.map((c) => `fragmento ${c.chunkIndex}: ${c.nodeIds.length}`).join(' · ')}.`);
+    }
   }
   L.push('');
 

@@ -2,7 +2,7 @@
 
 Versión: **v2.1** (2026-09-29) · Estado: arquitectura aceptada.
 - **H0**: cerrado (entorno fijado, Zod, typecheck real).
-- **H1**: **Implementado y probado con MOCK; integración real pendiente.** Ninguna integración con Figma se ha ejecutado contra un archivo real.
+- **H1**: implementado. Lectura real completada el 2026-09-30 (instantánea y manifiesto borrador de `4:142`). Aprobación pendiente: revisor sin designar, fuentes inestables y fusión de entidades.
 
 Historial de cambios: §10 (v2 → v2.1) y §11 (v1 → v2).
 
@@ -341,7 +341,11 @@ Necesarias antes de H2 y siguientes:
 ### 5.1 Pendientes técnicos registrados (sin ampliar alcance)
 
 - **T1.** Validar `npm ci` y `npm run check` en Node 24.21.0, la versión declarada. Hasta ahora solo se han ejecutado en 25.6.1.
-- **T2.** Separar los **hashes de integridad**, que deben ir sin redondeo deliberado, de las **comparaciones geométricas con tolerancia**. Hoy `canonical.ts` redondea todos los números a 4 decimales, también en las huellas de la maestra. Eso puede ocultar cambios reales menores de 1e-4 (así ocurrió con las tolerancias en la huella de reglas, §8). **Debe revisarse antes de aprobar un manifiesto real o de confiar en `verify-master`.**
+- **T2. Resuelto (2026-09-30).**
+  - **Hashes de integridad exactos:** `pcb.hash.v2` usa la representación más corta que reproduce el mismo double, sin redondeo; solo normaliza `-0`.
+  - **Tolerancias aparte:** las comparaciones geométricas con tolerancia están en `src/geometry/tolerance.ts`. `verify-master` muestra la magnitud (`maxNumericDelta`), pero la decisión la toma la huella exacta.
+  - **Versionado:** las huellas llevan `version: pcb.fingerprint.v2`. Comparar huellas de versiones distintas se rechaza con error explícito.
+  - **Consecuencia:** los manifiestos y las instantáneas anteriores (v1) no son comparables.
 
 ### 5.2 Primera lectura real (2026-09-29)
 
@@ -356,6 +360,33 @@ Necesarias antes de H2 y siguientes:
 - Una única llamada sobre `PNVvElNrs9t2ShZNq72Sst` / `4:141` (SHA-256 del script enviado = SHA-256 del guardado).
 - Resultado: `PCB_ROOT_TYPE_MISMATCH expected=FRAME actual=SECTION`. `4:141` es una **SECTION**. No se leyó ningún nodo ni se ejecutó la ingesta.
 - Evidencia en `runs/2026-09-29-read-4-141/`.
+
+### 5.4 Descubrimiento desde el punto de entrada y tercer intento (2026-09-29)
+
+- **Cambio de flujo:** se separan `entryNodeId` (el nodo del enlace del usuario, que puede ser página, sección u otro contenedor) y `masterNodeId` (la raíz de la composición).
+  - Un script de descubrimiento de solo lectura (`pcb.discover-script.v1`) devuelve las coincidencias de nombre y los hijos directos.
+  - El núcleo (`resolve-master.ts`) resuelve de forma determinista: nombre exacto y único, si no normalizado y único; con varios candidatos pregunta; si el tipo no es FRAME se detiene.
+  - La relación `entry` se conserva en la instantánea y en el manifiesto y **no altera la huella de la maestra**.
+- **Descubrimiento real sobre `4:141`** (SECTION "Imagen 2", página "Figma Agent + Claude Skill"): una única coincidencia, el FRAME `4:142` "960x1200_Taxdown_SVA2" de 960×1200, único hijo de la sección y con 36 descendientes. El nombre real usa `x` y el indicado `×`, así que se resolvió por `normalized_name`. Digest verificado.
+- **Lectura del inventario sobre `4:142`:** el script llegó a Figma, pero **la respuesta llegó truncada a 20 KB** (marca `// truncated to 20kb`: 13 de 36 nodos). El registro de la sesión también la guarda truncada. La ingesta la rechaza (`ENVELOPE_NOT_FOUND`). No hay instantánea.
+- **Ajuste propuesto (no implementado):** transporte por fragmentos, descrito en el mensaje al usuario. Requiere autorización para varias llamadas.
+
+### 5.5 Inventario real completo (2026-09-30)
+
+- **Transporte por fragmentos** (`pcb.read-script.v4`, `src/figma/chunks.ts`):
+  - **Presupuesto:** 12 000 B UTF-8 por fragmento, medidos sobre el texto ya escapado como JSON. Tope de la respuesta completa: 16 384 B, frente al límite observado de 20 480.
+  - **Contenido de cada fragmento:** `setId`, índice, total, longitudes y SHA-256 del fragmento y del payload completo.
+  - **Ensamblado:** lo hace el código. Detecta fragmentos ausentes, duplicados (idénticos o incompatibles), desorden, truncamiento, alteraciones y mezcla de conjuntos.
+  - **Límite:** exigir el mismo hash de contenido en todas las llamadas **detecta** inconsistencias, pero **no garantiza una captura atómica** de Figma. Un cambio que se revierta entre llamadas no es observable.
+- **Hallazgo real: `hasMissingFont` no es estable entre llamadas.** Los textos en "Mutualidad" alternan entre `true` y `false` de una llamada a otra sin que nadie edite el archivo. Esto hizo que el payload variase entre tres estados (intentos 1 y 2, rechazados con `SET_MISMATCH`).
+  - **Diagnóstico:** modo `node-digests` de solo lectura, con hash por nodo y registros completos de los nodos que varían.
+  - **Corrección:** `hasMissingFont` sale del payload estable y pasa a `call.missingFontNodeIds`. La instantánea registra la observación de cada llamada, su unión y si fue estable (`environment`).
+  - **Aprobación:** se bloquea si **cualquier** llamada observó una fuente ausente.
+- **Intento 3:** 6 de 6 fragmentos del mismo conjunto (`set_b9bb2f62d2fbd569`). 36 nodos. Huella de la maestra `sha256:71ec4a08…`.
+- **Correcciones del clasificador tras ver datos reales** (versión 2):
+  - Los descendientes de una máscara son estructurales (`mask`).
+  - Las pistas de rol comparan palabras completas: "Rectangle" ya no activa `cta`.
+- **Limitación detectada, no resuelta:** la revisión humana no puede **fusionar entidades**. El logo real aparece como dos grupos de vectores (símbolo y marca denominativa) y la taxonomía exige exactamente un logo.
 
 ## 6. Limitaciones declaradas de H1
 

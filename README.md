@@ -5,7 +5,8 @@ Diseño y decisiones: [docs/00-auditoria-y-diseno.md](docs/00-auditoria-y-diseno
 
 **Estado:**
 - **H0: cerrado.**
-- **H1: implementado y probado con MOCK; integración real pendiente.**
+- **H1: implementado; primera lectura real completada** (maestra `4:142`, manifiesto borrador sin aprobar).
+- **T1 pendiente:** validar `npm ci` y `npm run check` en Node 24.21.0 (hasta ahora solo en 25.6.1).
 
 Solo lectura e inventario. Ningún comando escribe en Figma.
 
@@ -25,10 +26,11 @@ npm run check
 
 ## Flujo H1
 
-1. `node src/cli.ts read-request --file-key <KEY> --node-id <ID> --out runs/<run>/read-request.json`
-2. El agente ejecuta `code` con la herramienta `use_figma` (solo lectura) y **guarda la respuesta original tal cual** en `runs/<run>/raw-response.txt`.
-3. `node src/cli.ts ingest --raw runs/<run>/raw-response.txt --file-key <KEY> --node-id <ID> --source mcp --out runs/<run>`
-   Verifica el digest calculado dentro de Figma, la estructura y el árbol, y calcula las huellas.
+0. Si el enlace apunta a una página o sección: `discover-request` y `resolve`, que dan `entryNodeId → masterNodeId`.
+1. `node src/cli.ts read-request --file-key <KEY> --node-id <MASTER> --chunk-index 0 --out …` (y cada índice hasta `chunkCount`).
+2. El agente ejecuta cada `code` con `use_figma` (solo lectura) y **guarda cada respuesta original tal cual**.
+3. `node src/cli.ts ingest --raw r0.txt --raw r1.txt … --file-key <KEY> --node-id <MASTER> --source mcp [--discovery d.json] --out runs/<run>`
+   Ensambla los fragmentos, verifica todos los hashes, la estructura y el árbol, y calcula las huellas exactas.
 4. `node src/cli.ts inventory --snapshot runs/<run>/snapshot.json --config <config> --out runs/<run>/inventory`
    Genera `manifest.draft.json`, `review.md` y `review.template.json`.
 5. Una persona edita la revisión → `review-apply` → `approve --by "<nombre>"`.

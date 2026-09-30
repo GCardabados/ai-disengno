@@ -1,22 +1,25 @@
-// Serialización canónica para hashes.
+// Serialización canónica para hashes de INTEGRIDAD (pcb.hash.v2).
 // - Claves ordenadas por unidades de código UTF-16; sin espacios.
-// - Números redondeados a DECIMALS decimales; -0 → 0; NaN/Infinity rechazados.
+// - Números EXACTOS: representación más corta que reproduce el mismo double (Number→String de JS).
+//   Sin redondeo deliberado: cualquier cambio de valor, por pequeño que sea, cambia el hash.
+//   Solo se normaliza -0 → 0. NaN/Infinity se rechazan.
 // - undefined rechazado en cualquier posición (los campos ausentes se omiten, no se ponen a undefined).
 // - Arrays en su orden (el orden es significativo: hijos, rellenos, segmentos).
 // - Cadenas SIN normalizar Unicode: una "é" compuesta y una descompuesta dan hashes distintos, a propósito.
+//
+// Las comparaciones geométricas CON tolerancia no usan esta función: ver src/geometry/tolerance.ts.
+//
+// Historial: pcb.hash.v1 redondeaba a 4 decimales; ocultaba cambios < 1e-4 (pendiente T2). Los hashes v1 y v2
+// no son comparables: HASH_VERSION forma parte de lo que se hashea.
 import { createHash } from 'node:crypto';
 
-export const HASH_VERSION = 'pcb.hash.v1';
-export const DECIMALS = 4;
-const FACTOR = 10 ** DECIMALS;
+export const HASH_VERSION = 'pcb.hash.v2';
 
 export class CanonicalizationError extends Error {}
 
 function normNumber(n: number, path: string): string {
   if (!Number.isFinite(n)) throw new CanonicalizationError(`non-finite number at ${path}`);
-  let r = Math.round(n * FACTOR) / FACTOR;
-  if (Object.is(r, -0)) r = 0;
-  return JSON.stringify(r);
+  return Object.is(n, -0) ? '0' : String(n);
 }
 
 function canon(v: unknown, path: string): string {

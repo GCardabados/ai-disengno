@@ -10,6 +10,13 @@
 import type { NodeSnapshot, Fingerprints } from '../contracts/snapshot.ts';
 import { relativeTo, type Transform } from '../contracts/geometry.ts';
 import { canonicalize, hashOf } from './canonical.ts';
+import { maxNumericDelta } from '../geometry/tolerance.ts';
+
+/**
+ * Versión del SIGNIFICADO de las huellas. v2: hashes exactos (pcb.hash.v2), sin redondeo.
+ * Huellas de versiones distintas no son comparables: verify-master lo rechaza explícitamente.
+ */
+export const FINGERPRINT_VERSION = 'pcb.fingerprint.v2';
 
 export const FINGERPRINT_CATEGORIES = ['structure', 'content', 'layout', 'metadata'] as const;
 export type FingerprintCategory = (typeof FINGERPRINT_CATEGORIES)[number];
@@ -99,8 +106,8 @@ export function computeFingerprints(nodes: NodeSnapshot[], rootId: string): Fing
   const content = hashOf('content', p.map((x) => ({ id: x.id, c: x.content })));
   const layout = hashOf('layout', p.map((x) => ({ id: x.id, l: x.layout })));
   const metadata = hashOf('metadata', p.map((x) => ({ id: x.id, m: x.metadata })));
-  const master = hashOf('master', { structure, content, layout, metadata });
-  return { master, structure, content, layout, metadata };
+  const master = hashOf('master', { version: FINGERPRINT_VERSION, structure, content, layout, metadata });
+  return { version: FINGERPRINT_VERSION, master, structure, content, layout, metadata };
 }
 
 export interface NodeChange {
@@ -108,6 +115,11 @@ export interface NodeChange {
   change: 'added' | 'removed' | 'modified';
   category: FingerprintCategory | 'presence';
   fields: string[];
+  /**
+   * Solo informativo, para maquetación: máxima diferencia numérica entre ambas versiones de los campos cambiados
+   * (null si cambia la forma). Una diferencia minúscula SIGUE siendo un cambio: la decisión la toma la huella exacta.
+   */
+  maxNumericDelta?: number | null;
 }
 
 /** Diff legible por categoría. Solo informa; la decisión (cualquier cambio invalida) la toma el llamante. */
@@ -125,7 +137,15 @@ export function diffNodes(before: NodeSnapshot[], after: NodeSnapshot[], rootId:
       const rb = pb[cat];
       const keys = new Set([...Object.keys(ra), ...Object.keys(rb)]);
       const fields = [...keys].filter((k) => canonicalize(ra[k] ?? null) !== canonicalize(rb[k] ?? null)).sort();
-      if (fields.length > 0) changes.push({ nodeId: id, change: 'modified', category: cat, fields });
+      if (fields.length === 0) continue;
+      const change: NodeChange = { nodeId: id, change: 'modified', category: cat, fields };
+      if (cat === 'layout') {
+        change.maxNumericDelta = maxNumericDelta(
+          Object.fromEntries(fields.map((k) => [k, ra[k] ?? null])),
+          Object.fromEntries(fields.map((k) => [k, rb[k] ?? null])),
+        );
+      }
+      changes.push(change);
     }
   }
   return changes;

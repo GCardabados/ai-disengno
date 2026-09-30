@@ -1,122 +1,59 @@
-// Ingesta de la respuesta de lectura.
-// Orden: (1) la respuesta ORIGINAL ya está guardada byte a byte por el llamante; (2) se localiza el sobre;
-// (3) se verifica el digest calculado dentro de Figma (fidelidad del transporte); (4) se valida la estructura;
-// (5) se comprueba la coherencia del árbol; (6) se calculan las huellas.
-// La validación de esquema NO prueba fidelidad: eso lo aporta el digest (detecta alteraciones accidentales
-// del reenvío, no manipulaciones deliberadas de quien retransmite).
+// Ingesta de la lectura.
+// Orden: (1) las respuestas ORIGINALES ya están guardadas byte a byte por el llamante; (2) se ensamblan los
+// fragmentos mediante código (src/figma/chunks.ts), verificando hashes por fragmento y del conjunto;
+// (3) se valida la estructura; (4) se comprueba identidad y coherencia del árbol; (5) se calculan las huellas.
+// La validación de esquema NO prueba fidelidad: eso lo aportan los hashes, que detectan alteraciones del contenido
+// transportado pero NO autentican que proceda de Figma.
 import { parse } from '../contracts/schema.ts';
-import {
-  ReadEnvelopeSchema,
-  ReadPayloadSchema,
-  READ_ENVELOPE_SCHEMA_ID,
-  SNAPSHOT_SCHEMA_ID,
-  type MasterSnapshot,
-  type ReadEnvelope,
-} from '../contracts/snapshot.ts';
-import { sha256Hex } from '../hash/canonical.ts';
+import { MasterSnapshotSchema, ReadPayloadSchema, SNAPSHOT_SCHEMA_ID, type MasterSnapshot } from '../contracts/snapshot.ts';
+import type { EntryRef } from '../contracts/discovery.ts';
 import { computeFingerprints } from '../hash/fingerprint.ts';
 import { normalizeNodeId } from './read-script.ts';
+import { assembleChunks, type ChunkResponse } from './chunks.ts';
+import type { IngestError } from './ingest-envelope.ts';
+
+export { extractEnvelope, type IngestError } from './ingest-envelope.ts';
+export type { ChunkResponse } from './chunks.ts';
 
 export interface IngestInput {
-  rawText: string;
+  /** Una respuesta original por llamada (fragmento), en cualquier orden. */
+  responses: ChunkResponse[];
   fileKey: string;
   expectedRootNodeId: string;
   /** Tipo exigido para la raíz (por defecto FRAME). Se comprueba también aquí, no solo en el script. */
   expectedRootType?: string;
+  /** Relación con el punto de entrada del usuario, si la maestra se resolvió por descubrimiento. */
+  entry?: EntryRef | null;
   source: 'FIGMA_MCP_USE_FIGMA' | 'MOCK';
-  rawResponsePath: string | null;
   now?: () => string;
-}
-
-export interface IngestError {
-  code: string;
-  message: string;
 }
 
 export type IngestResult =
   | { ok: true; snapshot: MasterSnapshot; warnings: string[] }
   | { ok: false; errors: IngestError[] };
 
-function isEnvelopeLike(v: unknown): v is Record<string, unknown> {
-  return typeof v === 'object' && v !== null && (v as Record<string, unknown>).schema === READ_ENVELOPE_SCHEMA_ID;
-}
-
-/**
- * El formato exacto con el que use_figma envuelve el valor devuelto NO está verificado.
- * Se acepta: el sobre directamente, o un único sobre anidado en la estructura JSON
- * (p. ej. bloques de contenido con un campo de texto que contiene el JSON del sobre).
- * Más de un sobre, o ninguno, es un error.
- */
-function extractEnvelope(raw: string): { value: unknown; extraction: 'direct' | 'embedded_json_block' } | IngestError {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(raw);
-  } catch (e) {
-    return { code: 'RAW_NOT_JSON', message: `La respuesta no es JSON: ${(e as Error).message}` };
-  }
-  if (isEnvelopeLike(parsed)) return { value: parsed, extraction: 'direct' };
-  const found: unknown[] = [];
-  const walk = (v: unknown, depth: number): void => {
-    if (depth > 8) return;
-    if (isEnvelopeLike(v)) return void found.push(v);
-    if (typeof v === 'string' && v.includes(READ_ENVELOPE_SCHEMA_ID)) {
-      try {
-        walk(JSON.parse(v), depth + 1);
-      } catch {
-        /* texto no JSON: se ignora */
-      }
-      return;
-    }
-    if (Array.isArray(v)) v.forEach((x) => walk(x, depth + 1));
-    else if (typeof v === 'object' && v !== null) Object.values(v).forEach((x) => walk(x, depth + 1));
-  };
-  walk(parsed, 0);
-  if (found.length === 1) return { value: found[0], extraction: 'embedded_json_block' };
-  if (found.length > 1) return { code: 'ENVELOPE_AMBIGUOUS', message: `Se encontraron ${found.length} sobres.` };
-  return { code: 'ENVELOPE_NOT_FOUND', message: 'No se encontró un sobre pcb.read.envelope.v1.' };
-}
-
-export function ingestReadResponse(input: IngestInput): IngestResult {
+export function ingestReadResponses(input: IngestInput): IngestResult {
   const errors: IngestError[] = [];
   const warnings: string[] = [];
-  const rawSha = `sha256:${sha256Hex(input.rawText)}`;
 
-  const ext = extractEnvelope(input.rawText);
-  if ('code' in ext) return { ok: false, errors: [ext] };
-
-  const env = parse(ReadEnvelopeSchema, ext.value, '$envelope');
-  if (!env.ok) {
-    return { ok: false, errors: env.issues.map((i) => ({ code: 'ENVELOPE_SCHEMA', message: `${i.path}: ${i.message}` })) };
-  }
-  const envelope: ReadEnvelope = env.value;
-
-  // (3) Fidelidad del transporte.
-  const recomputed = `sha256:${sha256Hex(envelope.payload)}`;
-  if (recomputed !== envelope.digest) {
-    return {
-      ok: false,
-      errors: [{ code: 'TRANSPORT_DIGEST_MISMATCH', message: `digest declarado ${envelope.digest} ≠ recalculado ${recomputed}` }],
-    };
-  }
-  if (envelope.payload.length !== envelope.payloadLength) {
-    return { ok: false, errors: [{ code: 'TRANSPORT_LENGTH_MISMATCH', message: 'payloadLength no coincide.' }] };
-  }
+  const assembled = assembleChunks(input.responses);
+  if (!assembled.ok) return { ok: false, errors: assembled.errors };
+  const a = assembled.value;
+  if (a.duplicatesDiscarded > 0) warnings.push(`Se descartaron ${a.duplicatesDiscarded} fragmento(s) duplicado(s) idéntico(s).`);
 
   let payloadValue: unknown;
   try {
-    payloadValue = JSON.parse(envelope.payload);
+    payloadValue = JSON.parse(a.payload);
   } catch (e) {
     return { ok: false, errors: [{ code: 'PAYLOAD_NOT_JSON', message: (e as Error).message }] };
   }
 
-  // (4) Estructura.
   const pl = parse(ReadPayloadSchema, payloadValue, '$payload');
   if (!pl.ok) {
     return { ok: false, errors: pl.issues.map((i) => ({ code: 'PAYLOAD_SCHEMA', message: `${i.path}: ${i.message}` })) };
   }
   const payload = pl.value;
 
-  // (5) Identidad y coherencia del árbol.
   let expectedRoot: string;
   try {
     expectedRoot = normalizeNodeId(input.expectedRootNodeId);
@@ -127,7 +64,10 @@ export function ingestReadResponse(input: IngestInput): IngestResult {
   if (payload.nodes[0] && payload.nodes[0].type !== expectedType) {
     errors.push({ code: 'ROOT_TYPE_MISMATCH', message: `Se esperaba ${expectedType}, llegó ${payload.nodes[0].type}.` });
   }
-  if (payload.rootNodeId !== expectedRoot) {
+  if (input.entry && input.entry.masterNodeId !== payload.rootNodeId) {
+    errors.push({ code: 'ENTRY_MASTER_MISMATCH', message: `El descubrimiento resolvió ${input.entry.masterNodeId}, se leyó ${payload.rootNodeId}.` });
+  }
+  if (payload.rootNodeId !== expectedRoot || a.rootNodeId !== expectedRoot) {
     errors.push({ code: 'ROOT_MISMATCH', message: `Se esperaba ${expectedRoot}, llegó ${payload.rootNodeId}.` });
   }
   if (payload.fileKey !== null && payload.fileKey !== input.fileKey) {
@@ -159,12 +99,18 @@ export function ingestReadResponse(input: IngestInput): IngestResult {
       errors.push({ code: 'ORPHAN_NODE', message: n.id });
     }
   }
-  if (payload.runtime.skipInvisibleInstanceChildrenBefore === true) {
+  if (a.calls.some((c) => c.skipInvisibleInstanceChildrenBefore === true)) {
     warnings.push('skipInvisibleInstanceChildren estaba activo; el script lo desactivó para leer hijos ocultos de instancias.');
   }
   if (errors.length > 0) return { ok: false, errors };
 
   const nodes = payload.nodes;
+  const byCall = a.calls.map((c) => ({ chunkIndex: c.chunkIndex, nodeIds: c.missingFontNodeIds }));
+  const missingUnion = [...new Set(byCall.flatMap((c) => c.nodeIds))].sort();
+  const missingStable = byCall.every((c) => JSON.stringify(c.nodeIds) === JSON.stringify(byCall[0]!.nodeIds));
+  if (!missingStable) {
+    warnings.push(`La disponibilidad de fuentes varió entre llamadas (${missingUnion.length} texto(s) afectados): se registra la unión.`);
+  }
   const snapshot: MasterSnapshot = {
     schema: SNAPSHOT_SCHEMA_ID,
     source: input.source,
@@ -173,18 +119,31 @@ export function ingestReadResponse(input: IngestInput): IngestResult {
     page: payload.page,
     editorType: payload.editorType,
     scriptVersion: payload.scriptVersion,
+    // Metadatos variables (fuera de las huellas): momento de ingesta y detalles de transporte de cada llamada.
     ingestedAt: (input.now ?? (() => new Date().toISOString()))(),
     transport: {
-      rawResponseSha256: rawSha,
-      rawResponsePath: input.rawResponsePath,
-      payloadDigest: envelope.digest,
-      envelopeExtraction: ext.extraction,
+      mode: 'chunked',
+      setId: a.setId,
+      payloadSha256: a.payloadSha256,
+      payloadBytes: a.payloadBytes,
+      byteBudget: a.byteBudget,
+      chunkCount: a.chunkCount,
+      calls: a.calls,
+      duplicatesDiscarded: a.duplicatesDiscarded,
     },
+    entry: input.entry ?? null,
     environment: {
-      nodesWithMissingFont: nodes.filter((n) => n.text?.hasMissingFont === true).map((n) => n.id),
+      nodesWithMissingFont: missingUnion,
+      missingFontByCall: byCall,
+      missingFontStable: missingStable,
     },
     nodes,
     fingerprints: computeFingerprints(nodes, payload.rootNodeId),
   };
+  // La instantánea producida debe cumplir su propio contrato (TypeScript no detecta claves de más).
+  const self = parse(MasterSnapshotSchema, snapshot, '$snapshot');
+  if (!self.ok) {
+    return { ok: false, errors: self.issues.map((i) => ({ code: 'SNAPSHOT_SELF_CHECK', message: `${i.path}: ${i.message}` })) };
+  }
   return { ok: true, snapshot, warnings };
 }

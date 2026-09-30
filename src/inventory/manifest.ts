@@ -48,6 +48,7 @@ export function buildDraftManifest(
       pageId: snapshot.page.id,
       fingerprints: snapshot.fingerprints,
       snapshotHash: snapshotHash(snapshot),
+      entry: snapshot.entry,
     },
     taxonomy: { id: config.taxonomy.id, version: config.taxonomy.version },
     classifier: { id: CLASSIFIER.id, version: CLASSIFIER.version },
@@ -318,6 +319,9 @@ export function verifyMasterUnchanged(m: Manifest, approvedSnapshot: MasterSnaps
   }
   const a = m.master.fingerprints;
   const b = current.fingerprints;
+  if (a.version !== b.version) {
+    throw new Error(`Huellas de versiones distintas (${a.version} ≠ ${b.version}): no son comparables; hay que volver a inventariar.`);
+  }
   const fingerprintsEqual = {
     master: a.master === b.master,
     structure: a.structure === b.structure,

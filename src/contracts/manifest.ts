@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { RectSchema } from './geometry.ts';
 import { ENTITY_OPS, PROTECTION_LEVELS } from './config.ts';
 import { FingerprintsSchema, SOURCES } from './snapshot.ts';
+import { EntryRefSchema } from './discovery.ts';
 
 export const CONTENT_NATURES = [
   'editable_text',
@@ -182,6 +183,8 @@ export const ManifestSchema = z.strictObject({
     pageId: z.string(),
     fingerprints: FingerprintsSchema,
     snapshotHash: z.string(),
+    /** Punto de entrada del usuario y cómo se resolvió la maestra (null si el enlace apuntaba directamente a ella). */
+    entry: EntryRefSchema.nullable(),
   }),
   taxonomy: z.strictObject({ id: z.string(), version: z.string() }),
   classifier: z.strictObject({ id: z.string(), version: z.string() }),
