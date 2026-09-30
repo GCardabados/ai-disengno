@@ -20,9 +20,14 @@ export interface DemoCheckInput {
   tolerancePx: number;
   /** Resultado de la comprobación de la maestra por hashes por nodo (null = no se ejecutó). */
   masterDigestsEqual: boolean | null;
+  /** Sondas de geometría vectorial (coordenadas del frame destino) antes y después de las ediciones. */
+  vectorProbe?: { before: VectorProbe; after: VectorProbe } | null;
   /** Revisión visual del agente sobre la captura del clon (null = no se hizo). */
   visual: { status: CheckStatus; findings: Finding[] } | null;
 }
+
+/** Por id de nodo del CLON: vértices y tiradores en coordenadas del frame destino (ver src/figma/vector-probe.ts). */
+export type VectorProbe = Record<string, { vertices: Array<[number, number]>; segments: Array<{ start: number; end: number; tangentStart: [number, number]; tangentEnd: [number, number] }> }>;
 
 export interface DemoCheckReport {
   results: ValidationResult[];
@@ -86,7 +91,7 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
   // 3. Contenido: textos, pinturas, efectos, visibilidad, máscaras y geometría vectorial idénticos.
   {
     const f: Finding[] = [];
-    const resized = new Set([mRoot.id, ...plan.effectResizes.map((e) => e.nodeId)]);
+    const resized = new Set([mRoot.id, ...plan.effectResizes.map((e) => e.nodeId), ...plan.vectorEdits.map((v) => v.nodeId)]);
     for (const m of master.nodes) {
       const cn = pair(m.id);
       if (!cn) continue;
@@ -94,6 +99,10 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       const b = contentProjection(cn);
       // La geometría de un nodo redimensionado cambia por definición; se compara todo lo demás.
       if (resized.has(m.id)) { a.vectorGeometryDigest = null; b.vectorGeometryDigest = null; }
+      // Propiedades de contenedor que no están en contentProjection (recorte, maquetación automática).
+      if (m.clipsContent !== cn.clipsContent || m.layout.mode !== cn.layout.mode) {
+        f.push({ code: 'CONTAINER_PROPS_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Recorte o modo de maquetación distinto' });
+      }
       if (m.text && cn.text && m.text.characters !== cn.text.characters) {
         f.push({ code: 'TEXT_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'El texto no es idéntico' });
       } else if (canonicalize(a) !== canonicalize(b)) {
@@ -112,16 +121,18 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       const cn = pair(m.id);
       const exp = plan.expected[m.id];
       if (!cn || !exp || !cRoot) continue;
-      if (exp.derived) continue; // GROUP: caja derivada de sus hijos, que se comprueban individualmente
+      const lm = m.relativeTransform, lc = cn.relativeTransform;
+      if (lm && lc && (lm[0][0] !== lc[0][0] || lm[0][1] !== lc[0][1] || lm[1][0] !== lc[1][0] || lm[1][1] !== lc[1][1])) {
+        f.push({ code: 'LINEAR_TRANSFORM_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Rotación, escala o sesgo cambiados' });
+      }
+      // GROUP: solo su CAJA es derivada de los hijos (que se comprueban uno a uno); rotación, opacidad, máscara,
+      // efectos y recorte se siguen comprobando aquí y en content_preserved. Vector editado: lo cubre vector_edits.
+      if (exp.derived || exp.edited) continue;
       const got = relRect(cn, cRoot);
       if (!got || !exp.rect) { f.push({ code: 'NO_BOUNDS', severity: 'warning', nodeIds: [m.id], message: 'Sin caja para comparar' }); continue; }
       const d = Math.max(Math.abs(got.x - exp.rect.x), Math.abs(got.y - exp.rect.y), Math.abs(got.width - exp.rect.width), Math.abs(got.height - exp.rect.height));
       if (d > tol) f.push({ code: 'UNEXPECTED_GEOMETRY', severity: 'blocking', nodeIds: [m.id, cn.id], measured: got, expected: exp.rect, message: `Desviación ${d} px` });
       if (!exp.resized && (cn.width !== m.width || cn.height !== m.height)) f.push({ code: 'SIZE_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Tamaño cambiado en un nodo que solo podía trasladarse' });
-      const lm = m.relativeTransform, lc = cn.relativeTransform;
-      if (lm && lc && (lm[0][0] !== lc[0][0] || lm[0][1] !== lc[0][1] || lm[1][0] !== lc[1][0] || lm[1][1] !== lc[1][1])) {
-        f.push({ code: 'LINEAR_TRANSFORM_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Rotación, escala o sesgo cambiados' });
-      }
     }
     results.push(r('allowed_operations', statusOf(f), `Posición de cada caja respecto al plan (±${tol} px), tamaño exacto de todo lo que solo se traslada y parte lineal exacta de cada transformación.`, f));
   }
@@ -195,6 +206,49 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       }
     }
     results.push(r('background_coverage', statusOf(f), 'Cobertura por cajas del ancho y del borde inferior; regiones protegidas (declaradas por el agente) completas y sin cajas de texto encima. No mide píxeles.', f));
+  }
+
+  // 7b. Ediciones vectoriales de decoración: lo editado está donde dice el plan y NADA más de ese vector se movió.
+  if (plan.vectorEdits.length > 0) {
+    const f: Finding[] = [];
+    const vp = inp.vectorProbe;
+    if (!vp) {
+      results.push(r('vector_edits', 'not_evaluable', 'Sin sondas de geometría antes/después.'));
+    } else {
+      const near = (a: [number, number] | undefined, b: { x: number; y: number } | [number, number], t: number) => {
+        const [bx, by] = Array.isArray(b) ? b : [b.x, b.y];
+        return !!a && Math.abs(a[0] - bx) <= t && Math.abs(a[1] - by) <= t;
+      };
+      for (const e of plan.vectorEdits) {
+        const cid = toClone.get(e.nodeId);
+        const before = cid ? vp.before[cid] : undefined, after = cid ? vp.after[cid] : undefined;
+        if (!before || !after) { f.push({ code: 'NO_PROBE', severity: 'blocking', nodeIds: [e.nodeId], message: 'Falta la sonda' }); continue; }
+        if (before.vertices.length !== after.vertices.length || before.segments.length !== after.segments.length) {
+          f.push({ code: 'VECTOR_TOPOLOGY_CHANGED', severity: 'blocking', nodeIds: [e.nodeId], message: 'Cambió el número de vértices o segmentos' });
+          continue;
+        }
+        const edited = new Map(e.vertices.map((v) => [v.index, v]));
+        before.vertices.forEach((bv, i) => {
+          const ed = edited.get(i);
+          if (ed) {
+            if (!near(bv, ed.from, 0.5)) f.push({ code: 'VERTEX_FROM_MISMATCH', severity: 'blocking', nodeIds: [e.nodeId], message: `vértice ${i} no estaba donde se esperaba` });
+            if (!near(after.vertices[i], ed.to, 0.5)) f.push({ code: 'VERTEX_NOT_AT_TARGET', severity: 'blocking', nodeIds: [e.nodeId], measured: after.vertices[i], expected: ed.to, message: `vértice ${i}` });
+          } else if (!near(after.vertices[i], bv, 0.05)) {
+            f.push({ code: 'UNEDITED_VERTEX_MOVED', severity: 'blocking', nodeIds: [e.nodeId], measured: after.vertices[i], expected: bv, message: `vértice ${i} no debía moverse` });
+          }
+        });
+        before.segments.forEach((bs, i) => {
+          const as = after.segments[i]!;
+          if (as.start !== bs.start || as.end !== bs.end) f.push({ code: 'SEGMENT_REWIRED', severity: 'blocking', nodeIds: [e.nodeId], message: `segmento ${i}` });
+          for (const field of ['tangentStart', 'tangentEnd'] as const) {
+            const ed = e.tangents.find((t) => t.segment === i && t.field === field);
+            if (ed) { if (!near(as[field], ed.to, 0.5)) f.push({ code: 'TANGENT_NOT_AT_TARGET', severity: 'blocking', nodeIds: [e.nodeId], message: `segmento ${i} ${field}` }); }
+            else if (!near(as[field], bs[field], 0.05)) f.push({ code: 'UNEDITED_TANGENT_CHANGED', severity: 'blocking', nodeIds: [e.nodeId], message: `segmento ${i} ${field}` });
+          }
+        });
+      }
+      results.push(r('vector_edits', statusOf(f), 'Vértices y tiradores editados en su destino (±0,5 px) y todos los demás de ese vector sin cambios (±0,05 px), en coordenadas del frame; misma topología.', f));
+    }
   }
 
   // 8. Maestra intacta (hash por nodo de la relectura frente a la instantánea del inventario).

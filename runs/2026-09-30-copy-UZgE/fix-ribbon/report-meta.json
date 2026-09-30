@@ -1,0 +1,13 @@
+{
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "screenshotPath": "runs/2026-09-30-copy-UZgE/evidence/demo-2009-122-v2.png",
+  "designerDecisions": [
+    "Nueva salida de la cinta por el borde derecho (último tramo prolongado + borde de su máscara desplazado): ¿mantiene la intención?",
+    "Oferta (1:549) más alta sobre la persona que en la maestra: ¿aceptable o prefieres reducir otros espacios?",
+    "Recorte de 65 px del pie de la foto.",
+    "Ensanchado del degradado de oscurecimiento 1:541 (975 → 1110 px, efecto no-contenido).",
+    "Información complementaria desplazada +60 px (constraint CENTER de la maestra) en lugar de quedarse alineada a la izquierda con el margen de 56 px.",
+    "Roles propuestos por el agente: 1:549 como body (tú lo describiste como texto principal), 1:572 como price, 1:552 como información complementaria (propuesta legal en el inventario; se mantiene como complementaria salvo evidencia).",
+    "1:555 (imagen totalmente recortada dentro del contenedor del logo): conservada; decidir qué es."
+  ]
+}

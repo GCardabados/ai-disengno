@@ -63,6 +63,68 @@
       "height": 449
     }
   ],
+  "vectorEdits": [
+    {
+      "nodeId": "1:548",
+      "purpose": "decoration",
+      "vertices": [
+        {
+          "index": 6,
+          "from": {
+            "x": 1004.99,
+            "y": 599.51
+          },
+          "to": {
+            "x": 1130,
+            "y": 470
+          }
+        }
+      ],
+      "tangents": [
+        {
+          "segment": 5,
+          "start": 5,
+          "end": 6,
+          "field": "tangentEnd",
+          "to": {
+            "x": -85,
+            "y": 18
+          }
+        }
+      ],
+      "why": "El extremo de la cinta, que en 960 px quedaba fuera del frame, queda dentro en 1080 px. Se prolonga solo su último tramo para que salga por el borde derecho (intención de la maestra); el tirador de salida del tramo y el resto de la cinta no cambian."
+    },
+    {
+      "nodeId": "1:547",
+      "purpose": "decoration_mask",
+      "vertices": [
+        {
+          "index": 7,
+          "from": {
+            "x": 986.49,
+            "y": 610.6
+          },
+          "to": {
+            "x": 1160,
+            "y": 610.6
+          }
+        },
+        {
+          "index": 8,
+          "from": {
+            "x": 986.49,
+            "y": 507.6
+          },
+          "to": {
+            "x": 1160,
+            "y": 400
+          }
+        }
+      ],
+      "tangents": [],
+      "why": "El borde recto derecho de esta forma de máscara (x=986,5) producía el corte vertical visible. Se desplazan solo los dos vértices de ese borde fuera del frame; el contorno izquierdo, que sigue el brazo, no cambia. La máscara solo afecta a la cinta."
+    }
+  ],
   "expected": {
     "1:537": {
       "rect": {
@@ -116,15 +178,11 @@
       "resized": true
     },
     "1:542": {
-      "rect": {
-        "x": -314.3347473144531,
-        "y": -99.7398681640625,
-        "width": 1558.5771484375,
-        "height": 1561.9761962890625
-      },
+      "rect": null,
       "dx": 4.992645263671875,
       "dy": -55,
-      "resized": false
+      "resized": false,
+      "derived": true
     },
     "1:543": {
       "rect": null,
@@ -167,26 +225,18 @@
       "resized": false
     },
     "1:547": {
-      "rect": {
-        "x": 631.9929046630859,
-        "y": 455.09521484375,
-        "width": 354.5002136230469,
-        "height": 537.9999389648438
-      },
+      "rect": null,
       "dx": 4.992645263671875,
       "dy": -55,
-      "resized": false
+      "resized": false,
+      "edited": true
     },
     "1:548": {
-      "rect": {
-        "x": -370.00732480395527,
-        "y": 342.594970703125,
-        "width": 1434.445676551134,
-        "height": 820.368377603836
-      },
+      "rect": null,
       "dx": 4.992645263671875,
       "dy": -55,
-      "resized": false
+      "resized": false,
+      "edited": true
     },
     "1:549": {
       "rect": {
@@ -233,15 +283,11 @@
       "resized": false
     },
     "1:553": {
-      "rect": {
-        "x": 90,
-        "y": 64,
-        "width": 271,
-        "height": 48
-      },
+      "rect": null,
       "dx": 0,
       "dy": -26,
-      "resized": false
+      "resized": false,
+      "derived": true
     },
     "1:554": {
       "rect": {

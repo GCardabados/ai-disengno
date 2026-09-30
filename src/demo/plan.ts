@@ -3,7 +3,7 @@
 // composición solo usa operaciones permitidas: traslación rígida de bloques y redimensionado de efectos no-contenido.
 import type { Rect } from '../contracts/geometry.ts';
 import type { MasterSnapshot, NodeSnapshot } from '../contracts/snapshot.ts';
-import type { DemoComposition } from '../contracts/demo.ts';
+import type { DemoComposition, VectorEdit } from '../contracts/demo.ts';
 
 export const DEMO_PLAN_SCHEMA_ID = 'pcb.demo-plan.v1';
 
@@ -16,8 +16,10 @@ export interface DemoPlan {
   moves: Array<{ unitId: string; anchorNodeId: string; nodeIds: string[]; dx: number; dy: number }>;
   /** x/y en coordenadas del frame raíz (los antecesores intermedios son GROUP, que no definen coordenadas). */
   effectResizes: Array<{ nodeId: string; x: number; y: number; width: number; height: number }>;
+  /** Ediciones de vértices/tiradores de decoraciones o sus máscaras, en coordenadas del frame destino. */
+  vectorEdits: VectorEdit[];
   /** Caja esperada de cada nodo en coordenadas del frame destino (para validar el clon). */
-  expected: Record<string, { rect: Rect | null; dx: number; dy: number; resized: boolean; derived?: boolean }>;
+  expected: Record<string, { rect: Rect | null; dx: number; dy: number; resized: boolean; derived?: boolean; edited?: boolean }>;
 }
 
 export type PlanResult = { ok: true; plan: DemoPlan } | { ok: false; issues: string[] };
@@ -90,6 +92,18 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
     if (!coordsRelativeToRoot(e.nodeId)) issues.push(`${e.nodeId}: dentro de un frame intermedio`);
     effectResizes.push({ nodeId: e.nodeId, ...e.to });
   }
+  const underLocked = (id: string) => [id, ...ancestors(id)].some((a) => locked.has(a));
+  for (const v of c.vectorEdits) {
+    const n = byId.get(v.nodeId);
+    if (!n) { issues.push(`edición vectorial de nodo desconocido ${v.nodeId}`); continue; }
+    if (n.type !== 'VECTOR') issues.push(`${v.nodeId}: solo se editan nodos VECTOR`);
+    if (n.text || (n.fills !== 'MIXED' && n.fills.some((f) => f.type === 'IMAGE' || f.type === 'VIDEO'))) issues.push(`${v.nodeId}: tiene texto o imagen`);
+    if (important.has(v.nodeId) || underLocked(v.nodeId)) issues.push(`${v.nodeId}: importante o dentro del logo; no se edita`);
+    const inMask = ancestors(v.nodeId).some((a) => byId.get(a)?.isMask === true);
+    if (v.purpose === 'decoration_mask' && !inMask) issues.push(`${v.nodeId}: declarado como máscara pero no está dentro de un grupo máscara`);
+    if (v.purpose === 'decoration' && inMask) issues.push(`${v.nodeId}: está dentro de una máscara; declararlo como decoration_mask`);
+    if (v.vertices.length === 0 && v.tangents.length === 0) issues.push(`${v.nodeId}: edición vacía`);
+  }
   for (const id of [...locked, ...important, ...c.mustCoverWidthNodeIds, ...c.protectedRegions.map((p) => p.nodeId)]) {
     if (!byId.has(id)) issues.push(`nodo desconocido en la composición: ${id}`);
   }
@@ -121,8 +135,13 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
       continue;
     }
     const d = deltaOf(n.id);
-    // Un GROUP no tiene geometría propia: su caja se deriva de sus hijos (que se validan uno a uno).
-    if (n.type === 'GROUP' && !moved.has(n.id)) {
+    if (c.vectorEdits.some((v) => v.nodeId === n.id)) {
+      expected[n.id] = { rect: null, ...d, resized: false, edited: true };
+      continue;
+    }
+    // Un GROUP no tiene geometría propia: su caja se deriva SIEMPRE de sus hijos (que se validan uno a uno, y
+    // cuyo desplazamiento prueba el del grupo), aunque el grupo sea el ancla de un bloque trasladado.
+    if (n.type === 'GROUP') {
       expected[n.id] = { rect: null, ...d, resized: false, derived: true };
       continue;
     }
@@ -139,6 +158,7 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
       target: c.target,
       moves,
       effectResizes,
+      vectorEdits: c.vectorEdits,
       expected,
     },
   };

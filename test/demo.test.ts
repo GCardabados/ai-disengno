@@ -36,6 +36,7 @@ function composition(over: Partial<DemoComposition> = {}): DemoComposition {
       { unitId: 'legal', nodeIds: ['10:10'], anchorNodeId: '10:10', to: { x: 60, y: 980 }, why: 'MOCK' },
     ],
     effectResizes: [],
+    vectorEdits: [],
     importantNodeIds: ['10:3', '10:6', '10:7', '10:8', '10:9', '10:10', '10:12'],
     sizeLockedNodeIds: ['10:3'],
     protectedRegions: [{ nodeId: '10:11', rect: { x: 0, y: 0, width: 460, height: 200 }, purpose: 'MOCK producto' }],
@@ -168,6 +169,17 @@ test('MOCK [plan/checks]: un GROUP cuyos hijos se mueven por separado no es un d
   assert.equal(statusOf(run(bad), 'allowed_operations'), 'fail');
 });
 
+test('MOCK [checks]: en un GROUP derivado se siguen comprobando opacidad, rotación y demás propiedades del contenedor', async () => {
+  const s = await scenario();
+  assert.equal(s.plan.expected['10:3']!.derived, true);
+  const opacity = run(await scenario((c) => { find(c, '90:3')!.opacity = 0.5; }));
+  assert.equal(statusOf(opacity, 'content_preserved'), 'fail');
+  const rotated = run(await scenario((c) => { find(c, '90:15')!.rotation = 5; }));
+  assert.ok(rotated.results.find((r) => r.validatorId === 'allowed_operations')!.findings.some((f) => f.code === 'LINEAR_TRANSFORM_CHANGED'));
+  const clip = run(await scenario((c) => { find(c, '90:8')!.clipsContent = !find(baseMasterSpec(), '10:8')!.clipsContent; }));
+  assert.ok(clip.results.find((r) => r.validatorId === 'content_preserved')!.findings.some((f) => f.code === 'CONTAINER_PROPS_CHANGED'));
+});
+
 // ---------- Script de escritura ----------
 
 test('MOCK [script]: solo escribe en el clon, no sustituye fuentes y no contiene operaciones prohibidas', async () => {
@@ -246,4 +258,49 @@ test('MOCK [digests]: la relectura por hashes por nodo detecta exactamente qué 
   const cmp = compareNodeDigests(a.value.payload, await digestsOf(moved));
   assert.equal(cmp.equal, false);
   assert.deepEqual(cmp.changedNodeIds, ['10:10']);
+});
+
+// ---------- Ediciones vectoriales de decoración y modo patch ----------
+
+const claimEdit = {
+  nodeId: '10:16', purpose: 'decoration' as const,
+  vertices: [{ index: 1, from: { x: 120, y: 800 }, to: { x: 140, y: 790 } }],
+  tangents: [], why: 'MOCK',
+};
+
+test('MOCK [plan]: las ediciones vectoriales solo se admiten sobre decoración, nunca sobre el logo ni texto', async () => {
+  const s = await snap(baseMasterSpec());
+  const ok = buildDemoPlan(s, composition({ vectorEdits: [claimEdit] }));
+  assert.ok(ok.ok);
+  if (ok.ok) assert.equal(ok.plan.expected['10:16']!.edited, true);
+  const logo = buildDemoPlan(s, composition({ vectorEdits: [{ ...claimEdit, nodeId: '10:4' }] }));
+  assert.ok(!logo.ok && logo.issues.some((i) => /logo/.test(i)));
+  const text = buildDemoPlan(s, composition({ vectorEdits: [{ ...claimEdit, nodeId: '10:6' }] }));
+  assert.ok(!text.ok && text.issues.some((i) => /VECTOR/.test(i)));
+  const mask = buildDemoPlan(s, composition({ vectorEdits: [{ ...claimEdit, purpose: 'decoration_mask' }] }));
+  assert.ok(!mask.ok && mask.issues.some((i) => /máscara/.test(i)));
+});
+
+test('MOCK [checks]: vector_edits exige el destino exacto y que nada más del vector se mueva', async () => {
+  const comp = composition({ vectorEdits: [claimEdit] });
+  const s = await scenario(undefined, comp);
+  const seg = { start: 0, end: 1, tangentStart: [0, 0] as [number, number], tangentEnd: [0, 0] as [number, number] };
+  const before = { '90:16': { vertices: [[100, 800], [120, 800]] as Array<[number, number]>, segments: [seg] } };
+  const good = { '90:16': { vertices: [[100, 800], [140, 790]] as Array<[number, number]>, segments: [seg] } };
+  const drift = { '90:16': { vertices: [[101, 800], [140, 790]] as Array<[number, number]>, segments: [seg] } };
+  const miss = { '90:16': { vertices: [[100, 800], [150, 790]] as Array<[number, number]>, segments: [seg] } };
+  assert.equal(statusOf(run(s, { vectorProbe: { before, after: good } }), 'vector_edits'), 'pass');
+  assert.ok(run(s, { vectorProbe: { before, after: drift } }).results.find((r) => r.validatorId === 'vector_edits')!.findings.some((f) => f.code === 'UNEDITED_VERTEX_MOVED'));
+  assert.ok(run(s, { vectorProbe: { before, after: miss } }).results.find((r) => r.validatorId === 'vector_edits')!.findings.some((f) => f.code === 'VERTEX_NOT_AT_TARGET'));
+  assert.equal(statusOf(run(s, { vectorProbe: null }), 'vector_edits'), 'not_evaluable');
+});
+
+test('MOCK [script]: el modo patch actualiza el clon existente sin clonar ni borrar, con guarda de vértice inesperado', async () => {
+  const { plan } = await scenario(undefined, composition({ vectorEdits: [claimEdit] }));
+  const code = buildAdaptScript(plan, { sectionName: 'PCB · Salida DEMO', cloneName: 'DEMO clon', gapFromContentPx: 400, mode: 'patch', existingCloneId: '90:1' });
+  assert.ok(code.includes('var MODE = "patch";'));
+  assert.ok(code.includes('PCB_PATCH_TARGET_NOT_FOUND') && code.includes('PCB_VERTEX_UNEXPECTED'), 'no pisa cambios ajenos');
+  assert.ok(code.includes("if (MODE === 'create') {\n  clone.remove();"), 'solo en create se descarta el clon propio');
+  assert.deepEqual(staticAdaptViolations(code), []);
+  assert.throws(() => buildAdaptScript(plan, { sectionName: 'x', cloneName: 'y', gapFromContentPx: 0, mode: 'patch' }), /existingCloneId/);
 });

@@ -1,0 +1,266 @@
+{
+ "schema": "pcb.adapt.result.v1",
+ "scriptVersion": "pcb.adapt-script.v4",
+ "mode": "patch",
+ "masterNodeId": "1:537",
+ "sectionId": "2009:121",
+ "sectionCreated": false,
+ "cloneId": "2009:122",
+ "cloneName": "DEMO_1080x1080 · 960x1200_Taxdown_SVA2 · pendiente de revisión humana",
+ "idMap": [
+  [
+   "1:537",
+   "2009:122"
+  ],
+  [
+   "1:538",
+   "2009:125"
+  ],
+  [
+   "1:539",
+   "2009:126"
+  ],
+  [
+   "1:540",
+   "2009:127"
+  ],
+  [
+   "1:541",
+   "2009:128"
+  ],
+  [
+   "1:542",
+   "2009:129"
+  ],
+  [
+   "1:543",
+   "2009:130"
+  ],
+  [
+   "1:544",
+   "2009:131"
+  ],
+  [
+   "1:545",
+   "2009:132"
+  ],
+  [
+   "1:546",
+   "2009:133"
+  ],
+  [
+   "1:547",
+   "2009:134"
+  ],
+  [
+   "1:548",
+   "2009:135"
+  ],
+  [
+   "1:549",
+   "2009:136"
+  ],
+  [
+   "1:550",
+   "2009:137"
+  ],
+  [
+   "1:551",
+   "2009:138"
+  ],
+  [
+   "1:552",
+   "2009:139"
+  ],
+  [
+   "1:553",
+   "2009:140"
+  ],
+  [
+   "1:554",
+   "2009:141"
+  ],
+  [
+   "1:555",
+   "2009:142"
+  ],
+  [
+   "1:556",
+   "2009:143"
+  ],
+  [
+   "1:557",
+   "2009:144"
+  ],
+  [
+   "1:558",
+   "2009:145"
+  ],
+  [
+   "1:559",
+   "2009:146"
+  ],
+  [
+   "1:560",
+   "2009:147"
+  ],
+  [
+   "1:561",
+   "2009:148"
+  ],
+  [
+   "1:562",
+   "2009:149"
+  ],
+  [
+   "1:563",
+   "2009:150"
+  ],
+  [
+   "1:564",
+   "2009:151"
+  ],
+  [
+   "1:565",
+   "2009:152"
+  ],
+  [
+   "1:566",
+   "2009:153"
+  ],
+  [
+   "1:567",
+   "2009:154"
+  ],
+  [
+   "1:568",
+   "2009:155"
+  ],
+  [
+   "1:569",
+   "2009:156"
+  ],
+  [
+   "1:570",
+   "2009:157"
+  ],
+  [
+   "1:571",
+   "2009:158"
+  ],
+  [
+   "1:572",
+   "2009:159"
+  ]
+ ],
+ "fonts": [
+  {
+   "family": "Mutualidad",
+   "style": "Black",
+   "loaded": false,
+   "requiredForOps": false,
+   "error": "The font \"Mutualidad Black\" could not be loaded. The font family \"Mutualidad\" does not exist."
+  },
+  {
+   "family": "Mutualidad",
+   "style": "Bold",
+   "loaded": false,
+   "requiredForOps": false,
+   "error": "The font \"Mutualidad Bold\" could not be loaded. The font family \"Mutualidad\" does not exist."
+  },
+  {
+   "family": "Mutualidad",
+   "style": "Regular",
+   "loaded": false,
+   "requiredForOps": false,
+   "error": "The font \"Mutualidad Regular\" could not be loaded. The font family \"Mutualidad\" does not exist."
+  },
+  {
+   "family": "Rufina",
+   "style": "Bold",
+   "loaded": true,
+   "requiredForOps": false,
+   "error": null
+  },
+  {
+   "family": "Rufina",
+   "style": "Regular",
+   "loaded": true,
+   "requiredForOps": false,
+   "error": null
+  }
+ ],
+ "applied": [
+  {
+   "op": "vector_edit",
+   "cloneNodeId": "2009:135",
+   "masterNodeId": "1:548",
+   "detail": {
+    "purpose": "decoration",
+    "changes": [
+     {
+      "vertex": 6,
+      "from": {
+       "x": 1004.9923724691689,
+       "y": 599.5080871578693
+      },
+      "to": {
+       "x": 1130,
+       "y": 470
+      }
+     },
+     {
+      "segment": 5,
+      "field": "tangentEnd",
+      "from": {
+       "x": -14.499941914003273,
+       "y": -92.00004469418982
+      },
+      "to": {
+       "x": -85,
+       "y": 18
+      }
+     }
+    ]
+   }
+  },
+  {
+   "op": "vector_edit",
+   "cloneNodeId": "2009:134",
+   "masterNodeId": "1:547",
+   "detail": {
+    "purpose": "decoration_mask",
+    "changes": [
+     {
+      "vertex": 7,
+      "from": {
+       "x": 986.4924011230469,
+       "y": 610.5951538085938
+      },
+      "to": {
+       "x": 1160,
+       "y": 610.6
+      }
+     },
+     {
+      "vertex": 8,
+      "from": {
+       "x": 986.4924011230469,
+       "y": 507.59515380859375
+      },
+      "to": {
+       "x": 1160,
+       "y": 400
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "master": {
+  "width": 960,
+  "height": 1200,
+  "childCount": 7,
+  "name": "960x1200_Taxdown_SVA2"
+ }
+}

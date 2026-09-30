@@ -42,6 +42,7 @@ export function renderDemoReport(c: DemoComposition, rep: DemoCheckReport, meta:
   L.push('');
   for (const u of c.units) L.push(`- Traslación rígida ${code(u.unitId)} (${u.nodeIds.map(code).join(', ')}): ${u.why}`);
   for (const e of c.effectResizes) L.push(`- Redimensionado de efecto ${code(e.nodeId)}: ${e.why}`);
+  for (const v of c.vectorEdits) L.push(`- Edición vectorial (${v.purpose === 'decoration_mask' ? 'máscara de decoración' : 'decoración'}) ${code(v.nodeId)}: ${v.vertices.length} vértice(s), ${v.tangents.length} tirador(es). ${v.why}`);
   L.push(`- Frame raíz: ${c.masterSize.width}×${c.masterSize.height} → ${c.target.width}×${c.target.height} con resizeWithoutConstraints (sin escalar hijos).`);
   L.push('');
   L.push('## Decisiones para la diseñadora');

@@ -21,6 +21,8 @@ import { AdaptResultSchema, AgentProposalsSchema, DemoCompositionSchema } from '
 import { validateProposals } from './inventory/proposals.ts';
 import { buildDemoPlan, type DemoPlan } from './demo/plan.ts';
 import { buildAdaptScript, ADAPT_SCRIPT_VERSION } from './figma/adapt-script.ts';
+import { buildVectorProbeScript } from './figma/vector-probe.ts';
+import { extractEnvelope } from './figma/ingest-envelope.ts';
 import { checkDemo } from './demo/check.ts';
 import { compareNodeDigests } from './figma/digests.ts';
 import { assembleChunks } from './figma/chunks.ts';
@@ -43,14 +45,16 @@ const USAGE = `pcb <comando> [opciones]
   DEMO (primera adaptación; nada de esto es aprobación de producción):
   proposals-check --manifest F --proposals F --config F    Valida las propuestas del agente contra el borrador
   demo-plan      --snapshot F --composition F --out F      Plan exacto (traslaciones/efectos) y comprobación previa
-  adapt-request  --plan F --composition F --file-key K --clone-name N --out F   Script de ESCRITURA sobre un clon
+  adapt-request  --plan F --composition F --file-key K --clone-name N [--mode patch --existing-clone-id ID] --out F
+                 Script de ESCRITURA sobre un clon ('patch' actualiza el clon existente sin duplicar la salida)
+  vector-probe-request --file-key K --frame-id ID --node-id N [--node-id N2 ...] --out F   Sonda vectorial (solo lectura)
   digests-compare --master-raw F [--master-raw F2 ...] --digests F   ¿La maestra releída es idéntica al inventario?
   demo-check     --snapshot F --clone-snapshot F --adapt-result F --plan F --composition F --config F
-                 --master-raw F... --digests F [--visual F] --meta F --out DIR`;
+                 --master-raw F... --digests F [--visual F] [--vector-before F --vector-after F] --meta F --out DIR`;
 
 const opts = {
   'file-key': { type: 'string' },
-  'node-id': { type: 'string' },
+  'node-id': { type: 'string', multiple: true },
   'root-type': { type: 'string' },
   'entry-node-id': { type: 'string' },
   'target-name': { type: 'string' },
@@ -80,6 +84,10 @@ const opts = {
   meta: { type: 'string' },
   'master-raw': { type: 'string', multiple: true },
   'clone-name': { type: 'string' },
+  'existing-clone-id': { type: 'string' },
+  'frame-id': { type: 'string' },
+  'vector-before': { type: 'string' },
+  'vector-after': { type: 'string' },
 } as const;
 
 function need(v: string | undefined, name: string): string {
@@ -126,7 +134,7 @@ async function main(argv: string[]): Promise<number> {
 
   switch (cmd) {
     case 'read-request': {
-      const req = buildReadRequest(need(a['file-key'], 'file-key'), need(a['node-id'], 'node-id'), {
+      const req = buildReadRequest(need(a['file-key'], 'file-key'), need(a['node-id']?.[0], 'node-id'), {
         requiredRootType: a['root-type'] ?? 'FRAME',
         chunkIndex: a['chunk-index'] ? Number(a['chunk-index']) : 0,
         byteBudget: a['byte-budget'] ? Number(a['byte-budget']) : DEFAULT_CHUNK_BYTE_BUDGET,
@@ -189,7 +197,7 @@ async function main(argv: string[]): Promise<number> {
       const r = ingestReadResponses({
         responses,
         fileKey: need(a['file-key'], 'file-key'),
-        expectedRootNodeId: need(a['node-id'], 'node-id'),
+        expectedRootNodeId: need(a['node-id']?.[0], 'node-id'),
         expectedRootType: a['root-type'] ?? 'FRAME',
         entry: a.discovery ? await loadResolvedEntry(a.discovery) : null,
         source: source === 'mock' ? 'MOCK' : 'FIGMA_MCP_USE_FIGMA',
@@ -278,11 +286,28 @@ async function main(argv: string[]): Promise<number> {
     case 'adapt-request': {
       const plan = (await readJson(need(a.plan, 'plan'))) as DemoPlan;
       const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
-      const codeText = buildAdaptScript(plan, { sectionName: comp.output.sectionName, cloneName: need(a['clone-name'], 'clone-name'), gapFromContentPx: comp.output.gapFromContentPx });
+      const mode = a.mode === 'patch' ? 'patch' : 'create';
+      const codeText = buildAdaptScript(plan, {
+        sectionName: comp.output.sectionName, cloneName: need(a['clone-name'], 'clone-name'), gapFromContentPx: comp.output.gapFromContentPx,
+        mode, existingCloneId: mode === 'patch' ? need(a['existing-clone-id'], 'existing-clone-id') : undefined,
+      });
       await writeJson(need(a.out, 'out'), {
         tool: 'use_figma', fileKey: need(a['file-key'], 'file-key'), scriptVersion: ADAPT_SCRIPT_VERSION, writesOnlyClone: true,
-        description: `DEMO: clona ${plan.masterNodeId} en una sección de salida y adapta SOLO el clon a ${plan.target.width}×${plan.target.height}. La maestra no se modifica.`,
+        mode,
+        description: mode === 'patch'
+          ? `DEMO (actualización): aplica las ediciones de decoración del plan SOLO sobre el clon existente ${a['existing-clone-id']}. La maestra no se modifica.`
+          : `DEMO: clona ${plan.masterNodeId} en una sección de salida y adapta SOLO el clon a ${plan.target.width}×${plan.target.height}. La maestra no se modifica.`,
         code: codeText,
+      });
+      return 0;
+    }
+    case 'vector-probe-request': {
+      const ids = a['node-id'] ?? [];
+      if (ids.length === 0) throw new Error('Falta --node-id');
+      await writeJson(need(a.out, 'out'), {
+        tool: 'use_figma', fileKey: need(a['file-key'], 'file-key'), readOnly: true,
+        description: `Solo lectura: vértices y tiradores de ${ids.join(', ')} en coordenadas del frame ${a['frame-id']}.`,
+        code: buildVectorProbeScript(need(a['frame-id'], 'frame-id'), ids),
       });
       return 0;
     }
@@ -303,7 +328,14 @@ async function main(argv: string[]): Promise<number> {
       const visual = a.visual ? ((await readJson(a.visual)) as { status: CheckStatus; findings: Finding[] }) : null;
       const meta = (await readJson(need(a.meta, 'meta'))) as Omit<DemoReportMeta, 'cloneId' | 'cloneName' | 'sectionId' | 'fonts'>;
       if (clone.rootNodeId !== res.cloneId) throw new Error('La instantánea del clon no corresponde al resultado de la adaptación');
-      const rep = checkDemo({ master, clone, idMap: res.idMap, plan, composition: comp, tolerancePx: cfg.tolerances.px, masterDigestsEqual: digests ? digests.equal : null, visual });
+      const probe = async (f: string | undefined) => {
+        if (!f) return null;
+        const ext = extractEnvelope(await readFile(f, 'utf8'), 'pcb.vector-probe.v1');
+        if ('code' in ext) throw new Error(`${f}: ${ext.message}`);
+        return (ext.value as { nodes: Record<string, never> }).nodes;
+      };
+      const vb = await probe(a['vector-before']), va = await probe(a['vector-after']);
+      const rep = checkDemo({ master, clone, idMap: res.idMap, plan, composition: comp, tolerancePx: cfg.tolerances.px, masterDigestsEqual: digests ? digests.equal : null, visual, vectorProbe: vb && va ? { before: vb, after: va } : null });
       const out = need(a.out, 'out');
       await mkdir(out, { recursive: true });
       await writeJson(join(out, 'checks.json'), { ...rep, masterDigests: digests });

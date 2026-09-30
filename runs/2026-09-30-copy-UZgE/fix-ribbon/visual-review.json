@@ -1,0 +1,9 @@
+{
+  "status": "needs_review",
+  "findings": [
+    { "code": "BODY_TEXT_HIGHER_ON_SUBJECT", "severity": "warning", "nodeIds": ["1:549", "2009:136"], "message": "El bloque de oferta queda ~89 px más arriba respecto a la persona que en la maestra (sobre hombros/pelo y la cinta). Legible; la cara no queda cubierta." },
+    { "code": "PHOTO_BOTTOM_CROPPED", "severity": "warning", "nodeIds": ["1:539", "2009:126"], "message": "Se recortan 65 px del pie de la foto (camisa/silla). Cabeza y cara completas." },
+    { "code": "RIBBON_EXIT_RESHAPED", "severity": "warning", "nodeIds": ["1:548", "2009:135"], "message": "Corte corregido: la cinta ya no muestra el borde recto de la máscara ni su extremo; su último tramo se prolonga y sale por el borde derecho a y≈470–500 (en la maestra el arco salía por el borde a otra altura). El paso por detrás de los brazos no cambia." },
+    { "code": "FONT_NOT_LOADABLE_IN_ENV", "severity": "warning", "nodeIds": ["2009:138", "2009:139", "2009:158", "2009:159"], "message": "\"Mutualidad\" no es cargable por el plugin en esta copia; el render muestra la tipografía correcta y no se sustituyó ninguna fuente." }
+  ]
+}

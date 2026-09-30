@@ -406,6 +406,15 @@ Necesarias antes de H2 y siguientes:
 - **Fallo propio del validador:** un GROUP cuyos hijos se mueven por bloques distintos cambia de caja; su geometría es derivada y ahora se valida a través de sus hijos (prueba añadida).
 - **Resultado:** clon `2009:122` en la sección `2009:121`. Deterministas 8/8 superadas; maestra intacta por hashes por nodo; revisión visual del agente: `needs_review` (corte vertical de la cinta en el borde de su máscara, oferta más alta sobre la persona, pie de foto recortado, fuente no cargable en este entorno). Estado: **DEMO pendiente de revisión humana**.
 
+#### 5.6.2 Corrección de la cinta y repetibilidad (2026-09-30)
+
+- **Causa del corte:** el borde recto (x=986,5) de la forma de máscara «Vector 3» (1:547); además el extremo de la cinta (1:548) quedaba dentro del frame en 1080 px. Ampliar solo la máscara habría dejado a la vista ese extremo; mover cinta+máscara habría roto el paso por detrás de los brazos.
+- **Corrección mínima:** operación declarada `vectorEdits` (solo decoración o su máscara; nunca logo, texto ni imágenes): vértice final y tirador de llegada de la cinta → sale por el borde derecho; los dos vértices del borde recto de la máscara → x=1160. La máscara solo afecta a la cinta.
+- **Actualización sin duplicar:** script v4 con modo `patch` sobre el clon existente, precedido de comprobación de hashes por nodo del clon (sin cambios manuales). Guarda `from` por vértice (idempotente; se detiene ante cambios ajenos).
+- **Validador de GROUP:** su caja se deriva siempre de los hijos; rotación/escala, opacidad, fusión, máscara, efectos, recorte y modo de maquetación del contenedor se siguen comprobando. Nueva comprobación `vector_edits` con sondas antes/después.
+- **Taxonomía:** rol propuesto `supplementary_info` («Más información…»); no hay evidencia de que sea texto legal.
+- **Resultado:** deterministas 9/9 superadas; revisión visual `needs_review`. Procedimiento: `docs/01-demo-1080-procedimiento.md`.
+
 ## 6. Limitaciones declaradas de H1
 
 - Sin OCR: ninguna imagen puede ser `image_no_text_detected` ni `image_embedded_text` salvo por **declaración humana**, que queda registrada como evidencia `human_statement`.

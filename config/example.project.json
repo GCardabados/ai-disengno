@@ -12,6 +12,7 @@
       { "id": "cta", "label": "CTA", "multiplicity": { "min": 0, "max": 1 }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["cta", "boton", "botón", "button"] },
       { "id": "cta_label", "label": "Texto del CTA", "multiplicity": { "min": 0, "max": 1 }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["cta/label"] },
       { "id": "legal", "label": "Legal", "multiplicity": { "min": 0, "max": null }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["legal", "disclaimer"] },
+      { "id": "supplementary_info", "label": "Información complementaria", "multiplicity": { "min": 0, "max": null }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": [] },
       { "id": "product_image", "label": "Imagen de producto", "multiplicity": { "min": 0, "max": null }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["producto", "product", "packshot"] },
       { "id": "price", "label": "Precio", "multiplicity": { "min": 0, "max": null }, "protection": "protected", "mustBeInSafeZone": true, "defaultAllowOps": ["translate"], "nameHints": ["precio", "price"] },
       { "id": "background", "label": "Fondo", "multiplicity": { "min": 0, "max": 2 }, "protection": "flexible", "mustBeInSafeZone": false, "defaultAllowOps": [], "nameHints": ["fondo", "background", "bg"] },

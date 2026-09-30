@@ -1,7 +1,7 @@
 {
   "schema": "pcb.manifest.v1",
-  "manifestId": "man_47783832eed2",
-  "createdAt": "2026-09-30T08:07:19.648Z",
+  "manifestId": "man_62d772478176",
+  "createdAt": "2026-09-30T11:05:30.375Z",
   "source": "FIGMA_MCP_USE_FIGMA",
   "master": {
     "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
@@ -36,7 +36,7 @@
     "version": "2"
   },
   "rules": {
-    "fingerprint": "sha256:e049eeab5b39f1f4af87e0288e2f4bcb2c6b9955c4aff5b743f74e5f09f593f3",
+    "fingerprint": "sha256:21b2d0a8aaf7957cba2929d14ccc30923059cd7ad591f188251984caafc2c75a",
     "covers": [
       "config.projectId",
       "config.taxonomy.id",
@@ -1184,5 +1184,5 @@
     "approvedBy": null,
     "approvedAt": null
   },
-  "manifestHash": "sha256:85f43d27d92b7deec6e66f8fd4415192cbeafb78109faf33353c8d8dafea47ad"
+  "manifestHash": "sha256:3b63bbd12b673914969532f5f768d6265434eaa8e1d9fe453debc49acaae0e9b"
 }

@@ -3,8 +3,8 @@
   "status": "agent_proposal",
   "proposedBy": "agente (Claude) — propuesta, no aprobación humana",
   "createdAt": "2026-09-30T00:00:00.000Z",
-  "manifestId": "man_47783832eed2",
-  "manifestHash": "sha256:85f43d27d92b7deec6e66f8fd4415192cbeafb78109faf33353c8d8dafea47ad",
+  "manifestId": "man_62d772478176",
+  "manifestHash": "sha256:3b63bbd12b673914969532f5f768d6265434eaa8e1d9fe453debc49acaae0e9b",
   "groups": [
     {
       "groupId": "grp_logo",
@@ -339,7 +339,7 @@
       "nodeIds": [
         "1:552"
       ],
-      "roleId": "legal",
+      "roleId": "supplementary_info",
       "groupId": null,
       "proposedNature": "editable_text",
       "confidence": "medium",
@@ -354,11 +354,11 @@
         },
         {
           "kind": "screenshot_visual_inspection",
-          "detail": "Información complementaria en letra pequeña; la taxonomía no tiene un rol «información complementaria»: se propone legal (mismo tratamiento: protegido, en zona segura)",
+          "detail": "Información complementaria en letra pequeña (remite a la web). No hay evidencia de que sea texto legal; se propone supplementary_info.",
           "nodeIds": [
             "1:552"
           ],
-          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+          "artifact": null
         }
       ]
     },

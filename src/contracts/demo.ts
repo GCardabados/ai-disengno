@@ -90,6 +90,24 @@ export const EffectResizeSchema = z.strictObject({
   why: z.string(),
 });
 
+const Pt = z.strictObject({ x: z.number(), y: z.number() });
+
+/**
+ * Edición mínima de la geometría de una DECORACIÓN o de su MÁSCARA (nunca de contenido importante ni del logo).
+ * Coordenadas en el frame DESTINO. `from` es la posición esperada antes de editar (guarda contra editar otro vértice).
+ */
+export const VectorEditSchema = z.strictObject({
+  nodeId: z.string(),
+  purpose: z.enum(['decoration', 'decoration_mask']),
+  vertices: z.array(z.strictObject({ index: z.number().int().min(0), from: Pt, to: Pt })),
+  tangents: z.array(z.strictObject({
+    segment: z.number().int().min(0), start: z.number().int().min(0), end: z.number().int().min(0),
+    field: z.enum(['tangentStart', 'tangentEnd']), to: Pt,
+  })),
+  why: z.string(),
+});
+export type VectorEdit = z.infer<typeof VectorEditSchema>;
+
 export const DemoCompositionSchema = z.strictObject({
   schema: z.literal(DEMO_COMPOSITION_SCHEMA_ID),
   label: z.string(),
@@ -104,6 +122,7 @@ export const DemoCompositionSchema = z.strictObject({
   output: z.strictObject({ sectionName: z.string(), gapFromContentPx: z.number().min(0) }),
   units: z.array(MoveUnitSchema),
   effectResizes: z.array(EffectResizeSchema),
+  vectorEdits: z.array(VectorEditSchema).default([]),
   /** Nodos cuya caja debe quedar completa dentro de la zona interna de prueba. */
   importantNodeIds: z.array(z.string()),
   /** Nodos cuyo tamaño y disposición interna deben ser idénticos a la maestra (el logo). */
@@ -130,7 +149,8 @@ export const AdaptResultSchema = z.strictObject({
   /** Pares [id en la maestra, id en el clon] obtenidos por recorrido paralelo del árbol. */
   idMap: z.array(z.tuple([z.string(), z.string()])),
   fonts: z.array(z.strictObject({ family: z.string(), style: z.string(), loaded: z.boolean(), requiredForOps: z.boolean(), error: z.string().nullable() })),
-  applied: z.array(z.strictObject({ op: z.enum(['resize_root', 'translate', 'resize_effect']), cloneNodeId: z.string(), masterNodeId: z.string(), detail: z.unknown() })),
+  mode: z.enum(['create', 'patch']).default('create'),
+  applied: z.array(z.strictObject({ op: z.enum(['resize_root', 'translate', 'resize_effect', 'vector_edit']), cloneNodeId: z.string(), masterNodeId: z.string(), detail: z.unknown() })),
   master: z.strictObject({ width: z.number(), height: z.number(), childCount: z.number(), name: z.string() }),
 });
 export type AdaptResult = z.infer<typeof AdaptResultSchema>;

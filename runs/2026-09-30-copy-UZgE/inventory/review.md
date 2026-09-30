@@ -6,8 +6,8 @@
 - Origen: `FIGMA_MCP_USE_FIGMA` · fileKey `UZgEPO8UUe9IDwTWitBbgF` · raíz `1:537` · página ` Figma Agents `
 - Huella de la maestra: `sha256:031cb9fab21a0fe78eae3d77dddcb6a49e5a956c37658d2032632558a5623120`
 - Punto de entrada del usuario: `1:536` (SECTION) → maestra resuelta `1:537` por `exact_name` con el nombre ` 960x1200_Taxdown_SVA2 ` · dimensiones del nombre coinciden con el nodo
-- Manifiesto: `man_47783832eed2` · hash `sha256:85f43d27d92b7deec6e66f8fd4415192cbeafb78109faf33353c8d8dafea47ad` · estado **draft**
-- Huella de reglas: `sha256:e049eeab5b39f1f4af87e0288e2f4bcb2c6b9955c4aff5b743f74e5f09f593f3`
+- Manifiesto: `man_62d772478176` · hash `sha256:3b63bbd12b673914969532f5f768d6265434eaa8e1d9fe453debc49acaae0e9b` · estado **draft**
+- Huella de reglas: `sha256:21b2d0a8aaf7957cba2929d14ccc30923059cd7ad591f188251984caafc2c75a`
 - Integridad: los SHA-256 detectan alteraciones del contenido transportado; no autentican por sí solos que proceda de Figma.
 - Clasificador: `pcb.classifier.heuristic@2` · OCR: **not_run**
 - Nodos: 36 · entidades: 14 · estructurales: 11 · **pendientes: 0**
