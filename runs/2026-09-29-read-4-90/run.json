@@ -1,0 +1,29 @@
+{
+  "fileKey": "PNVvElNrs9t2ShZNq72Sst",
+  "nodeId": "4:90",
+  "sourceUrl": "https://www.figma.com/design/PNVvElNrs9t2ShZNq72Sst/IAs?node-id=4-90&m=dev",
+  "scriptVersion": "pcb.read-script.v1",
+  "scriptSha256": "5b1cf8c2e020029fd096ff96f0f4bc6478aa395f8446498e2026044b0c08a847",
+  "scriptLength": 14059,
+  "preparedAt": "2026-09-29T18:23:02.200Z",
+  "authorization": "Usuario: una única lectura estructural vía MCP; sin capturas, sin OCR, sin exportar, sin aprobación.",
+  "outcome": {
+    "status": "stopped_by_script_guard",
+    "executedAt": "2026-09-29",
+    "calls": 1,
+    "toolUseId": "toolu_01XgwF2gZfsjYnhRHfg21Thy",
+    "sentScriptSha256Matches": true,
+    "error": "PCB_ROOT_MUST_BE_SCENE_NODE (línea 219)",
+    "figmaDebugUuid": "73097329-4057-4e63-96c0-3ca4e254037c",
+    "interpretation": "getNodeByIdAsync(\"4:90\") devolvió un nodo de tipo PAGE o DOCUMENT; el documento es 0:0, así que 4:90 es una página, no el frame de la maestra.",
+    "rawEvidence": [
+      "tool-call.json",
+      "raw-tool-result.json"
+    ],
+    "extractedFrom": "registro de la sesión de Claude Code (jsonl), sin transcripción manual",
+    "ingest": "no ejecutada: no hay payload",
+    "documentModified": false,
+    "screenshots": false,
+    "ocr": false
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "fileKey": "PNVvElNrs9t2ShZNq72Sst",
+  "entryNodeId": "4:141",
+  "masterNodeId": "4:142",
+  "requiredRootType": "FRAME",
+  "discovery": "runs/2026-09-29-discover-4-141/discovery.json",
+  "scriptVersion": "pcb.read-script.v2",
+  "scriptSha256": "2d69cf3d289378d34787b95e40b7c519ce098c5e03ed038f1746f97ec2d93e36",
+  "scriptLength": 14337,
+  "preparedAt": "2026-09-29T18:52:05.476Z",
+  "authorization": "Usuario: inventario de la composición resuelta desde 4:141; solo lectura; sin capturas, OCR, exportación ni cambios; sin aprobación.",
+  "outcome": {
+    "status": "stopped_truncated_response",
+    "calls": 1,
+    "sentScriptSha256Matches": true,
+    "detail": "El resultado de use_figma llegó truncado con la marca \"// truncated to 20kb\" (24 991 bytes, 13 de 36 nodos visibles). El registro de la sesión también lo guarda truncado, así que el corte ocurre antes de llegar al entorno local.",
+    "ingest": "rechazada: ENVELOPE_NOT_FOUND (JSON incompleto). Sin instantánea ni manifiesto.",
+    "payloadDeclared": {
+      "nodeCount": 36
+    },
+    "documentModified": false,
+    "screenshots": false,
+    "ocr": false,
+    "evidence": [
+      "tool-call.json",
+      "raw-tool-result.json",
+      "raw-toolUseResult.json",
+      "raw-response.txt",
+      "ingest/raw-response.txt"
+    ]
+  }
+}

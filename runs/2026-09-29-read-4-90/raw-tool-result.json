@@ -1,0 +1,6 @@
+{
+  "type": "tool_result",
+  "content": "Error: PCB_ROOT_MUST_BE_SCENE_NODE\n    at <anonymous> (PLUGIN_1_SOURCE:219:70)\n\nFigma Debug UUID: 73097329-4057-4e63-96c0-3ca4e254037c",
+  "is_error": true,
+  "tool_use_id": "toolu_01XgwF2gZfsjYnhRHfg21Thy"
+}

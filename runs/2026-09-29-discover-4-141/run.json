@@ -1,0 +1,20 @@
+{
+  "fileKey": "PNVvElNrs9t2ShZNq72Sst",
+  "entryNodeId": "4:141",
+  "targetName": "960×1200_Taxdown_SVA2",
+  "targetNameCodepoints": "39 36 30 d7 31 32 30 30 5f 54 61 78 64 6f 77 6e 5f 53 56 41 32",
+  "sourceUrl": "https://www.figma.com/design/PNVvElNrs9t2ShZNq72Sst/IAs?node-id=4-141&m=dev",
+  "scriptVersion": "pcb.discover-script.v1",
+  "scriptSha256": "8ac37599c2c4108cb9a19db9ebdb9e8867139b734409e34623fbf1cf0966cddc",
+  "scriptLength": 5776,
+  "preparedAt": "2026-09-29T18:51:00.348Z",
+  "authorization": "Usuario: explorar la sección 4:141 y localizar 960×1200_Taxdown_SVA2; solo lectura; sin capturas, OCR, exportación ni cambios.",
+  "toolUseId": "toolu_01WKcqUMs9Gb4RXRLxujrwfJ",
+  "sentScriptSha256Matches": true,
+  "outcome": {
+    "status": "resolved",
+    "masterNodeId": "4:142",
+    "method": "normalized_name",
+    "note": "El nombre real usa x (U+0078); el indicado usa × (U+00D7). Único candidato, único hijo de la sección, 960×1200."
+  }
+}

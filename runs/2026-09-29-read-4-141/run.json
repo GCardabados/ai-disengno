@@ -1,0 +1,30 @@
+{
+  "fileKey": "PNVvElNrs9t2ShZNq72Sst",
+  "nodeId": "4:141",
+  "requiredRootType": "FRAME",
+  "sourceUrl": "https://www.figma.com/design/PNVvElNrs9t2ShZNq72Sst/IAs?node-id=4-141&m=dev",
+  "scriptVersion": "pcb.read-script.v2",
+  "scriptSha256": "16f6affec2cb38081f55f8195fedb92fa032821977b450f18ad95ff308856f8d",
+  "scriptLength": 14337,
+  "preparedAt": "2026-09-29T18:32:18.809Z",
+  "authorization": "Usuario: nuevo intento de lectura estructural limitado al frame 4:141; solo lectura MCP; sin capturas, OCR, exportación ni cambios; sin aprobación.",
+  "outcome": {
+    "status": "stopped_by_root_type_guard",
+    "calls": 1,
+    "toolUseId": "toolu_01HZwvjvobKvvwkQdSLppcDw",
+    "sentScriptSha256Matches": true,
+    "error": "PCB_ROOT_TYPE_MISMATCH expected=FRAME actual=SECTION (línea 222)",
+    "figmaDebugUuid": "d25264f5-5fca-4687-ac5d-a3c3602f7656",
+    "rootTypeReturned": "SECTION",
+    "nodesRead": 0,
+    "ingest": "no ejecutada: no hay payload",
+    "documentModified": false,
+    "screenshots": false,
+    "ocr": false,
+    "rawEvidence": [
+      "tool-call.json",
+      "raw-tool-result.json"
+    ],
+    "extractedFrom": "registro de la sesión (jsonl), sin transcripción manual"
+  }
+}

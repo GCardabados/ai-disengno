@@ -1,0 +1,10 @@
+{
+  "tool_use_id": "toolu_01WKcqUMs9Gb4RXRLxujrwfJ",
+  "type": "tool_result",
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"schema\":\"pcb.discover.envelope.v1\",\"payload\":\"{\\\"schema\\\":\\\"pcb.discover.v1\\\",\\\"scriptVersion\\\":\\\"pcb.discover-script.v1\\\",\\\"entry\\\":{\\\"id\\\":\\\"4:141\\\",\\\"type\\\":\\\"SECTION\\\",\\\"name\\\":\\\"Imagen 2\\\"},\\\"page\\\":{\\\"id\\\":\\\"4:90\\\",\\\"name\\\":\\\"Figma Agent + Claude Skill\\\"},\\\"fileKey\\\":\\\"PNVvElNrs9t2ShZNq72Sst\\\",\\\"targetName\\\":\\\"960×1200_Taxdown_SVA2\\\",\\\"matches\\\":[{\\\"id\\\":\\\"4:142\\\",\\\"type\\\":\\\"FRAME\\\",\\\"name\\\":\\\"960x1200_Taxdown_SVA2\\\",\\\"width\\\":960,\\\"height\\\":1200,\\\"depth\\\":1,\\\"parentId\\\":\\\"4:141\\\",\\\"pathIds\\\":[\\\"4:141\\\"]}],\\\"entryChildren\\\":[{\\\"id\\\":\\\"4:142\\\",\\\"type\\\":\\\"FRAME\\\",\\\"name\\\":\\\"960x1200_Taxdown_SVA2\\\",\\\"width\\\":960,\\\"height\\\":1200,\\\"depth\\\":1,\\\"parentId\\\":\\\"4:141\\\",\\\"pathIds\\\":[\\\"4:141\\\"]}],\\\"entryChildrenTruncated\\\":false,\\\"descendantCount\\\":36}\",\"digest\":\"sha256:83fdc70f7789e43cb3c13af606bff9aa2958b7e2f6c8795a0c02618364405e65\",\"payloadLength\":610}"
+    }
+  ]
+}

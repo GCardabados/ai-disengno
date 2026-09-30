@@ -1,0 +1,16 @@
+{
+  "fileKey": "PNVvElNrs9t2ShZNq72Sst",
+  "entryNodeId": "4:141",
+  "masterNodeId": "4:142",
+  "discovery": "runs/2026-09-29-discover-4-141/discovery.json",
+  "scriptVersion": "pcb.read-script.v3",
+  "byteBudget": 12000,
+  "attempt": 1,
+  "scripts": {
+    "0": {
+      "sha256": "f3b7ae7d5f0018e34c89e8ac8d074af36ef86e648097b4467c15a53586e4affb",
+      "length": 16642
+    }
+  },
+  "preparedAt": "2026-09-30T06:33:12.270Z"
+}
