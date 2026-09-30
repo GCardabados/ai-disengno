@@ -1,53 +1,9 @@
-// Script use_figma de ESCRITURA para la adaptación DEMO. Solo escribe sobre un clon dentro de una sección de salida.
-//
-// Garantías que impone el propio script (además de las comprobaciones posteriores sobre la relectura):
-//  - Verifica tipo, nombre y tamaño de la maestra antes de nada; si no coinciden, no escribe.
-//  - Nunca modifica la maestra: todas las mutaciones pasan por `onClone(masterId)`, que resuelve el nodo del clon por
-//    recorrido paralelo del árbol y rechaza cualquier id que pertenezca a la maestra o que no descienda del clon.
-//  - No sustituye fuentes: nunca asigna fontName. Intenta cargar las fuentes existentes y registra el resultado.
-//    Solo exige que carguen si el plan toca la maquetación de algún texto (FONT_REQUIRED); trasladar un texto o su
-//    contenedor no necesita la fuente cargada (v2: observado en real que una copia del archivo no tiene "Mutualidad"
-//    disponible para el plugin, aunque el render del servidor la muestra).
-//  - Todo o nada: si algo falla después de clonar, descarta SU PROPIO clon (única llamada a remove permitida) y relanza.
-//  - Operaciones: resizeWithoutConstraints del frame raíz (sin escalar hijos), traslación de bloques y
-//    redimensionado de efectos listados en el plan. Ninguna otra.
-//  - No duplica: en 'create', si ya existe un clon con ese nombre se detiene; 'patch' actualiza ese clon.
-//  - v5: traslaciones ABSOLUTAS (posición de la maestra + desplazamiento), idempotentes; varios clones por sección.
-//  - v6: un GROUP se traslada midiendo sobre un descendiente de referencia no modificado (su caja es derivada:
-//    en v5, reaplicar tras redimensionar un hijo desplazaba todo el grupo).
-//  - Ediciones vectoriales de decoración con guarda 'from' (idempotentes; detectan cambios ajenos).
-import type { DemoPlan } from '../demo/plan.ts';
+var PLAN = {"masterNodeId":"1:537","masterName":"960x1200_Taxdown_SVA2","masterSize":{"width":960,"height":1200},"target":{"width":1200,"height":628},"moves":[{"unitId":"logo","nodeIds":["1:553"],"dx":-36,"dy":-36},{"unitId":"message","nodeIds":["1:571","1:572"],"dx":-56,"dy":-79},{"unitId":"photo","nodeIds":["1:539","1:542"],"dx":605.9926452636719,"dy":-490},{"unitId":"offer","nodeIds":["1:549","1:540"],"dx":355,"dy":-431},{"unitId":"cta","nodeIds":["1:550"],"dx":-89,"dy":-580},{"unitId":"info","nodeIds":["1:552"],"dx":-2,"dy":-594}],"effectResizes":[{"nodeId":"1:541","x":-15,"y":250,"width":1230,"height":378},{"nodeId":"1:544","x":745,"y":4.0001220703125,"width":152.9928894042969,"height":343}],"vectorEdits":[]};
+var OUT = {"sectionName":"PCB · Salida DEMO (no producción)","cloneName":"DEMO_1200x628 · 960x1200_Taxdown_SVA2 · pendiente de revisión humana","gapFromContentPx":400,"existingCloneId":"2048:121"};
+var MODE = "patch";
+var SCRIPT_VERSION = "pcb.adapt-script.v5";
+var FONT_REQUIRED = false;
 
-export const ADAPT_SCRIPT_VERSION = 'pcb.adapt-script.v6';
-
-/** Única eliminación permitida: el clon creado por este mismo script, si falla algo después de crearlo. */
-export const ALLOWED_DISCARD_LINE = '  clone.remove(); // PCB_DISCARD_OWN_CLONE';
-
-export const FORBIDDEN_IN_ADAPT_SCRIPT = [
-  '.remove(', 'setPluginData', 'setSharedPluginData', 'createImage', 'exportAsync', 'loadAllPagesAsync',
-  'setCurrentPageAsync', 'detachInstance', 'flatten(', 'insertCharacters', 'deleteCharacters', '.characters =',
-  'fontName =', 'rescale(', 'figma.currentPage =',
-];
-
-export function staticAdaptViolations(code: string): string[] {
-  const scanned = code.split('\n').filter((l) => l !== ALLOWED_DISCARD_LINE).join('\n');
-  return FORBIDDEN_IN_ADAPT_SCRIPT.filter((f) => scanned.includes(f));
-}
-
-export interface AdaptOptions {
-  sectionName: string;
-  cloneName: string;
-  gapFromContentPx: number;
-  /**
-   * 'create' (por defecto): clona y aplica todo el plan. 'patch': reaplica el plan COMPLETO sobre el clon EXISTENTE
-   * (sin duplicar la salida). Todas las operaciones son absolutas respecto a la maestra, así que reaplicarlas es
-   * idempotente. Usar 'patch' solo tras comprobar que el clon no cambió desde la última lectura.
-   */
-  mode?: 'create' | 'patch';
-  existingCloneId?: string;
-}
-
-const BODY = String.raw`
 var master = await figma.getNodeByIdAsync(PLAN.masterNodeId);
 if (!master) throw new Error('PCB_MASTER_NOT_FOUND');
 if (master.type !== 'FRAME') throw new Error('PCB_MASTER_TYPE ' + master.type);
@@ -164,34 +120,15 @@ if (root.width !== PLAN.target.width || root.height !== PLAN.target.height) {
   applied.push({ op: 'resize_root', cloneNodeId: root.id, masterNodeId: PLAN.masterNodeId, detail: { width: root.width, height: root.height } });
 }
 // Traslaciones ABSOLUTAS: posición en la maestra + desplazamiento del bloque (idempotente al reaplicar).
-var CHANGED = {};
-PLAN.effectResizes.forEach(function (e) { CHANGED[e.nodeId] = true; });
-PLAN.vectorEdits.forEach(function (e) { CHANGED[e.nodeId] = true; });
 for (var mi = 0; mi < PLAN.moves.length; mi++) {
   var mv = PLAN.moves[mi];
   for (var ni = 0; ni < mv.nodeIds.length; ni++) {
     var mNode = await figma.getNodeByIdAsync(mv.nodeIds[ni]);
     var node = onClone(mv.nodeIds[ni]);
     var before = { x: node.x, y: node.y };
-    if (mNode.type === 'GROUP') {
-      // La caja de un GROUP se deriva de sus hijos (cambia si se redimensiona o edita uno): se mide el desplazamiento
-      // sobre un descendiente de REFERENCIA que no se redimensiona ni se edita, y se traslada el grupo por la diferencia.
-      var ref = null;
-      var cands = mNode.findAll(function (d) { return d.type !== 'GROUP'; });
-      for (var ci = 0; ci < cands.length && !ref; ci++) if (!CHANGED[cands[ci].id]) ref = cands[ci];
-      if (!ref) throw new Error('PCB_GROUP_WITHOUT_REFERENCE ' + mNode.id);
-      var cRef = onClone(ref.id);
-      var ex = ref.absoluteTransform[0][2] - master.absoluteTransform[0][2] + mv.dx;
-      var ey = ref.absoluteTransform[1][2] - master.absoluteTransform[1][2] + mv.dy;
-      var gx = ex - (cRef.absoluteTransform[0][2] - root.absoluteTransform[0][2]);
-      var gy = ey - (cRef.absoluteTransform[1][2] - root.absoluteTransform[1][2]);
-      if (gx !== 0) node.x = node.x + gx;
-      if (gy !== 0) node.y = node.y + gy;
-    } else {
-      var tx0 = mNode.x + mv.dx, ty0 = mNode.y + mv.dy;
-      if (node.x !== tx0) node.x = tx0;
-      if (node.y !== ty0) node.y = ty0;
-    }
+    var tx0 = mNode.x + mv.dx, ty0 = mNode.y + mv.dy;
+    if (node.x !== tx0) node.x = tx0;
+    if (node.y !== ty0) node.y = ty0;
     applied.push({ op: 'translate', cloneNodeId: node.id, masterNodeId: mv.nodeIds[ni], detail: { unitId: mv.unitId, dx: mv.dx, dy: mv.dy, before: before, after: { x: node.x, y: node.y } } });
   }
 }
@@ -261,30 +198,3 @@ return {
   idMap: idMap, fonts: fonts, applied: applied,
   master: { width: master.width, height: master.height, childCount: master.children.length, name: master.name }
 };
-`;
-
-export function buildAdaptScript(plan: DemoPlan, out: AdaptOptions): string {
-  const planData = {
-    masterNodeId: plan.masterNodeId,
-    masterName: plan.masterName,
-    masterSize: plan.masterSize,
-    target: { width: plan.target.width, height: plan.target.height },
-    moves: plan.moves.map((m) => ({ unitId: m.unitId, nodeIds: m.nodeIds, dx: m.dx, dy: m.dy })),
-    effectResizes: plan.effectResizes,
-    vectorEdits: plan.vectorEdits ?? [],
-  };
-  const mode = out.mode ?? 'create';
-  if (mode === 'patch' && !out.existingCloneId) throw new Error('patch requiere existingCloneId');
-  const code = [
-    `var PLAN = ${JSON.stringify(planData)};`,
-    `var OUT = ${JSON.stringify({ sectionName: out.sectionName, cloneName: out.cloneName, gapFromContentPx: out.gapFromContentPx, existingCloneId: out.existingCloneId ?? null })};`,
-    `var MODE = ${JSON.stringify(mode)};`,
-    `var SCRIPT_VERSION = ${JSON.stringify(ADAPT_SCRIPT_VERSION)};`,
-    // El plan solo traslada textos (el plan rechaza redimensionar texto): no hace falta cargar sus fuentes.
-    `var FONT_REQUIRED = false;`,
-    BODY,
-  ].join('\n');
-  const v = staticAdaptViolations(code);
-  if (v.length > 0) throw new Error(`El script de adaptación contiene operaciones prohibidas: ${v.join(', ')}`);
-  return code;
-}

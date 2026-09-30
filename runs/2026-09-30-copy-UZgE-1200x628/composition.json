@@ -1,0 +1,164 @@
+{
+  "schema": "pcb.demo-composition.v1",
+  "label": "Prueba interna 1200×628 a partir de 1:537 (composición específica de esta pieza y destino)",
+  "masterNodeId": "1:537",
+  "masterSize": {
+    "width": 960,
+    "height": 1200
+  },
+  "target": {
+    "width": 1200,
+    "height": 628,
+    "name": "test_1200x628"
+  },
+  "safeArea": {
+    "kind": "internal_demo_rule",
+    "marginPx": 54,
+    "note": "Margen de 54 px declarado SOLO para esta prueba interna 1200×628; no es especificación oficial ni valor general."
+  },
+  "output": {
+    "sectionName": "PCB · Salida DEMO (no producción)",
+    "gapFromContentPx": 400
+  },
+  "units": [
+    {
+      "unitId": "logo",
+      "nodeIds": [
+        "1:553"
+      ],
+      "anchorNodeId": "1:553",
+      "to": {
+        "x": 54,
+        "y": 54
+      },
+      "why": "Esquina superior izquierda, alineado con el titular y la información complementaria."
+    },
+    {
+      "unitId": "message",
+      "nodeIds": [
+        "1:571",
+        "1:572"
+      ],
+      "anchorNodeId": "1:571",
+      "to": {
+        "x": 54,
+        "y": 124
+      },
+      "why": "Titular + importe como bloque rígido en la columna izquierda (el titular no puede estrecharse: «personalizado» ocupa ~717 px)."
+    },
+    {
+      "unitId": "photo",
+      "nodeIds": [
+        "1:539",
+        "1:542"
+      ],
+      "anchorNodeId": "1:539",
+      "to": {
+        "x": 600,
+        "y": 20
+      },
+      "why": "Foto con cinta+máscara (alineadas con los brazos) a la derecha; la cara queda completa y a la derecha del titular; se recortan el antebrazo derecho y el pie de la foto."
+    },
+    {
+      "unitId": "offer",
+      "nodeIds": [
+        "1:549",
+        "1:540"
+      ],
+      "anchorNodeId": "1:549",
+      "to": {
+        "x": 525,
+        "y": 424
+      },
+      "why": "Oferta blanca sobre la parte baja oscurecida de la foto, con su sombra de legibilidad; bajo la cara y el importe."
+    },
+    {
+      "unitId": "cta",
+      "nodeIds": [
+        "1:550"
+      ],
+      "anchorNodeId": "1:550",
+      "to": {
+        "x": 250,
+        "y": 450
+      },
+      "why": "CTA en la columna izquierda, bajo el importe (no cabe con la oferta en la altura disponible)."
+    },
+    {
+      "unitId": "info",
+      "nodeIds": [
+        "1:552"
+      ],
+      "anchorNodeId": "1:552",
+      "to": {
+        "x": 54,
+        "y": 552
+      },
+      "why": "Información complementaria abajo a la izquierda, en el borde de la zona de prueba."
+    }
+  ],
+  "effectResizes": [
+    {
+      "nodeId": "1:541",
+      "to": {
+        "x": -15,
+        "y": 250,
+        "width": 1230,
+        "height": 378
+      },
+      "why": "Oscurecimiento inferior a todo el ancho (también bajo la columna izquierda: fondo de la información complementaria clara) y más corto para no oscurecer el titular."
+    },
+    {
+      "nodeId": "1:544",
+      "to": {
+        "x": 896.9928894042969,
+        "y": 4.0001220703125,
+        "width": 1,
+        "height": 343
+      },
+      "why": "Forma rectangular de la máscara de la cinta: su borde izquierdo cortaba la cinta en vertical (detrás del titular en x≈451 y, al probar x=745, sobre la manga). Se recoge hasta su borde derecho (1 px): la cinta solo asoma entre brazo y pelo y tras la mano, como en la maestra. Solo OCULTA decoración; no revela nada."
+    }
+  ],
+  "vectorEdits": [],
+  "importantNodeIds": [
+    "1:553",
+    "1:571",
+    "1:572",
+    "1:549",
+    "1:550",
+    "1:551",
+    "1:552"
+  ],
+  "sizeLockedNodeIds": [
+    "1:553"
+  ],
+  "protectedRegions": [
+    {
+      "nodeId": "1:539",
+      "rect": {
+        "x": 370,
+        "y": 0,
+        "width": 200,
+        "height": 200
+      },
+      "purpose": "Cabeza y cara de la persona (región declarada por el agente a partir de la captura)"
+    }
+  ],
+  "mustCoverWidthNodeIds": [],
+  "mustCoverEdges": [
+    {
+      "nodeId": "1:539",
+      "edges": [
+        "right"
+      ]
+    },
+    {
+      "nodeId": "1:541",
+      "edges": [
+        "left",
+        "right",
+        "bottom"
+      ]
+    }
+  ]
+}

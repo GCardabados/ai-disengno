@@ -1,0 +1,19 @@
+{
+  "schema": "pcb.demo-acceptance.v1",
+  "acceptedBy": "Gabriel Cardaba (gabriel.cardaba@es.wpp.com)",
+  "acceptedAt": "2026-09-30T13:58:48.859Z",
+  "scope": "Revisión humana del resultado actual de la DEMO 1080×1080 (clon 2009:122) de la pieza 960x1200_Taxdown_SVA2, solo en esta versión. No implica aprobación general de otras adaptaciones ni autoriza su publicación.",
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "cloneId": "2009:122",
+  "target": {
+    "width": 1080,
+    "height": 1080
+  },
+  "cloneSnapshotSha256": "sha256:267f6661c9e63d89d22945944cf565c635cc9639d5c39d78aa2fe41faa6b1b0f",
+  "cloneFingerprint": "sha256:988989a3a460ed97765a7fb158c8d30f5f6c816ea23d78d1f0802f37e1aef812",
+  "compositionSha256": "sha256:00edb29fa22207568401194aee3e5d31e9acb1d538a0f8e261031c1e5bdee8b8",
+  "planSha256": "sha256:63753b24f786d643c36b528d316f336a335b7643baeb38d07c209b40fc360a3f",
+  "checksSha256": "sha256:3deef3a9b19af176df4921580cfaab2fa077b4d8e8067719ffed54dda4729dbb",
+  "checksAggregate": "needs_review",
+  "notes": "Aceptación comunicada en la conversación tras revisar la prueba."
+}

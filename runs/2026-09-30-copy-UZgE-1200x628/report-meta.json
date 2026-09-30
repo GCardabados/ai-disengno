@@ -1,0 +1,11 @@
+{
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "screenshotPath": "runs/2026-09-30-copy-UZgE-1200x628/evidence/demo-2048-121-v3.png",
+  "designerDecisions": [
+    "Cinta en 1200×628: (a) ocultar los dos fragmentos que quedan (sin cinta en este formato), (b) rediseñar su trazado para este formato, o (c) aceptar los fragmentos actuales.",
+    "Composición horizontal nueva (no derivada del cuadrado): titular y logo a la izquierda, foto a la derecha desde x=600, CTA a la izquierda y oferta a la derecha en la franja inferior.",
+    "Recorte de la foto: antebrazo derecho y parte baja fuera de cuadro; cara completa.",
+    "Degradado de oscurecimiento 1:541 redimensionado a 1230×378 (efecto no-contenido).",
+    "Margen de 54 px como regla interna SOLO de esta prueba (internal_demo_rule); no es una especificación oficial de 1200×628."
+  ]
+}

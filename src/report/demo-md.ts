@@ -1,5 +1,5 @@
 // Informe breve de la adaptación DEMO. Los textos y nombres de Figma son datos: se escapan siempre.
-import type { DemoComposition } from '../contracts/demo.ts';
+import { safeAreaLabel, type DemoComposition } from '../contracts/demo.ts';
 import type { DemoCheckReport } from '../demo/check.ts';
 import { untrustedInline as code } from './untrusted.ts';
 
@@ -25,7 +25,7 @@ export function renderDemoReport(c: DemoComposition, rep: DemoCheckReport, meta:
   L.push(`- Frame creado: ${code(meta.cloneName)} (${code(meta.cloneId)}) → ${link}`);
   L.push(`- Sección de salida: ${code(meta.sectionId)}`);
   L.push(`- Maestra: ${code(c.masterNodeId)} (${c.masterSize.width}×${c.masterSize.height})`);
-  L.push(`- Zona interna de prueba: ${c.safeArea.marginPx} px por lado — ${c.safeArea.note}`);
+  L.push(`- Zona segura: ${safeAreaLabel(c)}`);
   if (meta.screenshotPath) L.push(`- Captura: ${code(meta.screenshotPath)}`);
   L.push(`- Fuentes (nunca se sustituyen; ✗ = no cargable por el plugin en este entorno): ${meta.fonts.map((f) => `${f.family} ${f.style} ${f.loaded ? '✓' : '✗'}`).join(' · ')}. Carga exigida por las operaciones: ${meta.fonts.some((f) => f.requiredForOps) ? 'sí' : 'no (solo traslaciones de texto)'}.`);
   L.push('');

@@ -1,0 +1,12 @@
+{
+  "status": "needs_review",
+  "findings": [
+    { "code": "RIBBON_FRAGMENTS", "severity": "warning", "nodeIds": ["1:548", "2048:134"], "message": "Revisión visual del agente sobre evidence/demo-2048-121-v3.png: la cinta ya no muestra cortes rectos, pero quedan dos fragmentos rosas sueltos (junto al pelo, x≈890 y≈95, y junto a la mano, x≈1150 y≈170), vistos a través de las formas de máscara 1:545/1:546. El motivo de la cinta no sobrevive al recorte horizontal con ediciones mínimas. Decisión de diseño pendiente." },
+    { "code": "PHOTO_LEFT_SEAM", "severity": "warning", "nodeIds": ["1:539", "2048:125"], "message": "La foto empieza en x=600; su borde izquierdo queda suavizado por el degradado, pero se nota la transición bajo la oferta." },
+    { "code": "PHOTO_CROPPED_LANDSCAPE", "severity": "warning", "nodeIds": ["1:539"], "message": "Formato horizontal: se recorta el antebrazo derecho y la parte baja de la persona. Cara completa y fuera de las cajas de texto (región protegida)." },
+    { "code": "HEADLINE_NEAR_SUBJECT", "severity": "info", "nodeIds": ["1:571", "2048:157"], "message": "\"personalizado\" termina cerca de la manga (≈20 px). No la toca." },
+    { "code": "CTA_OFFER_ADJACENT", "severity": "info", "nodeIds": ["1:550", "1:549"], "message": "CTA a la izquierda y oferta a la derecha en la misma franja; separación ≈8 px entre la caja del botón y la de la oferta. Composición nueva para este formato, no presente en la maestra." },
+    { "code": "GRADIENT_RESHAPED", "severity": "info", "nodeIds": ["1:541", "2048:127"], "message": "Degradado de oscurecimiento (efecto no-contenido) redimensionado a 1230×378 desde y=250 para cubrir el ancho y el pie." },
+    { "code": "FONT_NOT_LOADABLE_IN_ENV", "severity": "warning", "nodeIds": ["2048:137", "2048:138", "2048:157", "2048:158"], "message": "\"Mutualidad\" no es cargable por el plugin en esta copia; el render muestra la tipografía correcta y no se sustituyó ninguna fuente." }
+  ]
+}

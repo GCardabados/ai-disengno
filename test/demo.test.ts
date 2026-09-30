@@ -41,6 +41,7 @@ function composition(over: Partial<DemoComposition> = {}): DemoComposition {
     sizeLockedNodeIds: ['10:3'],
     protectedRegions: [{ nodeId: '10:11', rect: { x: 0, y: 0, width: 460, height: 200 }, purpose: 'MOCK producto' }],
     mustCoverWidthNodeIds: ['10:2'],
+    mustCoverEdges: [],
     ...over,
   };
 }
@@ -303,4 +304,22 @@ test('MOCK [script]: el modo patch actualiza el clon existente sin clonar ni bor
   assert.ok(code.includes("if (MODE === 'create') {\n  clone.remove();"), 'solo en create se descarta el clon propio');
   assert.deepEqual(staticAdaptViolations(code), []);
   assert.throws(() => buildAdaptScript(plan, { sectionName: 'x', cloneName: 'y', gapFromContentPx: 0, mode: 'patch' }), /existingCloneId/);
+});
+
+test('MOCK [plan]: un efecto dentro de un bloque trasladado se puede redimensionar (coordenadas finales); el propio nodo trasladado no', async () => {
+  const s = await snap(baseMasterSpec());
+  const inMoved = composition({ units: [{ unitId: 'claim', nodeIds: ['10:15'], anchorNodeId: '10:15', to: { x: 60, y: 780 }, why: '' }],
+    effectResizes: [{ nodeId: '10:16', to: { x: 60, y: 780, width: 10, height: 60 }, why: '' }] });
+  // 10:16 es VECTOR: se rechaza por tipo, no por estar dentro de un bloque trasladado.
+  const r = buildDemoPlan(s, inMoved);
+  assert.ok(!r.ok && r.issues.every((i) => !/trasladarse y redimensionarse/.test(i)));
+  const self = buildDemoPlan(s, composition({ effectResizes: [{ nodeId: '10:11', to: { x: 0, y: 0, width: 10, height: 10 }, why: '' }] }));
+  assert.ok(!self.ok && self.issues.some((i) => /trasladarse y redimensionarse|tiene imagen/.test(i)));
+});
+
+test('[script v6]: la traslación de un GROUP se mide sobre un descendiente de referencia no modificado', async () => {
+  const { plan } = await scenario();
+  const code = buildAdaptScript(plan, { sectionName: 'S', cloneName: 'C', gapFromContentPx: 0 });
+  assert.ok(code.includes("if (mNode.type === 'GROUP')") && code.includes('PCB_GROUP_WITHOUT_REFERENCE'));
+  assert.ok(code.includes('if (!CHANGED[cands[ci].id]) ref = cands[ci];'), 'la referencia excluye nodos redimensionados o editados');
 });

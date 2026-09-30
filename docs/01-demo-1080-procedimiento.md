@@ -4,8 +4,12 @@ Estado del resultado: **DEMO pendiente de revisión humana** (no es aprobación 
 Las rutas `runs/…` contienen evidencia y datos de la pieza; el código está en `src/`.
 
 Cada llamada a Figma se hace con `use_figma` enviando **exactamente** el `code` del JSON que genera el CLI, y cada
-respuesta original se guarda sin transcribir (`runs/*/extract.py` la extrae del registro de la sesión y verifica que
-el SHA-256 del script enviado coincide con el generado).
+respuesta original se guarda sin transcribir: `python3 scripts/extract-tool-calls.py --out DIR --prefix "<description>"
+--label L [--set-id S] [--last N]` la extrae del registro de la sesión y `node src/cli.ts verify-sent --request … --calls
+DIR/calls-L.json` comprueba que el SHA-256 del script enviado coincide con el generado. (Las copias antiguas
+`runs/2026-09-30-copy-UZgE/extract.py` y `compare.ts` se conservan solo como evidencia; no se usan.)
+
+Flujo general e invocación como skill: `.claude/skills/adapt-master-creative/SKILL.md`.
 
 ## 0. Requisitos
 
@@ -29,8 +33,9 @@ node src/cli.ts ingest --raw … (una por fragmento) --file-key K --node-id MAES
 node src/cli.ts inventory --snapshot R/ingest/snapshot.json --config config/example.project.json --out R/inventory
 ```
 
-Si la maestra es una copia de otra ya inventariada, comparar sin IDs (`runs/2026-09-30-copy-UZgE/compare.ts`) y
-traducir composición y propuestas por correspondencia en preorden.
+Si la maestra es la misma ya inventariada: `read-request --mode node-digests` + `digests-compare` contra el inventario
+(igual ⇒ se reutilizan inventario y propuestas). Si es una copia en otro archivo: `compare-masters --snapshot A
+--current-snapshot B --out id-map.json` y `remap --id-map … --composition|--proposals … --out …`.
 
 ## 3. Propuestas del agente (roles y agrupaciones)
 
@@ -44,9 +49,18 @@ node src/cli.ts proposals-check --manifest R/inventory/manifest.draft.json --pro
 node src/cli.ts demo-plan --snapshot R/ingest/snapshot.json --composition R/composition.json --out R/plan.json
 # Primera vez (crea sección de salida + clon):
 node src/cli.ts adapt-request --plan R/plan.json --composition R/composition.json --file-key K --clone-name "DEMO_1080x1080 · … · pendiente de revisión humana" --out R/adapt-request.json
-# Actualizar un clon existente SIN duplicar la salida (solo ediciones vectoriales de decoración):
+# Actualizar un clon existente SIN duplicar la salida (reaplica el plan completo, idempotente):
 node src/cli.ts adapt-request … --mode patch --existing-clone-id CLON --out R/patch-request.json
 ```
+
+Antes de escribir: `node src/cli.ts precheck --plan R/plan.json --composition R/composition.json --snapshot R/ingest/snapshot.json`
+(predice zona segura, recorte, cobertura, regiones protegidas y solapes de texto sin tocar Figma) y
+`layout-summary --snapshot …` para ver las cajas de la maestra al componer.
+
+Script v6: los movimientos son absolutos (posición en la maestra + dx/dy), así que reaplicar el plan no acumula
+desplazamientos. Un GROUP se mueve midiendo un descendiente de referencia que no cambia (ni redimensionado de efecto ni
+edición vectorial): en v5 se medía el propio grupo y, tras redimensionar una máscara interior, el grupo se desplazaba
+(−294, −141). Varios clones comparten la sección de salida; los nuevos se colocan a la derecha de los existentes.
 
 Antes de un `patch`: comprobar que nadie tocó el clon desde la última relectura:
 
@@ -83,3 +97,14 @@ node src/cli.ts demo-check --snapshot R/ingest/snapshot.json --clone-snapshot R/
 | Roles propuestos (p. ej. 1:552 como información complementaria) | Validadores deterministas, sonda vectorial, informe |
 
 Lo específico es DATO revisable; ninguna regla de la pieza está codificada en `src/`.
+
+## 7. Reutilización: misma maestra a 1200×628 (prueba interna)
+
+Datos en `runs/2026-09-30-copy-UZgE-1200x628/` (`job.json` lista ambos destinos; el 1080 sigue `human_accepted`).
+
+- Reutilizado: descubrimiento, inventario y propuestas del 1080 (maestra verificada idéntica con `node-digests`),
+  todo el código de `src/`, el script v6 y los validadores.
+- Decidido para el formato: composición nueva (6 bloques: logo, titular, foto+cinta, oferta, CTA, información), dos
+  redimensionados de efecto (degradado 1:541 y forma de máscara 1:544), región protegida de la cara, bordes a cubrir y
+  margen de 54 px declarado solo para esta prueba. No se reutilizaron desplazamientos ni ediciones vectoriales del 1080.
+- Pendiente: la cinta deja dos fragmentos sueltos en horizontal (decisión de diseño).

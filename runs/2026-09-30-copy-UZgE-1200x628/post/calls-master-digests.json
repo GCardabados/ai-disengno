@@ -1,0 +1,12 @@
+{
+  "transcript": "4ead3c5c-3228-4830-b470-8763aad6ef39.jsonl",
+  "calls": [
+    {
+      "toolUseId": "toolu_01HVphAnA8NRsVhc9ggmWEHr",
+      "scriptSha256": "dc69f875aa3b2f472bf27c023d5997caaeedab2693c1eaf376a86545f393341c",
+      "raw": "raw-response-master-digests-9ggmWEHr.txt",
+      "isError": false,
+      "rawBytes": 1615
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "transcript": "4ead3c5c-3228-4830-b470-8763aad6ef39.jsonl",
+  "calls": [
+    {
+      "toolUseId": "toolu_01ENsUaZLnjPDqQe92ZPgXC6",
+      "scriptSha256": "f8daec42faac4508ee4243a2b3a815e4f36aa918069d959feeba72339e92964d",
+      "raw": "raw-response-patch-92ZPgXC6.txt",
+      "isError": false,
+      "rawBytes": 4577
+    },
+    {
+      "toolUseId": "toolu_013JzzrzujtU1faUwHBxpB1M",
+      "scriptSha256": "5e4ff77449640ce8dfcb87de63696423d69aa3c2a49a1f18ee41b976546ee80f",
+      "raw": "raw-response-patch-wHBxpB1M.txt",
+      "isError": false,
+      "rawBytes": 4578
+    },
+    {
+      "toolUseId": "toolu_01NcrJt75BGpU6rxkirY2ZKy",
+      "scriptSha256": "1c1e46746de3ca5f3956dcf582ae5ce97dc254918925b4acddf4c5dd2838d003",
+      "raw": "raw-response-patch-kirY2ZKy.txt",
+      "isError": false,
+      "rawBytes": 4561
+    }
+  ]
+}

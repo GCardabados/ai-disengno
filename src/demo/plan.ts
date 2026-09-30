@@ -88,7 +88,9 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
     if (n.text) issues.push(`${e.nodeId}: es texto`);
     if (n.rotation !== 0) issues.push(`${e.nodeId}: rotado`);
     if (locked.has(e.nodeId) || important.has(e.nodeId)) issues.push(`${e.nodeId}: bloqueado o importante; no se redimensiona`);
-    if (moved.has(e.nodeId) || ancestors(e.nodeId).some((a) => moved.has(a))) issues.push(`${e.nodeId}: no puede trasladarse y redimensionarse a la vez`);
+    // El destino del efecto se da en coordenadas FINALES del frame; puede estar dentro de un bloque trasladado
+    // (se aplica después de las traslaciones), pero no ser él mismo un nodo trasladado.
+    if (moved.has(e.nodeId)) issues.push(`${e.nodeId}: no puede trasladarse y redimensionarse a la vez`);
     if (!coordsRelativeToRoot(e.nodeId)) issues.push(`${e.nodeId}: dentro de un frame intermedio`);
     effectResizes.push({ nodeId: e.nodeId, ...e.to });
   }
@@ -104,7 +106,7 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
     if (v.purpose === 'decoration' && inMask) issues.push(`${v.nodeId}: está dentro de una máscara; declararlo como decoration_mask`);
     if (v.vertices.length === 0 && v.tangents.length === 0) issues.push(`${v.nodeId}: edición vacía`);
   }
-  for (const id of [...locked, ...important, ...c.mustCoverWidthNodeIds, ...c.protectedRegions.map((p) => p.nodeId)]) {
+  for (const id of [...locked, ...important, ...c.mustCoverWidthNodeIds, ...c.mustCoverEdges.map((e) => e.nodeId), ...c.protectedRegions.map((p) => p.nodeId)]) {
     if (!byId.has(id)) issues.push(`nodo desconocido en la composición: ${id}`);
   }
   // El tamaño bloqueado incluye a los descendientes (disposición interna del logo).
@@ -142,7 +144,9 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
     // Un GROUP no tiene geometría propia: su caja se deriva SIEMPRE de sus hijos (que se validan uno a uno, y
     // cuyo desplazamiento prueba el del grupo), aunque el grupo sea el ancla de un bloque trasladado.
     if (n.type === 'GROUP') {
-      expected[n.id] = { rect: null, ...d, resized: false, derived: true };
+      // Caja PREVISTA (maestra + desplazamiento) solo como predicción para precheck; no se valida en el clon.
+      const gr = relRect(n, root);
+      expected[n.id] = { rect: gr ? { x: gr.x + d.dx, y: gr.y + d.dy, width: gr.width, height: gr.height } : null, ...d, resized: false, derived: true };
       continue;
     }
     const rr = relRect(n, root);

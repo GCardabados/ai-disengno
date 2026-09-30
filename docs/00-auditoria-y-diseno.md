@@ -414,6 +414,16 @@ Necesarias antes de H2 y siguientes:
 - **Validador de GROUP:** su caja se deriva siempre de los hijos; rotación/escala, opacidad, fusión, máscara, efectos, recorte y modo de maquetación del contenedor se siguen comprobando. Nueva comprobación `vector_edits` con sondas antes/después.
 - **Taxonomía:** rol propuesto `supplementary_info` («Más información…»); no hay evidencia de que sea texto legal.
 - **Resultado:** deterministas 9/9 superadas; revisión visual `needs_review`. Procedimiento: `docs/01-demo-1080-procedimiento.md`.
+- **Aceptación humana (2026-09-30):** registrada en `runs/2026-09-30-copy-UZgE/fix-ribbon/human-acceptance.json` (`pcb.demo-acceptance.v1`), ligada por hashes al clon `2009:122`, su composición, plan y comprobaciones. Alcance: esta pieza y versión; no implica aprobación general ni publicación.
+
+#### 5.6.3 Flujo reutilizable y prueba 1200×628 (2026-09-30)
+
+- **Skill:** `.claude/skills/adapt-master-creative/SKILL.md`. Orquesta comandos existentes; no añade arquitectura.
+- **Utilidades movidas de `runs/` a código:** `src/demo/tools.ts` (`compareMasters`, `remapNodeIds`/`remapProposals`, `layoutSummary`, `precheckPlan`, `buildAcceptance`) con los comandos `compare-masters`, `remap`, `layout-summary`, `precheck`, `record-acceptance`, `job-check`, `verify-sent`; `scripts/extract-tool-calls.py` sustituye a las copias por ejecución.
+- **Configuración:** `pcb.adapt-job.v1` (maestra y destinos); `safeArea` con procedencia (`internal_demo_rule` | `safe_zone_rule`); `mustCoverEdges`.
+- **Script v6:** movimientos absolutos e idempotentes; los GROUP se miden en un descendiente de referencia no modificado. Motivo: en v5, reaplicar el plan tras redimensionar una forma de máscara interior desplazó el grupo (−294, −141) en el clon de prueba `2048:121`; se detectó en la captura y se restauró con v6. El clon aceptado `2009:122` no se tocó.
+- **Plan:** se permite redimensionar un efecto dentro de un bloque movido (sus coordenadas son finales), pero no mover el propio nodo del efecto.
+- **Resultado 1200×628:** clon `2048:121` en la misma sección de salida. Deterministas 8/8 superadas, maestra intacta por hashes por nodo; revisión visual `needs_review`: quedan dos fragmentos de la cinta en el recorte horizontal (decisión de diseño), junto con la costura izquierda de la foto y el recorte del antebrazo. Margen de 54 px declarado solo para esta prueba.
 
 ## 6. Limitaciones declaradas de H1
 

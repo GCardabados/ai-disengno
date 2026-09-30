@@ -114,11 +114,18 @@ export const DemoCompositionSchema = z.strictObject({
   masterNodeId: z.string(),
   masterSize: z.strictObject({ width: z.number(), height: z.number() }),
   target: z.strictObject({ width: z.number().int().positive(), height: z.number().int().positive(), name: z.string() }),
-  safeArea: z.strictObject({
-    kind: z.literal('internal_demo_rule'),
-    marginPx: z.number().min(0),
-    note: z.string(),
-  }),
+  /**
+   * Zona segura del destino, SIEMPRE con su procedencia. 'internal_demo_rule' = margen de prueba declarado para una
+   * ejecución concreta (no es una especificación); 'safe_zone_rule' = rectángulo de una regla resuelta con
+   * resolveSafeZone (src/contracts/destination.ts), con su procedencia y aprobación.
+   */
+  safeArea: z.discriminatedUnion('kind', [
+    z.strictObject({ kind: z.literal('internal_demo_rule'), marginPx: z.number().min(0), note: z.string() }),
+    z.strictObject({
+      kind: z.literal('safe_zone_rule'), ruleId: z.string(), version: z.string(),
+      provenance: z.enum(['platform_official', 'client', 'internal']), allowed: RectSchema, note: z.string(),
+    }),
+  ]),
   output: z.strictObject({ sectionName: z.string(), gapFromContentPx: z.number().min(0) }),
   units: z.array(MoveUnitSchema),
   effectResizes: z.array(EffectResizeSchema),
@@ -131,8 +138,68 @@ export const DemoCompositionSchema = z.strictObject({
   protectedRegions: z.array(z.strictObject({ nodeId: z.string(), rect: RectSchema, purpose: z.string() })),
   /** Nodos que deben cubrir el ancho completo del destino (fotografía y degradado de fondo). */
   mustCoverWidthNodeIds: z.array(z.string()),
+  /** Cobertura por bordes concretos (p. ej. una foto a sangre solo por la derecha y abajo en un formato horizontal). */
+  mustCoverEdges: z.array(z.strictObject({ nodeId: z.string(), edges: z.array(z.enum(['left', 'right', 'top', 'bottom'])).min(1) })).default([]),
 });
 export type DemoComposition = z.infer<typeof DemoCompositionSchema>;
+
+/** Rectángulo de la zona segura en coordenadas del destino, según su procedencia. */
+export function safeRectOf(c: Pick<DemoComposition, 'safeArea' | 'target'>): { x: number; y: number; width: number; height: number } {
+  const a = c.safeArea;
+  if (a.kind === 'safe_zone_rule') return a.allowed;
+  return { x: a.marginPx, y: a.marginPx, width: c.target.width - 2 * a.marginPx, height: c.target.height - 2 * a.marginPx };
+}
+export function safeAreaLabel(c: Pick<DemoComposition, 'safeArea'>): string {
+  const a = c.safeArea;
+  return a.kind === 'safe_zone_rule'
+    ? `regla ${a.ruleId}@${a.version} (${a.provenance}) — ${a.note}`
+    : `margen de prueba de ${a.marginPx} px por lado (regla interna de esta ejecución, no especificación) — ${a.note}`;
+}
+
+// ---------- Trabajo de adaptación: maestra y destinos (configuración, no código) ----------
+
+export const ADAPT_JOB_SCHEMA_ID = 'pcb.adapt-job.v1';
+export const AdaptJobSchema = z.strictObject({
+  schema: z.literal(ADAPT_JOB_SCHEMA_ID),
+  fileKey: z.string().regex(/^[0-9a-zA-Z]{22,128}$/),
+  entryNodeId: z.string(),
+  targetName: z.string(),
+  /** Configuración del proyecto (taxonomía, restricciones por rol, tolerancias). */
+  configPath: z.string(),
+  destinations: z.array(z.strictObject({
+    id: z.string().min(1),
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+    /** Composición específica de la pieza para este destino (dato revisable). */
+    compositionPath: z.string(),
+    cloneName: z.string(),
+    status: z.enum(['draft', 'created', 'human_accepted']),
+  })).min(1),
+});
+export type AdaptJob = z.infer<typeof AdaptJobSchema>;
+
+// ---------- Aceptación humana de UN resultado concreto ----------
+
+export const DEMO_ACCEPTANCE_SCHEMA_ID = 'pcb.demo-acceptance.v1';
+export const DemoAcceptanceSchema = z.strictObject({
+  schema: z.literal(DEMO_ACCEPTANCE_SCHEMA_ID),
+  /** Nombre DECLARADO; no autentica a la persona. */
+  acceptedBy: z.string().min(1),
+  acceptedAt: z.string(),
+  scope: z.string().min(10),
+  fileKey: z.string(),
+  cloneId: z.string(),
+  target: z.strictObject({ width: z.number(), height: z.number() }),
+  /** La aceptación caduca si cambia cualquiera de estas huellas. */
+  cloneSnapshotSha256: z.string(),
+  cloneFingerprint: z.string(),
+  compositionSha256: z.string(),
+  planSha256: z.string(),
+  checksSha256: z.string(),
+  checksAggregate: z.string(),
+  notes: z.string().nullable(),
+});
+export type DemoAcceptance = z.infer<typeof DemoAcceptanceSchema>;
 
 // ---------- Resultado del script de escritura ----------
 

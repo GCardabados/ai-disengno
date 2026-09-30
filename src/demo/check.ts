@@ -1,7 +1,7 @@
 // Comprobaciones deterministas de la adaptación DEMO sobre la RELECTURA del clon (no sobre lo que el script dice
 // haber hecho). Cada comprobación declara qué demuestra y qué no. La revisión visual solo puede empeorar el estado.
 import type { MasterSnapshot, NodeSnapshot } from '../contracts/snapshot.ts';
-import type { DemoComposition } from '../contracts/demo.ts';
+import { safeAreaLabel, safeRectOf, type DemoComposition } from '../contracts/demo.ts';
 import type { Rect } from '../contracts/geometry.ts';
 import { aggregate, type Aggregate, type CheckStatus, type Finding, type ValidationResult } from '../contracts/validation.ts';
 import { canonicalize } from '../hash/canonical.ts';
@@ -167,18 +167,17 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
   // 6. Zona interna de prueba (regla de DEMO, no especificación oficial) y recortes por el borde del frame.
   {
     const f: Finding[] = [];
-    const m = c.safeArea.marginPx;
-    const safe: Rect = { x: m, y: m, width: c.target.width - 2 * m, height: c.target.height - 2 * m };
+    const safe: Rect = safeRectOf(c);
     const frame: Rect = { x: 0, y: 0, width: c.target.width, height: c.target.height };
     for (const id of c.importantNodeIds) {
       const cn = pair(id);
       const got = cn && cRoot ? relRect(cn, cRoot) : null;
       if (!got) { f.push({ code: 'NO_BOUNDS', severity: 'blocking', nodeIds: [id], message: 'Sin caja' }); continue; }
       if (!within(got, frame, tol)) f.push({ code: 'CLIPPED_BY_FRAME', severity: 'blocking', nodeIds: [id], measured: got, message: 'Sale del frame' });
-      else if (!within(got, safe, tol)) f.push({ code: 'OUTSIDE_DEMO_SAFE_AREA', severity: 'blocking', nodeIds: [id], measured: got, expected: safe, message: `Fuera del margen interno de ${m} px` });
+      else if (!within(got, safe, tol)) f.push({ code: 'OUTSIDE_DEMO_SAFE_AREA', severity: 'blocking', nodeIds: [id], measured: got, expected: safe, message: `Fuera de la zona segura (${safeAreaLabel(c)})` });
       if (cn && cn.text && cn.absoluteRenderBounds === null) f.push({ code: 'TEXT_NOT_RENDERED', severity: 'blocking', nodeIds: [id], message: 'El texto no tiene render bounds' });
     }
-    results.push(r('demo_safe_area', statusOf(f), `Cajas completas de los elementos importantes dentro del frame y del margen interno de ${m} px (regla interna de demo). Las cajas de texto no prueban ausencia de truncamiento visual.`, f));
+    results.push(r('demo_safe_area', statusOf(f), `Cajas completas de los elementos importantes dentro del frame y de la zona segura: ${safeAreaLabel(c)}. Las cajas de texto no prueban ausencia de truncamiento visual.`, f));
   }
 
   // 7. Cobertura de fondo: foto y degradado cubren todo el ancho; regiones protegidas de la foto visibles y sin textos encima.
@@ -190,6 +189,15 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       if (!got) { f.push({ code: 'NO_BOUNDS', severity: 'blocking', nodeIds: [id], message: 'Sin caja' }); continue; }
       if (got.x > tol || got.x + got.width < c.target.width - tol) f.push({ code: 'BACKGROUND_STRIP_UNCOVERED', severity: 'blocking', nodeIds: [id], measured: got, message: 'Queda una franja lateral sin cubrir' });
       if (got.y + got.height < c.target.height - tol) f.push({ code: 'BACKGROUND_BOTTOM_UNCOVERED', severity: 'blocking', nodeIds: [id], measured: got, message: 'No llega al borde inferior' });
+    }
+    for (const ce of c.mustCoverEdges) {
+      const cn = pair(ce.nodeId);
+      const got = cn && cRoot ? relRect(cn, cRoot) : null;
+      if (!got) { f.push({ code: 'NO_BOUNDS', severity: 'blocking', nodeIds: [ce.nodeId], message: 'Sin caja' }); continue; }
+      const miss = ce.edges.filter((e) =>
+        (e === 'left' && got.x > tol) || (e === 'top' && got.y > tol) ||
+        (e === 'right' && got.x + got.width < c.target.width - tol) || (e === 'bottom' && got.y + got.height < c.target.height - tol));
+      if (miss.length > 0) f.push({ code: 'EDGE_UNCOVERED', severity: 'blocking', nodeIds: [ce.nodeId], measured: got, message: `No llega al borde: ${miss.join(', ')}` });
     }
     const textRects = master.nodes.filter((n) => n.text).map((n) => ({ id: n.id, rect: pair(n.id) && cRoot ? relRect(pair(n.id)!, cRoot) : null }));
     for (const pr of c.protectedRegions) {

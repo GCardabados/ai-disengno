@@ -1,0 +1,179 @@
+{
+  "results": [
+    {
+      "validatorId": "target_dimensions",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Ancho/alto exactos del frame destino y recorte activo."
+    },
+    {
+      "validatorId": "nodes_preserved",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Mismo conjunto de nodos, tipos, nombres, padres y orden de apilado (por correspondencia de la relectura)."
+    },
+    {
+      "validatorId": "content_preserved",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Igualdad exacta de caracteres, segmentos de estilo (fuente, cuerpo, interlineado, color), pinturas, efectos, visibilidad, opacidad, máscaras y geometría vectorial. No evalúa el render."
+    },
+    {
+      "validatorId": "allowed_operations",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Posición de cada caja respecto al plan (±0.01 px), tamaño exacto de todo lo que solo se traslada y parte lineal exacta de cada transformación."
+    },
+    {
+      "validatorId": "logo_locked",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Ancho/alto exactos, transformaciones lineales exactas, recorte y posición de cada nodo respecto al bloque del logo. El render del logo lo confirma la captura."
+    },
+    {
+      "validatorId": "demo_safe_area",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cajas completas de los elementos importantes dentro del frame y de la zona segura: margen de prueba de 54 px por lado (regla interna de esta ejecución, no especificación) — Margen de 54 px declarado SOLO para esta prueba interna 1200×628; no es especificación oficial ni valor general.. Las cajas de texto no prueban ausencia de truncamiento visual."
+    },
+    {
+      "validatorId": "background_coverage",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cobertura por cajas del ancho y del borde inferior; regiones protegidas (declaradas por el agente) completas y sin cajas de texto encima. No mide píxeles."
+    },
+    {
+      "validatorId": "master_unchanged",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Hash exacto de cada registro de la maestra releída tras escribir frente al payload del inventario."
+    },
+    {
+      "validatorId": "visual_agent_review",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "visual",
+      "status": "needs_review",
+      "findings": [
+        {
+          "code": "RIBBON_FRAGMENTS",
+          "severity": "warning",
+          "nodeIds": [
+            "1:548",
+            "2048:134"
+          ],
+          "message": "Revisión visual del agente sobre evidence/demo-2048-121-v3.png: la cinta ya no muestra cortes rectos, pero quedan dos fragmentos rosas sueltos (junto al pelo, x≈890 y≈95, y junto a la mano, x≈1150 y≈170), vistos a través de las formas de máscara 1:545/1:546. El motivo de la cinta no sobrevive al recorte horizontal con ediciones mínimas. Decisión de diseño pendiente."
+        },
+        {
+          "code": "PHOTO_LEFT_SEAM",
+          "severity": "warning",
+          "nodeIds": [
+            "1:539",
+            "2048:125"
+          ],
+          "message": "La foto empieza en x=600; su borde izquierdo queda suavizado por el degradado, pero se nota la transición bajo la oferta."
+        },
+        {
+          "code": "PHOTO_CROPPED_LANDSCAPE",
+          "severity": "warning",
+          "nodeIds": [
+            "1:539"
+          ],
+          "message": "Formato horizontal: se recorta el antebrazo derecho y la parte baja de la persona. Cara completa y fuera de las cajas de texto (región protegida)."
+        },
+        {
+          "code": "HEADLINE_NEAR_SUBJECT",
+          "severity": "info",
+          "nodeIds": [
+            "1:571",
+            "2048:157"
+          ],
+          "message": "\"personalizado\" termina cerca de la manga (≈20 px). No la toca."
+        },
+        {
+          "code": "CTA_OFFER_ADJACENT",
+          "severity": "info",
+          "nodeIds": [
+            "1:550",
+            "1:549"
+          ],
+          "message": "CTA a la izquierda y oferta a la derecha en la misma franja; separación ≈8 px entre la caja del botón y la de la oferta. Composición nueva para este formato, no presente en la maestra."
+        },
+        {
+          "code": "GRADIENT_RESHAPED",
+          "severity": "info",
+          "nodeIds": [
+            "1:541",
+            "2048:127"
+          ],
+          "message": "Degradado de oscurecimiento (efecto no-contenido) redimensionado a 1230×378 desde y=250 para cubrir el ancho y el pie."
+        },
+        {
+          "code": "FONT_NOT_LOADABLE_IN_ENV",
+          "severity": "warning",
+          "nodeIds": [
+            "2048:137",
+            "2048:138",
+            "2048:157",
+            "2048:158"
+          ],
+          "message": "\"Mutualidad\" no es cargable por el plugin en esta copia; el render muestra la tipografía correcta y no se sustituyó ninguna fuente."
+        }
+      ],
+      "coverage": "Inspección visual del agente sobre una captura del clon. No sustituye la revisión de la diseñadora."
+    }
+  ],
+  "aggregate": {
+    "status": "needs_review",
+    "byStatus": {
+      "pass": [
+        "deterministic:target_dimensions@1",
+        "deterministic:nodes_preserved@1",
+        "deterministic:content_preserved@1",
+        "deterministic:allowed_operations@1",
+        "deterministic:logo_locked@1",
+        "deterministic:demo_safe_area@1",
+        "deterministic:background_coverage@1",
+        "deterministic:master_unchanged@1"
+      ],
+      "needs_review": [
+        "visual:visual_agent_review@1"
+      ],
+      "not_evaluable": [],
+      "fail": []
+    },
+    "autoApprovable": false,
+    "humanApprovable": true
+  },
+  "masterDigests": {
+    "equal": true,
+    "payloadEqual": true,
+    "changedNodeIds": [],
+    "missingNodeIds": [],
+    "addedNodeIds": []
+  }
+}

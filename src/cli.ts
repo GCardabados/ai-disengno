@@ -22,6 +22,9 @@ import { validateProposals } from './inventory/proposals.ts';
 import { buildDemoPlan, type DemoPlan } from './demo/plan.ts';
 import { buildAdaptScript, ADAPT_SCRIPT_VERSION } from './figma/adapt-script.ts';
 import { buildVectorProbeScript } from './figma/vector-probe.ts';
+import { AdaptJobSchema, DemoAcceptanceSchema } from './contracts/demo.ts';
+import { buildAcceptance, compareMasters, layoutSummary, precheckPlan, remapNodeIds, remapProposals } from './demo/tools.ts';
+import { sha256Hex } from './hash/canonical.ts';
 import { extractEnvelope } from './figma/ingest-envelope.ts';
 import { checkDemo } from './demo/check.ts';
 import { compareNodeDigests } from './figma/digests.ts';
@@ -42,7 +45,14 @@ const USAGE = `pcb <comando> [opciones]
                  (--by registra un nombre declarado; NO autentica a la persona)
   verify-master  --manifest F --approved-snapshot F --current-snapshot F
 
-  DEMO (primera adaptación; nada de esto es aprobación de producción):
+  ADAPTACIÓN (skill .claude/skills/adapt-master-creative; nada de esto es aprobación de producción):
+  job-check      --job F                                 Valida el trabajo (maestra, destinos, composiciones)
+  layout-summary --snapshot F [--depth N]                Cajas relativas al frame para componer un destino
+  precheck       --plan F --composition F --snapshot F   Predicción sobre el plan (sin tocar Figma)
+  compare-masters --snapshot A --current-snapshot B --out F   ¿Misma maestra en otro archivo? + correspondencia de ids
+  remap          --id-map F --composition F|--proposals F [--manifest F] --out F   Traduce ids con una correspondencia
+  verify-sent    --request F [--request F2 ...] --calls F   El script enviado == el generado (SHA-256)
+  record-acceptance --clone-snapshot F --composition F --plan F --checks F --by NOMBRE --scope TEXTO --file-key K --out F
   proposals-check --manifest F --proposals F --config F    Valida las propuestas del agente contra el borrador
   demo-plan      --snapshot F --composition F --out F      Plan exacto (traslaciones/efectos) y comprobación previa
   adapt-request  --plan F --composition F --file-key K --clone-name N [--mode patch --existing-clone-id ID] --out F
@@ -88,6 +98,14 @@ const opts = {
   'frame-id': { type: 'string' },
   'vector-before': { type: 'string' },
   'vector-after': { type: 'string' },
+  job: { type: 'string' },
+  depth: { type: 'string' },
+  'id-map': { type: 'string' },
+  request: { type: 'string', multiple: true },
+  calls: { type: 'string' },
+  checks: { type: 'string' },
+  scope: { type: 'string' },
+  notes: { type: 'string' },
 } as const;
 
 function need(v: string | undefined, name: string): string {
@@ -299,6 +317,80 @@ async function main(argv: string[]): Promise<number> {
           : `DEMO: clona ${plan.masterNodeId} en una sección de salida y adapta SOLO el clon a ${plan.target.width}×${plan.target.height}. La maestra no se modifica.`,
         code: codeText,
       });
+      return 0;
+    }
+    case 'job-check': {
+      const jobPath = need(a.job, 'job');
+      const job = parseOrThrow(AdaptJobSchema, await readJson(jobPath), 'job');
+      await loadConfig(resolve(jobPath, '..', job.configPath));
+      const issues: string[] = [];
+      for (const d of job.destinations) {
+        const cp = resolve(jobPath, '..', d.compositionPath);
+        try {
+          const comp = parseOrThrow(DemoCompositionSchema, await readJson(cp), d.compositionPath);
+          if (comp.target.width !== d.width || comp.target.height !== d.height) issues.push(`${d.id}: la composición es ${comp.target.width}×${comp.target.height}`);
+          console.log(`${d.id} ${d.width}×${d.height} · ${d.status} · ${comp.safeArea.kind} · ${comp.units.length} bloques, ${comp.effectResizes.length} efectos, ${comp.vectorEdits.length} ediciones vectoriales`);
+        } catch (e) {
+          issues.push(`${d.id}: ${(e as Error).message.split('\n')[0]}`);
+        }
+      }
+      if (issues.length) { console.error(issues.join('\n')); return 2; }
+      return 0;
+    }
+    case 'layout-summary': {
+      const snap = await loadSnapshot(need(a.snapshot, 'snapshot'));
+      for (const r of layoutSummary(snap, a.depth ? Number(a.depth) : 2)) {
+        const b = r.rect ? `${Math.round(r.rect.x)},${Math.round(r.rect.y)} ${Math.round(r.rect.width)}×${Math.round(r.rect.height)}` : '—';
+        console.log(`${'  '.repeat(r.depth)}${r.id.padEnd(9)} ${r.type.padEnd(10)} ${b.padEnd(24)} ${r.text ? 'T' : ' '}${r.image ? 'I' : ' '}${r.mask ? 'M' : ' '} ${JSON.stringify(r.name)}`);
+      }
+      return 0;
+    }
+    case 'precheck': {
+      const plan = (await readJson(need(a.plan, 'plan'))) as DemoPlan;
+      const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
+      const snap = await loadSnapshot(need(a.snapshot, 'snapshot'));
+      const f = precheckPlan(plan, comp, snap.nodes.filter((n) => n.text).map((n) => n.id));
+      if (f.length === 0) console.log('Predicción sin incidencias (revisar igualmente la captura del clon).');
+      for (const x of f) console.log(`${x.code.padEnd(28)} ${x.nodeId}  ${x.detail}`);
+      return f.length ? 3 : 0;
+    }
+    case 'compare-masters': {
+      const cmp = compareMasters(await loadSnapshot(need(a.snapshot, 'snapshot')), await loadSnapshot(need(a['current-snapshot'], 'current-snapshot')));
+      await writeJson(need(a.out, 'out'), cmp);
+      console.log(cmp.identical ? `Idénticas sin ids (${cmp.idMap.length} nodos).` : `${cmp.diffs.length} diferencia(s); ver ${a.out}`);
+      return cmp.identical ? 0 : 3;
+    }
+    case 'remap': {
+      const map = ((await readJson(need(a['id-map'], 'id-map'))) as { idMap?: Array<[string, string]> });
+      const idMap = Array.isArray(map) ? (map as Array<[string, string]>) : map.idMap ?? [];
+      if (a.composition) {
+        const comp = parseOrThrow(DemoCompositionSchema, await readJson(a.composition), 'composition');
+        await writeJson(need(a.out, 'out'), remapNodeIds(comp, idMap));
+      } else {
+        const p = parseOrThrow(AgentProposalsSchema, await readJson(need(a.proposals, 'proposals')), 'proposals');
+        await writeJson(need(a.out, 'out'), remapProposals(p, idMap, await loadManifest(need(a.manifest, 'manifest'))));
+      }
+      return 0;
+    }
+    case 'verify-sent': {
+      const calls = (await readJson(need(a.calls, 'calls'))) as { calls: Array<{ scriptSha256: string; isError: boolean }> };
+      const gen = await Promise.all((a.request ?? []).map(async (f) => sha256Hex(((await readJson(f)) as { code: string }).code)));
+      const bad = calls.calls.filter((c) => !gen.includes(c.scriptSha256));
+      console.log(`${calls.calls.length} llamada(s); ${calls.calls.length - bad.length} con script idéntico al generado; ${calls.calls.filter((c) => c.isError).length} con error.`);
+      return bad.length ? 3 : 0;
+    }
+    case 'record-acceptance': {
+      const clone = await loadSnapshot(need(a['clone-snapshot'], 'clone-snapshot'));
+      const checksText = await readFile(need(a.checks, 'checks'), 'utf8');
+      const acc = buildAcceptance({
+        acceptedBy: need(a.by, 'by'), acceptedAt: now, scope: need(a.scope, 'scope'), notes: a.notes ?? null,
+        fileKey: need(a['file-key'], 'file-key'), clone,
+        compositionText: await readFile(need(a.composition, 'composition'), 'utf8'),
+        planText: await readFile(need(a.plan, 'plan'), 'utf8'),
+        checksText, checksAggregate: (JSON.parse(checksText) as { aggregate: { status: string } }).aggregate.status,
+      });
+      await writeJson(need(a.out, 'out'), parseOrThrow(DemoAcceptanceSchema, acc, 'acceptance'));
+      console.log(`Aceptación registrada para ${acc.cloneId} (${acc.target.width}×${acc.target.height}) por el nombre declarado ${JSON.stringify(acc.acceptedBy)}. Alcance: ${acc.scope}`);
       return 0;
     }
     case 'vector-probe-request': {
