@@ -1,0 +1,544 @@
+{
+  "schema": "pcb.agent-proposals.v1",
+  "status": "agent_proposal",
+  "proposedBy": "agente (Claude) — propuesta, no aprobación humana",
+  "createdAt": "2026-09-30T00:00:00.000Z",
+  "manifestId": "man_a06d1f59f1d6",
+  "manifestHash": "sha256:fce4447754fe29dcf333631056c9dd2ecf0e6f9d569b2b635e3f0b1bd75a090d",
+  "groups": [
+    {
+      "groupId": "grp_logo",
+      "kind": "logo_unit",
+      "label": "Logo completo (símbolo + logotipo)",
+      "entityIds": [
+        "ent_5b90b3e2ade8",
+        "ent_d829e4b64b88",
+        "ent_c07bac49c441"
+      ],
+      "attachedNodeIds": [
+        "4:158",
+        "4:159",
+        "4:161",
+        "4:164"
+      ],
+      "rigidAncestorNodeId": "4:158",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "Símbolo (4:161) y logotipo (4:164) comparten el frame de recorte 4:159 dentro del grupo 4:158; se trasladan juntos moviendo 4:158",
+          "nodeIds": [
+            "4:158",
+            "4:159"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Se leen como un único logo horizontal arriba a la izquierda",
+          "nodeIds": [
+            "4:158"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "groupId": "grp_cta",
+      "kind": "cta_unit",
+      "label": "CTA (botón + texto)",
+      "entityIds": [
+        "ent_738d59b225ca",
+        "ent_aae77b01d989"
+      ],
+      "attachedNodeIds": [],
+      "rigidAncestorNodeId": "4:155",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "4:156 es hijo de 4:155; mover 4:155 mueve la unidad",
+          "nodeIds": [
+            "4:155",
+            "4:156"
+          ],
+          "artifact": null
+        }
+      ]
+    },
+    {
+      "groupId": "grp_message",
+      "kind": "message_block",
+      "label": "Titular + importe",
+      "entityIds": [
+        "ent_e12eb09653f1",
+        "ent_d6978916efc9"
+      ],
+      "attachedNodeIds": [],
+      "rigidAncestorNodeId": null,
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "Textos contiguos (separación 15 px), centrados sobre el mismo eje y del mismo color",
+          "nodeIds": [
+            "4:176",
+            "4:177"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Se leen como un único mensaje",
+          "nodeIds": [
+            "4:176",
+            "4:177"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "entityId": "ent_debef8a17a7f",
+      "nodeIds": [
+        "4:142"
+      ],
+      "roleId": "background",
+      "groupId": null,
+      "proposedNature": "shape",
+      "confidence": "high",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "Frame raíz: relleno sólido verde + degradado lineal al 30 %; ocupa toda la pieza",
+          "nodeIds": [
+            "4:142"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Se ve como el fondo verde claro de toda la pieza",
+          "nodeIds": [
+            "4:142"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_350217c25977",
+      "nodeIds": [
+        "4:144"
+      ],
+      "roleId": "background",
+      "groupId": null,
+      "proposedNature": "image_no_text_detected",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "RECTANGLE con relleno IMAGE (CROP), 1103×690, anclado al borde inferior",
+          "nodeIds": [
+            "4:144"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Fotografía de una mujer relajada con los brazos detrás de la cabeza; no se aprecia texto incrustado en la imagen (inspección visual del agente, no OCR)",
+          "nodeIds": [
+            "4:144"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_2d79118fc5fc",
+      "nodeIds": [
+        "4:145"
+      ],
+      "roleId": "decorative",
+      "groupId": null,
+      "proposedNature": "shape",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "ELLIPSE 30 % casi negra con LAYER_BLUR 100, situada bajo el texto 4:154",
+          "nodeIds": [
+            "4:145",
+            "4:154"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "No se distingue como forma: oscurece suavemente la zona del texto blanco para legibilidad",
+          "nodeIds": [
+            "4:145"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_b4c4b1c14dee",
+      "nodeIds": [
+        "4:146"
+      ],
+      "roleId": "decorative",
+      "groupId": null,
+      "proposedNature": "shape",
+      "confidence": "high",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "RECTANGLE con degradado lineal vertical transparente→negro al 70 %, COLOR_BURN, anclado al borde inferior",
+          "nodeIds": [
+            "4:146"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Oscurecimiento progresivo de la parte inferior bajo los textos blancos y el CTA",
+          "nodeIds": [
+            "4:146"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_5977981e8a57",
+      "nodeIds": [
+        "4:153"
+      ],
+      "roleId": "decorative",
+      "groupId": null,
+      "proposedNature": "vector_graphic",
+      "confidence": "high",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "VECTOR con trazo rosa de 40 px y extremos redondeados; enmascarado por 4:148 (geometría de máscara alineada con la foto)",
+          "nodeIds": [
+            "4:153",
+            "4:148"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Cinta curva rosa que pasa por detrás de los brazos de la mujer: la máscara depende de la posición de la foto",
+          "nodeIds": [
+            "4:153",
+            "4:144"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_71d4437bce1b",
+      "nodeIds": [
+        "4:154"
+      ],
+      "roleId": "body",
+      "groupId": null,
+      "proposedNature": "editable_text",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "TEXT centrado, Rufina 32/60/32, blanco; constraint horizontal CENTER",
+          "nodeIds": [
+            "4:154"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Bloque de oferta en blanco sobre la foto: «3,5 % de rentabilidad» es la línea más destacada del bloque. Se propone body porque 4:176 es visualmente el titular; la persona lo describió como «texto principal»: decidir en revisión",
+          "nodeIds": [
+            "4:154",
+            "4:176"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_738d59b225ca",
+      "nodeIds": [
+        "4:155"
+      ],
+      "roleId": "cta",
+      "groupId": "grp_cta",
+      "proposedNature": "shape",
+      "confidence": "high",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "FRAME «BOTÓN» con relleno rosa y radio de esquina; contiene 4:156",
+          "nodeIds": [
+            "4:155",
+            "4:156"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "layer_name_hint",
+          "detail": "Nombre de capa «BOTÓN» (dato no confiable, pista débil)",
+          "nodeIds": [
+            "4:155"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Botón en forma de píldora rosa",
+          "nodeIds": [
+            "4:155"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_aae77b01d989",
+      "nodeIds": [
+        "4:156"
+      ],
+      "roleId": "cta_label",
+      "groupId": "grp_cta",
+      "proposedNature": "editable_text",
+      "confidence": "high",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "TEXT hijo único del frame 4:155",
+          "nodeIds": [
+            "4:156"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Texto del botón",
+          "nodeIds": [
+            "4:156"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_5d3b4d7cb926",
+      "nodeIds": [
+        "4:157"
+      ],
+      "roleId": "legal",
+      "groupId": null,
+      "proposedNature": "editable_text",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "TEXT de 18 px, abajo a la izquierda",
+          "nodeIds": [
+            "4:157"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Información complementaria en letra pequeña; la taxonomía no tiene un rol «información complementaria»: se propone legal (mismo tratamiento: protegido, en zona segura)",
+          "nodeIds": [
+            "4:157"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_c07bac49c441",
+      "nodeIds": [
+        "4:160"
+      ],
+      "roleId": "decorative",
+      "groupId": "grp_logo",
+      "proposedNature": "image_text_undetermined",
+      "confidence": "low",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "ELLIPSE con relleno IMAGE, rotada 180°, dentro del frame de recorte 4:159 del logo pero totalmente fuera de su área (render bounds null)",
+          "nodeIds": [
+            "4:160",
+            "4:159"
+          ],
+          "artifact": null
+        }
+      ]
+    },
+    {
+      "entityId": "ent_5b90b3e2ade8",
+      "nodeIds": [
+        "4:162",
+        "4:163"
+      ],
+      "roleId": "logo",
+      "groupId": "grp_logo",
+      "proposedNature": "vector_graphic",
+      "confidence": "high",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "2 vectores de 48 px de alto en el grupo izquierdo del contenedor Capa_1",
+          "nodeIds": [
+            "4:162",
+            "4:163"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Símbolo «M» entre corchetes de la marca",
+          "nodeIds": [
+            "4:162",
+            "4:163"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_d829e4b64b88",
+      "nodeIds": [
+        "4:165",
+        "4:166",
+        "4:167",
+        "4:168",
+        "4:169",
+        "4:170",
+        "4:171",
+        "4:172",
+        "4:173",
+        "4:174",
+        "4:175"
+      ],
+      "roleId": "logo",
+      "groupId": "grp_logo",
+      "proposedNature": "vectorized_text",
+      "confidence": "high",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "11 vectores alineados en una línea base común, a la derecha del símbolo",
+          "nodeIds": [
+            "4:165"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Palabra de la marca en vectores (texto vectorizado del logotipo)",
+          "nodeIds": [
+            "4:165"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_e12eb09653f1",
+      "nodeIds": [
+        "4:176"
+      ],
+      "roleId": "headline",
+      "groupId": "grp_message",
+      "proposedNature": "editable_text",
+      "confidence": "high",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "TEXT Mutualidad Black 100 px, el mayor cuerpo de la pieza",
+          "nodeIds": [
+            "4:176"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Titular principal en dos líneas",
+          "nodeIds": [
+            "4:176"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    },
+    {
+      "entityId": "ent_d6978916efc9",
+      "nodeIds": [
+        "4:177"
+      ],
+      "roleId": "price",
+      "groupId": "grp_message",
+      "proposedNature": "editable_text",
+      "confidence": "high",
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "TEXT Mutualidad Bold 60,5 px bajo el titular, mismo color",
+          "nodeIds": [
+            "4:177"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Importe mínimo asociado al titular",
+          "nodeIds": [
+            "4:177"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    }
+  ],
+  "uncertain": [
+    {
+      "nodeIds": [
+        "4:160"
+      ],
+      "decision": "preserve",
+      "observation": "Relleno IMAGE en una elipse rotada 180°, fuera del área del frame de recorte 4:159: no se pinta en la maestra ni en la captura. La ausencia de render bounds no prueba que sea irrelevante.",
+      "hypotheses": [
+        "Resto de la importación del logo (el contenedor se llama como en exportaciones de Illustrator)",
+        "Imagen colocada a propósito para usarse al cambiar el recorte"
+      ],
+      "evidence": [
+        {
+          "kind": "structure",
+          "detail": "absoluteRenderBounds null; caja completamente por encima de 4:159, que recorta",
+          "nodeIds": [
+            "4:160",
+            "4:159"
+          ],
+          "artifact": null
+        },
+        {
+          "kind": "screenshot_visual_inspection",
+          "detail": "Nada visible en la zona del logo aparte del símbolo y el logotipo",
+          "nodeIds": [
+            "4:158"
+          ],
+          "artifact": "runs/2026-09-30-demo-1080/evidence/master-4-142.png"
+        }
+      ]
+    }
+  ]
+}

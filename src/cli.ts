@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// CLI de H0/H1. Ningún comando escribe en Figma.
+// CLI. Ningún comando escribe en Figma: adapt-request solo GENERA el script de escritura sobre un clon (DEMO).
 import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
@@ -17,6 +17,15 @@ import { MOCK_FIXTURES, MOCK_FILE_KEY } from './figma/mock/fixtures.ts';
 import { classify } from './inventory/classify.ts';
 import { applyReview, approveManifest, buildDraftManifest, buildReviewTemplate, verifyMasterUnchanged } from './inventory/manifest.ts';
 import { renderManifestReview } from './report/review-md.ts';
+import { AdaptResultSchema, AgentProposalsSchema, DemoCompositionSchema } from './contracts/demo.ts';
+import { validateProposals } from './inventory/proposals.ts';
+import { buildDemoPlan, type DemoPlan } from './demo/plan.ts';
+import { buildAdaptScript, ADAPT_SCRIPT_VERSION } from './figma/adapt-script.ts';
+import { checkDemo } from './demo/check.ts';
+import { compareNodeDigests } from './figma/digests.ts';
+import { assembleChunks } from './figma/chunks.ts';
+import { renderDemoReport, type DemoReportMeta } from './report/demo-md.ts';
+import type { CheckStatus, Finding } from './contracts/validation.ts';
 
 const USAGE = `pcb <comando> [opciones]
 
@@ -29,7 +38,15 @@ const USAGE = `pcb <comando> [opciones]
   review-apply   --manifest F --review F --config F --out F
   approve        --manifest F --snapshot F --config F --by NOMBRE --out F
                  (--by registra un nombre declarado; NO autentica a la persona)
-  verify-master  --manifest F --approved-snapshot F --current-snapshot F`;
+  verify-master  --manifest F --approved-snapshot F --current-snapshot F
+
+  DEMO (primera adaptación; nada de esto es aprobación de producción):
+  proposals-check --manifest F --proposals F --config F    Valida las propuestas del agente contra el borrador
+  demo-plan      --snapshot F --composition F --out F      Plan exacto (traslaciones/efectos) y comprobación previa
+  adapt-request  --plan F --composition F --file-key K --clone-name N --out F   Script de ESCRITURA sobre un clon
+  digests-compare --master-raw F [--master-raw F2 ...] --digests F   ¿La maestra releída es idéntica al inventario?
+  demo-check     --snapshot F --clone-snapshot F --adapt-result F --plan F --composition F --config F
+                 --master-raw F... --digests F [--visual F] --meta F --out DIR`;
 
 const opts = {
   'file-key': { type: 'string' },
@@ -53,6 +70,16 @@ const opts = {
   by: { type: 'string' },
   'approved-snapshot': { type: 'string' },
   'current-snapshot': { type: 'string' },
+  proposals: { type: 'string' },
+  composition: { type: 'string' },
+  plan: { type: 'string' },
+  'clone-snapshot': { type: 'string' },
+  'adapt-result': { type: 'string' },
+  digests: { type: 'string' },
+  visual: { type: 'string' },
+  meta: { type: 'string' },
+  'master-raw': { type: 'string', multiple: true },
+  'clone-name': { type: 'string' },
 } as const;
 
 function need(v: string | undefined, name: string): string {
@@ -84,6 +111,13 @@ async function loadResolvedEntry(path: string): Promise<EntryRef> {
 
 const tag = (source: string): string => (source === 'MOCK' ? '[MOCK] ' : '');
 const loadManifest = async (p: string): Promise<Manifest> => parseOrThrow(ManifestSchema, await readJson(p), 'manifest');
+
+async function assembledPayload(paths: string[]): Promise<string> {
+  if (paths.length === 0) throw new Error('Falta --master-raw (respuestas originales de la lectura del inventario)');
+  const r = assembleChunks(await Promise.all(paths.map(async (p) => ({ rawText: await readFile(p, 'utf8'), rawResponsePath: p }))));
+  if (!r.ok) throw new Error(r.errors.map((e) => `${e.code}: ${e.message}`).join('\n'));
+  return r.value.payload;
+}
 
 async function main(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
@@ -217,6 +251,66 @@ async function main(argv: string[]): Promise<number> {
       console.log(`${tag(manifest.source)}manifiesto ${manifest.source} · lectura actual ${current.source}`);
       console.log(JSON.stringify(v, null, 2));
       return v.unchanged ? 0 : 3;
+    }
+    case 'proposals-check': {
+      const m = await loadManifest(need(a.manifest, 'manifest'));
+      const p = parseOrThrow(AgentProposalsSchema, await readJson(need(a.proposals, 'proposals')), 'proposals');
+      const issues = validateProposals(m, p, await loadConfig(need(a.config, 'config')));
+      if (issues.length > 0) {
+        console.error(issues.map((i) => `${i.code}: ${i.message}`).join('\n'));
+        return 2;
+      }
+      console.log(`Propuestas del agente coherentes con ${m.manifestId}: ${p.roles.length} roles, ${p.groups.length} agrupaciones, ${p.uncertain.length} nodo(s) incierto(s). Estado: agent_proposal (no aprobado).`);
+      return 0;
+    }
+    case 'demo-plan': {
+      const snap = await loadSnapshot(need(a.snapshot, 'snapshot'));
+      const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
+      const r = buildDemoPlan(snap, comp);
+      if (!r.ok) {
+        console.error(`Composición rechazada:\n${r.issues.map((i) => `  ${i}`).join('\n')}`);
+        return 2;
+      }
+      await writeJson(need(a.out, 'out'), r.plan);
+      console.log(r.plan.moves.map((m) => `${m.unitId}: dx=${m.dx} dy=${m.dy}`).join('\n'));
+      return 0;
+    }
+    case 'adapt-request': {
+      const plan = (await readJson(need(a.plan, 'plan'))) as DemoPlan;
+      const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
+      const codeText = buildAdaptScript(plan, { sectionName: comp.output.sectionName, cloneName: need(a['clone-name'], 'clone-name'), gapFromContentPx: comp.output.gapFromContentPx });
+      await writeJson(need(a.out, 'out'), {
+        tool: 'use_figma', fileKey: need(a['file-key'], 'file-key'), scriptVersion: ADAPT_SCRIPT_VERSION, writesOnlyClone: true,
+        description: `DEMO: clona ${plan.masterNodeId} en una sección de salida y adapta SOLO el clon a ${plan.target.width}×${plan.target.height}. La maestra no se modifica.`,
+        code: codeText,
+      });
+      return 0;
+    }
+    case 'digests-compare': {
+      const payload = await assembledPayload(a['master-raw'] ?? []);
+      const cmp = compareNodeDigests(payload, await readFile(need(a.digests, 'digests'), 'utf8'));
+      console.log(JSON.stringify(cmp, null, 2));
+      return cmp.equal ? 0 : 3;
+    }
+    case 'demo-check': {
+      const master = await loadSnapshot(need(a.snapshot, 'snapshot'));
+      const clone = await loadSnapshot(need(a['clone-snapshot'], 'clone-snapshot'));
+      const res = parseOrThrow(AdaptResultSchema, await readJson(need(a['adapt-result'], 'adapt-result')), 'adapt-result');
+      const plan = (await readJson(need(a.plan, 'plan'))) as DemoPlan;
+      const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
+      const cfg = await loadConfig(need(a.config, 'config'));
+      const digests = a.digests ? compareNodeDigests(await assembledPayload(a['master-raw'] ?? []), await readFile(a.digests, 'utf8')) : null;
+      const visual = a.visual ? ((await readJson(a.visual)) as { status: CheckStatus; findings: Finding[] }) : null;
+      const meta = (await readJson(need(a.meta, 'meta'))) as Omit<DemoReportMeta, 'cloneId' | 'cloneName' | 'sectionId' | 'fonts'>;
+      if (clone.rootNodeId !== res.cloneId) throw new Error('La instantánea del clon no corresponde al resultado de la adaptación');
+      const rep = checkDemo({ master, clone, idMap: res.idMap, plan, composition: comp, tolerancePx: cfg.tolerances.px, masterDigestsEqual: digests ? digests.equal : null, visual });
+      const out = need(a.out, 'out');
+      await mkdir(out, { recursive: true });
+      await writeJson(join(out, 'checks.json'), { ...rep, masterDigests: digests });
+      await writeFile(join(out, 'report.md'), renderDemoReport(comp, rep, { ...meta, cloneId: res.cloneId, cloneName: res.cloneName, sectionId: res.sectionId, fonts: res.fonts }), 'utf8');
+      console.log(`Estado agregado: ${rep.aggregate.status}`);
+      for (const r of rep.results) console.log(`  ${r.status.padEnd(13)} ${r.validatorId}${r.findings.length ? ` — ${r.findings.map((f) => f.code).join(', ')}` : ''}`);
+      return rep.aggregate.status === 'fail' ? 3 : 0;
     }
     default:
       console.log(USAGE);

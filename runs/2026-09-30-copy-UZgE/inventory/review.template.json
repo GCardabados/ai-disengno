@@ -1,0 +1,143 @@
+{
+  "schema": "pcb.review.v1",
+  "manifestHash": "sha256:85f43d27d92b7deec6e66f8fd4415192cbeafb78109faf33353c8d8dafea47ad",
+  "reviewer": "",
+  "_instructions": "Rellene cada entidad con status (approved|rejected), role y, si cambia la naturaleza del contenido, statement. Resuelva cada nodo pendiente y cada composición. Elimine este campo _instructions antes de aplicar.",
+  "entities": {
+    "ent_d64eb11bd16e": {
+      "status": null,
+      "role": null,
+      "_currentNature": "shape",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "MIXED_CONTAINER_PAINT"
+      ]
+    },
+    "ent_8b3debb8fa27": {
+      "status": null,
+      "role": null,
+      "_currentNature": "image_text_undetermined",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "TEXT_DETECTION_NOT_RUN",
+        "EDITABLE_TEXT_OVERLAY_ON_IMAGE"
+      ]
+    },
+    "ent_18366c1197d8": {
+      "status": null,
+      "role": null,
+      "_currentNature": "shape",
+      "_reasons": [
+        "ROLE_UNASSIGNED"
+      ]
+    },
+    "ent_227b70c98419": {
+      "status": null,
+      "role": null,
+      "_currentNature": "shape",
+      "_reasons": [
+        "ROLE_UNASSIGNED"
+      ]
+    },
+    "ent_157c5ed20a22": {
+      "status": null,
+      "role": null,
+      "_currentNature": "vector_undetermined",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "VECTOR_NATURE_UNDETERMINED"
+      ]
+    },
+    "ent_7c421f6d3223": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "EDITABLE_TEXT_OVERLAY_ON_IMAGE"
+      ]
+    },
+    "ent_766695986582": {
+      "status": null,
+      "role": "cta",
+      "_currentNature": "shape",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "MIXED_CONTAINER_PAINT"
+      ]
+    },
+    "ent_3bd03e376a81": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "FONT_MISSING",
+        "EDITABLE_TEXT_OVERLAY_ON_IMAGE"
+      ]
+    },
+    "ent_91a7f4d0b10b": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "FONT_MISSING",
+        "EDITABLE_TEXT_OVERLAY_ON_IMAGE"
+      ]
+    },
+    "ent_b1704c0045ec": {
+      "status": null,
+      "role": null,
+      "_currentNature": "image_text_undetermined",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "TEXT_DETECTION_NOT_RUN",
+        "RENDER_BOUNDS_UNAVAILABLE"
+      ]
+    },
+    "ent_91e4106b0c89": {
+      "status": null,
+      "role": null,
+      "_currentNature": "vector_undetermined",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "VECTOR_NATURE_UNDETERMINED"
+      ]
+    },
+    "ent_2f06210f12b3": {
+      "status": null,
+      "role": null,
+      "_currentNature": "vector_undetermined",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "VECTOR_NATURE_UNDETERMINED"
+      ]
+    },
+    "ent_25067f060bdd": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "FONT_MISSING"
+      ]
+    },
+    "ent_4c58a0fe966f": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "FONT_MISSING"
+      ]
+    }
+  },
+  "pending": {},
+  "compositions": {
+    "cmp_c5b78177f5d1": {
+      "status": null
+    }
+  },
+  "relations": []
+}

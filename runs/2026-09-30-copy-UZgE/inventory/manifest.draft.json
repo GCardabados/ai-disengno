@@ -1,0 +1,1188 @@
+{
+  "schema": "pcb.manifest.v1",
+  "manifestId": "man_47783832eed2",
+  "createdAt": "2026-09-30T08:07:19.648Z",
+  "source": "FIGMA_MCP_USE_FIGMA",
+  "master": {
+    "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+    "rootNodeId": "1:537",
+    "pageId": "1:484",
+    "fingerprints": {
+      "version": "pcb.fingerprint.v2",
+      "master": "sha256:031cb9fab21a0fe78eae3d77dddcb6a49e5a956c37658d2032632558a5623120",
+      "structure": "sha256:519f9e6afda7cd011d33bd5ebf5550da95230319604847e9e148535c81ce96d2",
+      "content": "sha256:17fff12cb78eb05411c86e176d24ccd06d304f482e88aa339b81bd0d66286586",
+      "layout": "sha256:1c1b1c8917bd1c6ba8923251bffa1bbdddd80df55c01e46756799d469ecc19be",
+      "metadata": "sha256:1588882e45bd7f57370636c1e9ed3b6a746b60adbe19d9507e089923a8d5c99c"
+    },
+    "snapshotHash": "sha256:d891471a850a956a4a9302cd0470396a31d9e55e8eba295daab7438230dd0d30",
+    "entry": {
+      "entryNodeId": "1:536",
+      "entryType": "SECTION",
+      "masterNodeId": "1:537",
+      "targetName": "960x1200_Taxdown_SVA2",
+      "method": "exact_name",
+      "dimensionsFromNameMatch": true,
+      "discoveryDigest": "sha256:050a1d0262b8165eb214016f9f966773b51a55d335dd49931eced818f9d66efe",
+      "discoveryRawSha256": "sha256:d6e0df56984c35b778308ea97dd25a99130de2cf25e55f6436ae30c058c4c19a"
+    }
+  },
+  "taxonomy": {
+    "id": "paid-static-default",
+    "version": "0.1.0-propuesta"
+  },
+  "classifier": {
+    "id": "pcb.classifier.heuristic",
+    "version": "2"
+  },
+  "rules": {
+    "fingerprint": "sha256:e049eeab5b39f1f4af87e0288e2f4bcb2c6b9955c4aff5b743f74e5f09f593f3",
+    "covers": [
+      "config.projectId",
+      "config.taxonomy.id",
+      "config.taxonomy.version",
+      "config.taxonomy.roles[*] (id, label, multiplicity, protection, mustBeInSafeZone, defaultAllowOps, nameHints)",
+      "config.tolerances",
+      "config.approvers",
+      "config.ocr (enabled, engine, langs)",
+      "config.heuristics",
+      "code:GLOBAL_INVARIANTS",
+      "code:NUMERIC_TOLERANCE_MAX",
+      "code:CLASSIFIER (id, version)"
+    ]
+  },
+  "detectors": {
+    "ocr": "not_run"
+  },
+  "entities": [
+    {
+      "entityId": "ent_d64eb11bd16e",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:537"
+      ],
+      "contentNature": "shape",
+      "evidence": [
+        {
+          "kind": "paint_analysis",
+          "detail": "Contenedor FRAME con pintura propia visible (7 hijos)",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:537"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "MIXED_CONTAINER_PAINT"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_8b3debb8fa27",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:539"
+      ],
+      "contentNature": "image_text_undetermined",
+      "evidence": [
+        {
+          "kind": "image_fill",
+          "detail": "Relleno IMAGE en nodo RECTANGLE: hash=ccb2a35e56dcaf23a5d9448d5f7c37e6a85e5a4e scaleMode=CROP",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:539"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "TEXT_DETECTION_NOT_RUN",
+          "EDITABLE_TEXT_OVERLAY_ON_IMAGE"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_18366c1197d8",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:540"
+      ],
+      "contentNature": "shape",
+      "evidence": [
+        {
+          "kind": "paint_analysis",
+          "detail": "Nodo ELLIPSE con pintura visible sin imagen",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:540"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_227b70c98419",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:541"
+      ],
+      "contentNature": "shape",
+      "evidence": [
+        {
+          "kind": "paint_analysis",
+          "detail": "Nodo RECTANGLE con pintura visible sin imagen",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:541"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_157c5ed20a22",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:548"
+      ],
+      "contentNature": "vector_undetermined",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:548"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "VECTOR_NATURE_UNDETERMINED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_7c421f6d3223",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:549"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:549"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "97 caracteres, 3 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:549"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "EDITABLE_TEXT_OVERLAY_ON_IMAGE"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_766695986582",
+      "role": null,
+      "roleHints": [
+        {
+          "roleId": "cta",
+          "evidence": {
+            "kind": "layer_name_hint",
+            "detail": "El nombre del nodo 1:550 contiene la pista configurada \"botón\"",
+            "producedBy": "pcb.classifier.heuristic",
+            "version": "2",
+            "trust": "low",
+            "nodeIds": [
+              "1:550"
+            ]
+          }
+        }
+      ],
+      "nodeIds": [
+        "1:550"
+      ],
+      "contentNature": "shape",
+      "evidence": [
+        {
+          "kind": "paint_analysis",
+          "detail": "Contenedor FRAME con pintura propia visible (1 hijos)",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:550"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "MIXED_CONTAINER_PAINT"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_3bd03e376a81",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:551"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:551"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "10 caracteres, 1 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:551"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "FONT_MISSING",
+          "EDITABLE_TEXT_OVERLAY_ON_IMAGE"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_91a7f4d0b10b",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:552"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:552"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "33 caracteres, 1 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:552"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "FONT_MISSING",
+          "EDITABLE_TEXT_OVERLAY_ON_IMAGE"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_b1704c0045ec",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:555"
+      ],
+      "contentNature": "image_text_undetermined",
+      "evidence": [
+        {
+          "kind": "image_fill",
+          "detail": "Relleno IMAGE en nodo ELLIPSE: hash=7f12ea1300756f144a0fb5daaf68dbfc01103a46 scaleMode=FILL",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:555"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "TEXT_DETECTION_NOT_RUN",
+          "RENDER_BOUNDS_UNAVAILABLE"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_91e4106b0c89",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:557",
+        "1:558"
+      ],
+      "contentNature": "vector_undetermined",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:557"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:558"
+          ]
+        },
+        {
+          "kind": "vector_cluster",
+          "detail": "2 vectores hermanos bajo el contenedor 1:556",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "medium",
+          "nodeIds": [
+            "1:557",
+            "1:558",
+            "1:556"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "VECTOR_NATURE_UNDETERMINED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_2f06210f12b3",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:560",
+        "1:561",
+        "1:562",
+        "1:563",
+        "1:564",
+        "1:565",
+        "1:566",
+        "1:567",
+        "1:568",
+        "1:569",
+        "1:570"
+      ],
+      "contentNature": "vector_undetermined",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:560"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:561"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:562"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:563"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:564"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:565"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:566"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:567"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:568"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:569"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:570"
+          ]
+        },
+        {
+          "kind": "vector_cluster",
+          "detail": "11 vectores hermanos bajo el contenedor 1:559",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "medium",
+          "nodeIds": [
+            "1:560",
+            "1:561",
+            "1:562",
+            "1:563",
+            "1:564",
+            "1:565",
+            "1:566",
+            "1:567",
+            "1:568",
+            "1:569",
+            "1:570",
+            "1:559"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "VECTOR_NATURE_UNDETERMINED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_25067f060bdd",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:571"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:571"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "20 caracteres, 1 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:571"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "FONT_MISSING"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_4c58a0fe966f",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "1:572"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:572"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "11 caracteres, 1 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:572"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "FONT_MISSING"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    }
+  ],
+  "dispositions": [
+    {
+      "kind": "content",
+      "nodeId": "1:537",
+      "entityId": "ent_d64eb11bd16e"
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:538",
+      "justification": "container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor GROUP sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:538"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:539",
+      "entityId": "ent_8b3debb8fa27"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:540",
+      "entityId": "ent_18366c1197d8"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:541",
+      "entityId": "ent_227b70c98419"
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:542",
+      "justification": "container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor GROUP sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:542"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:543",
+      "justification": "mask",
+      "evidence": [
+        {
+          "kind": "mask_flag",
+          "detail": "isMask=true, maskType=ALPHA",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:543"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:544",
+      "justification": "mask",
+      "evidence": [
+        {
+          "kind": "mask_flag",
+          "detail": "Forma parte de la geometría de la máscara 1:543; no se pinta como contenido",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:544",
+            "1:543"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:545",
+      "justification": "mask",
+      "evidence": [
+        {
+          "kind": "mask_flag",
+          "detail": "Forma parte de la geometría de la máscara 1:543; no se pinta como contenido",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:545",
+            "1:543"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:546",
+      "justification": "mask",
+      "evidence": [
+        {
+          "kind": "mask_flag",
+          "detail": "Forma parte de la geometría de la máscara 1:543; no se pinta como contenido",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:546",
+            "1:543"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:547",
+      "justification": "mask",
+      "evidence": [
+        {
+          "kind": "mask_flag",
+          "detail": "Forma parte de la geometría de la máscara 1:543; no se pinta como contenido",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:547",
+            "1:543"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:548",
+      "entityId": "ent_157c5ed20a22"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:549",
+      "entityId": "ent_7c421f6d3223"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:550",
+      "entityId": "ent_766695986582"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:551",
+      "entityId": "ent_3bd03e376a81"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:552",
+      "entityId": "ent_91a7f4d0b10b"
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:553",
+      "justification": "container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor GROUP sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:553"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:554",
+      "justification": "clip_container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor FRAME sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:554"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:555",
+      "entityId": "ent_b1704c0045ec"
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:556",
+      "justification": "container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor GROUP sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:556"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:557",
+      "entityId": "ent_91e4106b0c89"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:558",
+      "entityId": "ent_91e4106b0c89"
+    },
+    {
+      "kind": "structural",
+      "nodeId": "1:559",
+      "justification": "container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor GROUP sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "1:559"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:560",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:561",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:562",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:563",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:564",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:565",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:566",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:567",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:568",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:569",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:570",
+      "entityId": "ent_2f06210f12b3"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:571",
+      "entityId": "ent_25067f060bdd"
+    },
+    {
+      "kind": "content",
+      "nodeId": "1:572",
+      "entityId": "ent_4c58a0fe966f"
+    }
+  ],
+  "compositions": [
+    {
+      "compositionId": "cmp_c5b78177f5d1",
+      "nature": "image_with_editable_text_overlay",
+      "entityIds": [
+        "ent_8b3debb8fa27",
+        "ent_7c421f6d3223",
+        "ent_3bd03e376a81",
+        "ent_91a7f4d0b10b"
+      ],
+      "evidence": [
+        {
+          "kind": "geometry_overlap",
+          "detail": "3 texto(s) editable(s) pintado(s) sobre la imagen; solape de renderBounds (px²): 85950, 5466, 4560. Los rectángulos no prueban solape de píxeles.",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "medium",
+          "nodeIds": [
+            "1:539",
+            "1:549",
+            "1:551",
+            "1:552"
+          ]
+        }
+      ],
+      "status": "proposed",
+      "decidedBy": null,
+      "statement": null
+    }
+  ],
+  "relations": [],
+  "approval": {
+    "status": "draft",
+    "approvedBy": null,
+    "approvedAt": null
+  },
+  "manifestHash": "sha256:85f43d27d92b7deec6e66f8fd4415192cbeafb78109faf33353c8d8dafea47ad"
+}

@@ -388,6 +388,24 @@ Necesarias antes de H2 y siguientes:
   - Las pistas de rol comparan palabras completas: "Rectangle" ya no activa `cta`.
 - **Limitación detectada, no resuelta:** la revisión humana no puede **fusionar entidades**. El logo real aparece como dos grupos de vectores (símbolo y marca denominativa) y la taxonomía exige exactamente un logo.
 
+### 5.6 Primera adaptación DEMO 1080×1080 (2026-09-30): bloqueada por permisos de escritura
+
+- **Propuestas del agente** (`pcb.agent-proposals.v1`, `src/inventory/proposals.ts`): roles para las 14 entidades y agrupaciones semánticas mínimas (logo = símbolo + logotipo + 4:160 adjunto; CTA = 4:155 + 4:156; bloque titular + importe), con evidencia estructural y visual (captura). Estado fijo `agent_proposal`: no se escriben en el manifiesto ni cuentan como revisión humana. La multiplicidad de la taxonomía se cuenta por unidad agrupada (el logo en dos entidades cuenta como uno).
+- **4:160** se conserva: la ausencia de render bounds no prueba que sea irrelevante; se mueve con el logo.
+- **Composición específica** (`pcb.demo-composition.v1`, `src/demo/plan.ts`), no un planificador universal: traslaciones rígidas por bloque (logo, titular+importe, foto+cinta+máscara, bloque inferior con su sombra), ensanche del degradado de oscurecimiento 4:146 (efecto no-contenido) y `resizeWithoutConstraints` del frame raíz. Margen de 54 px como **regla interna de demo**, no especificación oficial. El plan rechaza antes de tocar Figma: nodos en dos bloques, nodos dentro de frames intermedios, redimensionar imágenes, texto o el logo.
+- **Script de escritura** (`pcb.adapt-script.v1`, `src/figma/adapt-script.ts`): solo escribe en un clon dentro de una sección de salida; guardas en tiempo de ejecución contra ids de la maestra; carga las fuentes existentes y se detiene si alguna falla (no sustituye); no duplica clones.
+- **Validación** (`src/demo/check.ts`) sobre la relectura del clon: dimensiones, conservación de nodos/jerarquía/orden, contenido exacto, operaciones permitidas, logo bloqueado, zona interna de prueba, cobertura de fondo y región protegida, maestra intacta por hashes por nodo (`src/figma/digests.ts`) y revisión visual (solo puede empeorar el estado).
+- **Resultado real:** `use_figma` rechazó la escritura: *"To use MCP tools that make edits, you'll need a Full seat"*. El script no llegó a ejecutarse. Comprobado después en solo lectura: los 36 hashes por nodo y el hash del payload de la maestra coinciden con el inventario (`b9bb2f62…`) y no existe ninguna sección ni clon nuevos. No se usó ninguna vía alternativa.
+- **Para desbloquear:** una cuenta con asiento Full en el equipo del archivo (o que otra persona con asiento Full ejecute `runs/2026-09-30-demo-1080/adapt-request.json`). Después: releer el clon, captura, `demo-check`.
+
+#### 5.6.1 Ejecución en la copia `UZgEPO8UUe9IDwTWitBbgF` (asiento Full)
+
+- Descubrimiento `1:536` (SECTION) → maestra `1:537`. Lectura por fragmentos (6/6). Comparada sin IDs con `4:142`: **idéntica** (36 nodos, contenido y geometría relativa); composición y propuestas traducidas por correspondencia en preorden.
+- **Fuentes:** en la copia "Mutualidad" no es cargable por el plugin (`loadFontAsync` falla), aunque el render del servidor la muestra. v1 del script se detuvo antes de clonar. v2: solo exige cargar fuentes si alguna operación toca la maquetación de un texto (aquí solo hay traslaciones) y nunca asigna `fontName`; además es todo-o-nada (si algo falla tras clonar, descarta su propio clon).
+- **Fallo propio detectado en la relectura:** `figma.createSection()` crea en la página actual del plugin (la primera), no en la de la maestra. Corregido en v3 (`page.appendChild(section)` + comprobación `PCB_OUTPUT_NOT_ON_MASTER_PAGE`); la sección ya creada se trasladó a la página de la maestra con un script acotado a esa sección.
+- **Fallo propio del validador:** un GROUP cuyos hijos se mueven por bloques distintos cambia de caja; su geometría es derivada y ahora se valida a través de sus hijos (prueba añadida).
+- **Resultado:** clon `2009:122` en la sección `2009:121`. Deterministas 8/8 superadas; maestra intacta por hashes por nodo; revisión visual del agente: `needs_review` (corte vertical de la cinta en el borde de su máscara, oferta más alta sobre la persona, pie de foto recortado, fuente no cargable en este entorno). Estado: **DEMO pendiente de revisión humana**.
+
 ## 6. Limitaciones declaradas de H1
 
 - Sin OCR: ninguna imagen puede ser `image_no_text_detected` ni `image_embedded_text` salvo por **declaración humana**, que queda registrada como evidencia `human_statement`.

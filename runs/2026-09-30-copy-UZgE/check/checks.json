@@ -1,0 +1,155 @@
+{
+  "results": [
+    {
+      "validatorId": "target_dimensions",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Ancho/alto exactos del frame destino y recorte activo."
+    },
+    {
+      "validatorId": "nodes_preserved",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Mismo conjunto de nodos, tipos, nombres, padres y orden de apilado (por correspondencia de la relectura)."
+    },
+    {
+      "validatorId": "content_preserved",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Igualdad exacta de caracteres, segmentos de estilo (fuente, cuerpo, interlineado, color), pinturas, efectos, visibilidad, opacidad, máscaras y geometría vectorial. No evalúa el render."
+    },
+    {
+      "validatorId": "allowed_operations",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Posición de cada caja respecto al plan (±0.01 px), tamaño exacto de todo lo que solo se traslada y parte lineal exacta de cada transformación."
+    },
+    {
+      "validatorId": "logo_locked",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Ancho/alto exactos, transformaciones lineales exactas, recorte y posición de cada nodo respecto al bloque del logo. El render del logo lo confirma la captura."
+    },
+    {
+      "validatorId": "demo_safe_area",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cajas completas de los elementos importantes dentro del frame y del margen interno de 54 px (regla interna de demo). Las cajas de texto no prueban ausencia de truncamiento visual."
+    },
+    {
+      "validatorId": "background_coverage",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cobertura por cajas del ancho y del borde inferior; regiones protegidas (declaradas por el agente) completas y sin cajas de texto encima. No mide píxeles."
+    },
+    {
+      "validatorId": "master_unchanged",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Hash exacto de cada registro de la maestra releída tras escribir frente al payload del inventario."
+    },
+    {
+      "validatorId": "visual_agent_review",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "visual",
+      "status": "needs_review",
+      "findings": [
+        {
+          "code": "DECORATION_CUT_BY_MASK_EDGE",
+          "severity": "warning",
+          "nodeIds": [
+            "1:548",
+            "1:547",
+            "2009:135",
+            "2009:134"
+          ],
+          "message": "La cinta rosa termina en un corte vertical en x≈986 (arriba a la derecha): es el borde de la forma de máscara 'Vector 3', que en 960 px quedaba fuera del frame. Visible en la captura."
+        },
+        {
+          "code": "BODY_TEXT_HIGHER_ON_SUBJECT",
+          "severity": "warning",
+          "nodeIds": [
+            "1:549",
+            "2009:136"
+          ],
+          "message": "El bloque de oferta queda ~89 px más arriba respecto a la persona que en la maestra (sobre hombros/pelo y la cinta). Legible en la captura; la cara no queda cubierta."
+        },
+        {
+          "code": "PHOTO_BOTTOM_CROPPED",
+          "severity": "warning",
+          "nodeIds": [
+            "1:539",
+            "2009:126"
+          ],
+          "message": "Se recortan 65 px del pie de la foto (camisa/silla). Cabeza y cara completas."
+        },
+        {
+          "code": "FONT_NOT_LOADABLE_IN_ENV",
+          "severity": "warning",
+          "nodeIds": [
+            "2009:138",
+            "2009:139",
+            "2009:158",
+            "2009:159"
+          ],
+          "message": "\"Mutualidad\" no es cargable por el plugin en esta copia; el render del servidor muestra la tipografía correcta y no se sustituyó ninguna fuente. Una edición de texto en este archivo sí la necesitaría."
+        }
+      ],
+      "coverage": "Inspección visual del agente sobre una captura del clon. No sustituye la revisión de la diseñadora."
+    }
+  ],
+  "aggregate": {
+    "status": "needs_review",
+    "byStatus": {
+      "pass": [
+        "deterministic:target_dimensions@1",
+        "deterministic:nodes_preserved@1",
+        "deterministic:content_preserved@1",
+        "deterministic:allowed_operations@1",
+        "deterministic:logo_locked@1",
+        "deterministic:demo_safe_area@1",
+        "deterministic:background_coverage@1",
+        "deterministic:master_unchanged@1"
+      ],
+      "needs_review": [
+        "visual:visual_agent_review@1"
+      ],
+      "not_evaluable": [],
+      "fail": []
+    },
+    "autoApprovable": false,
+    "humanApprovable": true
+  },
+  "masterDigests": {
+    "equal": true,
+    "payloadEqual": true,
+    "changedNodeIds": [],
+    "missingNodeIds": [],
+    "addedNodeIds": []
+  }
+}

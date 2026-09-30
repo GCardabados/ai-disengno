@@ -1,0 +1,2 @@
+To use MCP tools that make edits, you'll need a Full seat. Request one here: https://www.figma.com/files/934561927567188391/recents-and-sharing?upgrade_request_type=figma&entry_point=mcp_edit_restriction
+Figma Debug UUID: 639532d5-4b61-4e31-acb7-769c6a0c7c21

@@ -1,0 +1,118 @@
+{
+  "schema": "pcb.demo-composition.v1",
+  "label": "DEMO interna 1080×1080 a partir de 4:142 (composición específica de esta pieza)",
+  "masterNodeId": "4:142",
+  "masterSize": {
+    "width": 960,
+    "height": 1200
+  },
+  "target": {
+    "width": 1080,
+    "height": 1080,
+    "name": "demo_1080x1080"
+  },
+  "safeArea": {
+    "kind": "internal_demo_rule",
+    "marginPx": 54,
+    "note": "Margen de prueba de 54 px por lado. Regla interna de la demo: no hay safe zone aprobada para este destino y esto NO es una especificación oficial."
+  },
+  "output": {
+    "sectionName": "PCB · Salida DEMO (no producción)",
+    "gapFromContentPx": 400
+  },
+  "units": [
+    {
+      "unitId": "logo",
+      "nodeIds": [
+        "4:158"
+      ],
+      "anchorNodeId": "4:158",
+      "to": {
+        "x": 90,
+        "y": 64
+      },
+      "why": "Mismo margen izquierdo que la maestra (90); sube 26 px para ganar altura."
+    },
+    {
+      "unitId": "message",
+      "nodeIds": [
+        "4:176",
+        "4:177"
+      ],
+      "anchorNodeId": "4:176",
+      "to": {
+        "x": 170,
+        "y": 148
+      },
+      "why": "Titular + importe como bloque rígido; +60 px en x conserva su posición respecto al eje central (960→1080); 36 px bajo el logo (65 en la maestra)."
+    },
+    {
+      "unitId": "photo",
+      "nodeIds": [
+        "4:144",
+        "4:147"
+      ],
+      "anchorNodeId": "4:144",
+      "to": {
+        "x": -1,
+        "y": 455
+      },
+      "why": "Foto y grupo de la cinta+máscara juntos (la máscara está alineada con la foto). x=-1 para no dejar franja a la izquierda; queda 7 px bajo el importe como en la maestra; se recortan 65 px del pie de la foto."
+    },
+    {
+      "unitId": "bottom",
+      "nodeIds": [
+        "4:154",
+        "4:155",
+        "4:157",
+        "4:145"
+      ],
+      "anchorNodeId": "4:157",
+      "to": {
+        "x": 116,
+        "y": 1002
+      },
+      "why": "Oferta, CTA, información complementaria y su sombra de legibilidad como bloque rígido (separaciones de la maestra); +60 px en x (constraints CENTER); el pie queda 2 px por encima del margen de 54."
+    }
+  ],
+  "effectResizes": [
+    {
+      "nodeId": "4:146",
+      "to": {
+        "x": -15,
+        "y": 631,
+        "width": 1110,
+        "height": 449
+      },
+      "why": "El degradado de oscurecimiento (975 px) no cubre 1080 px de ancho: se ensancha sin cambiar su altura ni su perfil vertical y se ancla al borde inferior."
+    }
+  ],
+  "importantNodeIds": [
+    "4:158",
+    "4:176",
+    "4:177",
+    "4:154",
+    "4:155",
+    "4:156",
+    "4:157"
+  ],
+  "sizeLockedNodeIds": [
+    "4:158"
+  ],
+  "protectedRegions": [
+    {
+      "nodeId": "4:144",
+      "rect": {
+        "x": 370,
+        "y": 0,
+        "width": 200,
+        "height": 200
+      },
+      "purpose": "Cabeza y cara de la persona (región declarada por el agente a partir de la captura)"
+    }
+  ],
+  "mustCoverWidthNodeIds": [
+    "4:144",
+    "4:146"
+  ]
+}

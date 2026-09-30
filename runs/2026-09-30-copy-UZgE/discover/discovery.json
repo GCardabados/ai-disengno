@@ -1,0 +1,74 @@
+{
+  "resolution": {
+    "status": "resolved",
+    "candidate": {
+      "id": "1:537",
+      "type": "FRAME",
+      "name": "960x1200_Taxdown_SVA2",
+      "width": 960,
+      "height": 1200,
+      "depth": 1,
+      "parentId": "1:536",
+      "pathIds": [
+        "1:536"
+      ]
+    },
+    "entry": {
+      "entryNodeId": "1:536",
+      "entryType": "SECTION",
+      "masterNodeId": "1:537",
+      "targetName": "960x1200_Taxdown_SVA2",
+      "method": "exact_name",
+      "dimensionsFromNameMatch": true,
+      "discoveryDigest": "sha256:050a1d0262b8165eb214016f9f966773b51a55d335dd49931eced818f9d66efe",
+      "discoveryRawSha256": "sha256:d6e0df56984c35b778308ea97dd25a99130de2cf25e55f6436ae30c058c4c19a"
+    }
+  },
+  "discovery": {
+    "schema": "pcb.discover.v1",
+    "scriptVersion": "pcb.discover-script.v1",
+    "entry": {
+      "id": "1:536",
+      "type": "SECTION",
+      "name": "Imagen 2"
+    },
+    "page": {
+      "id": "1:484",
+      "name": "Figma Agents"
+    },
+    "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+    "targetName": "960x1200_Taxdown_SVA2",
+    "matches": [
+      {
+        "id": "1:537",
+        "type": "FRAME",
+        "name": "960x1200_Taxdown_SVA2",
+        "width": 960,
+        "height": 1200,
+        "depth": 1,
+        "parentId": "1:536",
+        "pathIds": [
+          "1:536"
+        ]
+      }
+    ],
+    "entryChildren": [
+      {
+        "id": "1:537",
+        "type": "FRAME",
+        "name": "960x1200_Taxdown_SVA2",
+        "width": 960,
+        "height": 1200,
+        "depth": 1,
+        "parentId": "1:536",
+        "pathIds": [
+          "1:536"
+        ]
+      }
+    ],
+    "entryChildrenTruncated": false,
+    "descendantCount": 36
+  },
+  "digest": "sha256:050a1d0262b8165eb214016f9f966773b51a55d335dd49931eced818f9d66efe",
+  "rawSha256": "sha256:d6e0df56984c35b778308ea97dd25a99130de2cf25e55f6436ae30c058c4c19a"
+}

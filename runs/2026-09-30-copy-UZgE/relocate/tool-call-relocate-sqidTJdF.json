@@ -1,0 +1,9 @@
+{
+  "tool_use_id": "toolu_01J4mraJsuepACmysqidTJdF",
+  "input": {
+    "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+    "description": "DEMO: mueve SOLO la sección de salida 2009:121 (creada por el agente, contiene solo el clon 2009:122) a la página de la maestra 1:537, a la derecha de su contenido. No toca la maestra ni otros nodos.",
+    "skillNames": "resource:figma-use",
+    "code": "var sec = await figma.getNodeByIdAsync('2009:121');\nvar master = await figma.getNodeByIdAsync('1:537');\nif (!sec || sec.type !== 'SECTION' || sec.name !== 'PCB · Salida DEMO (no producción)') throw new Error('PCB_UNEXPECTED_SECTION');\nif (sec.children.length !== 1 || sec.children[0].id !== '2009:122') throw new Error('PCB_SECTION_NOT_ONLY_CLONE');\nvar page = master.parent; while (page && page.type !== 'PAGE') page = page.parent;\nawait page.loadAsync();\nvar fromPage = sec.parent.id;\nvar maxRight = -Infinity;\nfor (var i = 0; i < page.children.length; i++) { var bb = page.children[i].absoluteBoundingBox; if (bb && bb.x + bb.width > maxRight) maxRight = bb.x + bb.width; }\npage.appendChild(sec);\nsec.x = Math.round(maxRight + 400);\nsec.y = Math.round(master.absoluteBoundingBox.y - 100);\nreturn { moved: sec.id, fromPage: fromPage, toPage: page.id, x: sec.x, y: sec.y, children: sec.children.map(function (c) { return c.id; }), cloneRel: { x: sec.children[0].x, y: sec.children[0].y } };"
+  }
+}

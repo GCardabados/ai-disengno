@@ -1,0 +1,13 @@
+{
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "screenshotPath": "runs/2026-09-30-copy-UZgE/evidence/demo-2009-122.png",
+  "designerDecisions": [
+    "Corte vertical de la cinta rosa (borde de su máscara) arriba a la derecha: ¿aceptable, o ampliar la máscara / mover la cinta (operaciones que la demo no se permite)?",
+    "Oferta (1:549) más alta sobre la persona que en la maestra: ¿aceptable o prefieres reducir otros espacios?",
+    "Recorte de 65 px del pie de la foto.",
+    "Ensanchado del degradado de oscurecimiento 1:541 (975 → 1110 px, efecto no-contenido).",
+    "Información complementaria desplazada +60 px (constraint CENTER de la maestra) en lugar de quedarse alineada a la izquierda con el margen de 56 px.",
+    "Roles propuestos por el agente: 1:549 como body (tú lo describiste como texto principal), 1:572 como price, 1:552 como legal.",
+    "1:555 (imagen totalmente recortada dentro del contenedor del logo): conservada; decidir qué es."
+  ]
+}

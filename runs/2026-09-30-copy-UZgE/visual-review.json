@@ -1,0 +1,9 @@
+{
+  "status": "needs_review",
+  "findings": [
+    { "code": "DECORATION_CUT_BY_MASK_EDGE", "severity": "warning", "nodeIds": ["1:548", "1:547", "2009:135", "2009:134"], "message": "La cinta rosa termina en un corte vertical en x≈986 (arriba a la derecha): es el borde de la forma de máscara 'Vector 3', que en 960 px quedaba fuera del frame. Visible en la captura." },
+    { "code": "BODY_TEXT_HIGHER_ON_SUBJECT", "severity": "warning", "nodeIds": ["1:549", "2009:136"], "message": "El bloque de oferta queda ~89 px más arriba respecto a la persona que en la maestra (sobre hombros/pelo y la cinta). Legible en la captura; la cara no queda cubierta." },
+    { "code": "PHOTO_BOTTOM_CROPPED", "severity": "warning", "nodeIds": ["1:539", "2009:126"], "message": "Se recortan 65 px del pie de la foto (camisa/silla). Cabeza y cara completas." },
+    { "code": "FONT_NOT_LOADABLE_IN_ENV", "severity": "warning", "nodeIds": ["2009:138", "2009:139", "2009:158", "2009:159"], "message": "\"Mutualidad\" no es cargable por el plugin en esta copia; el render del servidor muestra la tipografía correcta y no se sustituyó ninguna fuente. Una edición de texto en este archivo sí la necesitaría." }
+  ]
+}

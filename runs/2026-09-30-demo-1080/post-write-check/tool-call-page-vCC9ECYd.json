@@ -1,0 +1,9 @@
+{
+  "tool_use_id": "toolu_01Cc2tGUKECQyQiivCC9ECYd",
+  "input": {
+    "fileKey": "PNVvElNrs9t2ShZNq72Sst",
+    "description": "Solo lectura: comprobar que no existe la sección de salida DEMO ni clones en la página 4:90 ni en la sección 4:141 tras el intento de escritura rechazado.",
+    "skillNames": "resource:figma-use",
+    "code": "var page = await figma.getNodeByIdAsync('4:90');\nawait page.loadAsync();\nvar sec = await figma.getNodeByIdAsync('4:141');\nreturn {\n  pageChildCount: page.children.length,\n  demoSections: page.children.filter(function (n) { return n.name.indexOf('PCB') === 0 || n.name.indexOf('DEMO') >= 0; }).map(function (n) { return { id: n.id, type: n.type, name: n.name }; }),\n  section4141Children: sec.children.map(function (n) { return { id: n.id, type: n.type, name: n.name }; })\n};"
+  }
+}
