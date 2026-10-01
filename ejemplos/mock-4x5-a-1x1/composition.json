@@ -1,0 +1,98 @@
+{
+ "schema": "pcb.demo-composition.v1",
+ "label": "EJEMPLO SINTÉTICO (maestra MOCK 1080×1350 del repositorio) → 1080×1080. Sin datos de cliente; sirve para probar el entorno sin Figma.",
+ "masterNodeId": "10:1",
+ "masterSize": {
+  "width": 1080,
+  "height": 1350
+ },
+ "target": {
+  "width": 1080,
+  "height": 1080,
+  "name": "ejemplo_1080x1080"
+ },
+ "safeArea": {
+  "kind": "internal_demo_rule",
+  "marginPx": 54,
+  "note": "Margen de prueba del ejemplo, declarado como regla interna; no es una especificación."
+ },
+ "output": {
+  "sectionName": "PCB · Salida EJEMPLO (no producción)",
+  "gapFromContentPx": 400
+ },
+ "units": [
+  {
+   "unitId": "product",
+   "nodeIds": [
+    "10:11",
+    "10:12"
+   ],
+   "anchorNodeId": "10:11",
+   "to": {
+    "x": 560,
+    "y": 540
+   },
+   "why": "Producto y precio juntos a la derecha."
+  },
+  {
+   "unitId": "cta",
+   "nodeIds": [
+    "10:8"
+   ],
+   "anchorNodeId": "10:8",
+   "to": {
+    "x": 60,
+    "y": 890
+   },
+   "why": "CTA abajo a la izquierda."
+  },
+  {
+   "unitId": "legal",
+   "nodeIds": [
+    "10:10"
+   ],
+   "anchorNodeId": "10:10",
+   "to": {
+    "x": 60,
+    "y": 980
+   },
+   "why": "Legal al pie, dentro del margen."
+  }
+ ],
+ "effectResizes": [],
+ "vectorEdits": [],
+ "imageScales": [],
+ "layoutChecks": {
+  "readingOrder": [],
+  "cta": null,
+  "decorationMasks": []
+ },
+ "importantNodeIds": [
+  "10:3",
+  "10:6",
+  "10:7",
+  "10:8",
+  "10:9",
+  "10:10",
+  "10:12"
+ ],
+ "sizeLockedNodeIds": [
+  "10:3"
+ ],
+ "protectedRegions": [
+  {
+   "nodeId": "10:11",
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "width": 460,
+    "height": 200
+   },
+   "purpose": "Parte alta del producto"
+  }
+ ],
+ "mustCoverWidthNodeIds": [
+  "10:2"
+ ],
+ "mustCoverEdges": []
+}

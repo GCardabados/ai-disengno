@@ -3,7 +3,7 @@
 import type { MasterSnapshot } from '../contracts/snapshot.ts';
 import type { Rect } from '../contracts/geometry.ts';
 import type { AgentProposals, DemoAcceptance, DemoComposition } from '../contracts/demo.ts';
-import { DEMO_ACCEPTANCE_SCHEMA_ID, safeAreaLabel, safeRectOf } from '../contracts/demo.ts';
+import { DEMO_ACCEPTANCE_SCHEMA_ID, safeAreaLabel, safeExclusionsOf, safeRectOf } from '../contracts/demo.ts';
 import type { Manifest } from '../contracts/manifest.ts';
 import { canonicalize, sha256Hex } from '../hash/canonical.ts';
 import { contentProjection } from '../hash/fingerprint.ts';
@@ -90,6 +90,9 @@ export interface PrecheckFinding { code: string; nodeId: string; detail: string 
  * Predicción SOBRE EL PLAN (antes de escribir): zona segura, salida del frame, cobertura y regiones protegidas frente a
  * cajas de texto. No sustituye a demo-check sobre la relectura del clon; sirve para iterar la composición sin tocar Figma.
  */
+const overlapArea = (p: Rect, q: Rect) =>
+  Math.max(0, Math.min(p.x + p.width, q.x + q.width) - Math.max(p.x, q.x)) * Math.max(0, Math.min(p.y + p.height, q.y + q.height) - Math.max(p.y, q.y));
+
 export function precheckPlan(plan: DemoPlan, c: DemoComposition, textNodeIds: string[]): PrecheckFinding[] {
   const out: PrecheckFinding[] = [];
   const W = c.target.width, H = c.target.height, safe = safeRectOf(c);
@@ -100,6 +103,9 @@ export function precheckPlan(plan: DemoPlan, c: DemoComposition, textNodeIds: st
     if (!r) { out.push({ code: 'NO_PREDICTION', nodeId: id, detail: 'sin caja prevista' }); continue; }
     if (!inside(r, { x: 0, y: 0, width: W, height: H })) out.push({ code: 'CLIPPED_BY_FRAME', nodeId: id, detail: JSON.stringify(r) });
     else if (!inside(r, safe)) out.push({ code: 'OUTSIDE_SAFE_AREA', nodeId: id, detail: `${JSON.stringify(r)} · ${safeAreaLabel(c)}` });
+    for (const ex of safeExclusionsOf(c)) {
+      if (overlapArea(r, ex.rect) > 0) out.push({ code: 'IN_SAFE_ZONE_EXCLUSION', nodeId: id, detail: `${JSON.stringify(r)} toca «${ex.name}» ${JSON.stringify(ex.rect)}` });
+    }
   }
   for (const id of c.mustCoverWidthNodeIds) {
     const r = rect(id);

@@ -6,6 +6,7 @@ import { buildDraftManifest } from '../src/inventory/manifest.ts';
 import { validateProposals } from '../src/inventory/proposals.ts';
 import { buildDemoPlan, type DemoPlan } from '../src/demo/plan.ts';
 import { checkDemo } from '../src/demo/check.ts';
+import { precheckPlan } from '../src/demo/tools.ts';
 import { buildAdaptScript, staticAdaptViolations } from '../src/figma/adapt-script.ts';
 import { compareNodeDigests } from '../src/figma/digests.ts';
 import { mockReadRaw } from '../src/figma/mock/mock-relay.ts';
@@ -386,4 +387,29 @@ test('[script v7]: modo copy duplica el clon de origen sin tocarlo y escala imá
   assert.ok(code.includes('inode.resize(tw, th)') && code.includes('var tw = mIs.width * isc.scale, th = mIs.height * isc.scale;'), 'mismo factor en ancho y alto');
   assert.deepEqual(staticAdaptViolations(code), []);
   assert.throws(() => buildAdaptScript(plan, { sectionName: 'x', cloneName: 'y', gapFromContentPx: 0, mode: 'copy' }), /sourceCloneId/);
+});
+
+// ---------- Exclusiones de la zona segura (plantillas de Figma) ----------
+
+test('zona segura: tocar una exclusión es bloqueante en precheck y en demo-check; no tocarla pasa', async () => {
+  const safeArea = (ex: Array<{ name: string; rect: { x: number; y: number; width: number; height: number } }>) => ({
+    kind: 'safe_zone_rule' as const, ruleId: 'figma:MOCK', version: 'MOCK', provenance: 'internal' as const,
+    allowed: { x: 54, y: 54, width: 972, height: 972 }, note: 'MOCK', exclusions: ex, source: null,
+  });
+  // El CTA (10:8) queda en 60,890 300×80: una exclusión en la esquina inferior izquierda lo toca.
+  const hit = await scenario(undefined, composition({ safeArea: safeArea([{ name: 'Iconos', rect: { x: 54, y: 900, width: 100, height: 126 } }]) }));
+  const pre = precheckPlan(hit.plan, hit.comp, []);
+  assert.ok(pre.some((f) => f.code === 'IN_SAFE_ZONE_EXCLUSION' && f.nodeId === '10:8'), JSON.stringify(pre));
+  const rep = run(hit);
+  assert.equal(statusOf(rep, 'demo_safe_area'), 'fail');
+  assert.ok(rep.results.find((r) => r.validatorId === 'demo_safe_area')!.findings.some((f) => f.code === 'IN_SAFE_ZONE_EXCLUSION'));
+  const clear = await scenario(undefined, composition({ safeArea: safeArea([{ name: 'Iconos', rect: { x: 900, y: 54, width: 126, height: 100 } }]) }));
+  assert.ok(!precheckPlan(clear.plan, clear.comp, []).some((f) => f.code === 'IN_SAFE_ZONE_EXCLUSION'));
+  assert.equal(statusOf(run(clear), 'demo_safe_area'), 'pass');
+});
+
+test('zona segura: las composiciones sin exclusiones siguen siendo válidas (valor por defecto)', () => {
+  const c = parse(DemoCompositionSchema, { ...composition(), safeArea: { kind: 'safe_zone_rule', ruleId: 'r', version: 'v', provenance: 'client', allowed: { x: 0, y: 0, width: 10, height: 10 }, note: '' } });
+  assert.ok(c.ok);
+  assert.deepEqual(c.ok && c.value.safeArea.kind === 'safe_zone_rule' ? c.value.safeArea.exclusions : null, []);
 });

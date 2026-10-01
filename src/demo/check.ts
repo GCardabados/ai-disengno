@@ -1,7 +1,7 @@
 // Comprobaciones deterministas de la adaptación DEMO sobre la RELECTURA del clon (no sobre lo que el script dice
 // haber hecho). Cada comprobación declara qué demuestra y qué no. La revisión visual solo puede empeorar el estado.
 import type { MasterSnapshot, NodeSnapshot } from '../contracts/snapshot.ts';
-import { safeAreaLabel, safeRectOf, type DemoComposition } from '../contracts/demo.ts';
+import { safeAreaLabel, safeExclusionsOf, safeRectOf, type DemoComposition } from '../contracts/demo.ts';
 import type { Rect } from '../contracts/geometry.ts';
 import { aggregate, type Aggregate, type CheckStatus, type Finding, type ValidationResult } from '../contracts/validation.ts';
 import { canonicalize } from '../hash/canonical.ts';
@@ -184,9 +184,14 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       if (!got) { f.push({ code: 'NO_BOUNDS', severity: 'blocking', nodeIds: [id], message: 'Sin caja' }); continue; }
       if (!within(got, frame, tol)) f.push({ code: 'CLIPPED_BY_FRAME', severity: 'blocking', nodeIds: [id], measured: got, message: 'Sale del frame' });
       else if (!within(got, safe, tol)) f.push({ code: 'OUTSIDE_DEMO_SAFE_AREA', severity: 'blocking', nodeIds: [id], measured: got, expected: safe, message: `Fuera de la zona segura (${safeAreaLabel(c)})` });
+      for (const ex of safeExclusionsOf(c)) {
+        const ix = Math.min(got.x + got.width, ex.rect.x + ex.rect.width) - Math.max(got.x, ex.rect.x);
+        const iy = Math.min(got.y + got.height, ex.rect.y + ex.rect.height) - Math.max(got.y, ex.rect.y);
+        if (ix > tol && iy > tol) f.push({ code: 'IN_SAFE_ZONE_EXCLUSION', severity: 'blocking', nodeIds: [id], measured: got, expected: ex.rect, message: `Toca la exclusión «${ex.name}» de la zona segura` });
+      }
       if (cn && cn.text && cn.absoluteRenderBounds === null) f.push({ code: 'TEXT_NOT_RENDERED', severity: 'blocking', nodeIds: [id], message: 'El texto no tiene render bounds' });
     }
-    results.push(r('demo_safe_area', statusOf(f), `Cajas completas de los elementos importantes dentro del frame y de la zona segura: ${safeAreaLabel(c)}. Las cajas de texto no prueban ausencia de truncamiento visual.`, f));
+    results.push(r('demo_safe_area', statusOf(f), `Cajas completas de los elementos importantes dentro del frame y de la zona segura, sin tocar sus exclusiones: ${safeAreaLabel(c)}. Las cajas de texto no prueban ausencia de truncamiento visual.`, f));
   }
 
   // 7. Cobertura de fondo: foto y degradado cubren todo el ancho; regiones protegidas de la foto visibles y sin textos encima.

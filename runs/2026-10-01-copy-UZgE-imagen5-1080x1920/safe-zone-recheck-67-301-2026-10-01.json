@@ -1,0 +1,112 @@
+{
+ "schema": "pcb.safe-zone-recheck.v1",
+ "date": "2026-10-01",
+ "clone": "2096:122",
+ "note": "Comprobación POSTERIOR y separada: la vertical se validó con porcentajes de fuentes secundarias; aquí se mide contra la guía Reel 9:16 «UI Elements» (67:309) de la plantilla 67:75. No modifica la composición ni el clon.",
+ "template": {
+  "nodeId": "67:301",
+  "layer": "67:309",
+  "exclusions": [
+   {
+    "id": "67:311",
+    "name": "Safe zone bottom",
+    "type": "RECTANGLE",
+    "visible": true,
+    "rect": {
+     "x": 90,
+     "y": 1470,
+     "w": 820,
+     "h": 450
+    }
+   },
+   {
+    "id": "67:312",
+    "name": "Safe zone top",
+    "type": "RECTANGLE",
+    "visible": true,
+    "rect": {
+     "x": 90,
+     "y": 0,
+     "w": 900,
+     "h": 220
+    }
+   },
+   {
+    "id": "67:313",
+    "name": "Safe zone right 2",
+    "type": "RECTANGLE",
+    "visible": true,
+    "rect": {
+     "x": 910,
+     "y": 851,
+     "w": 170,
+     "h": 1069
+    }
+   },
+   {
+    "id": "67:314",
+    "name": "Safe zone left",
+    "type": "RECTANGLE",
+    "visible": true,
+    "rect": {
+     "x": 0,
+     "y": 0,
+     "w": 90,
+     "h": 1920
+    }
+   },
+   {
+    "id": "67:315",
+    "name": "Safe zone right",
+    "type": "RECTANGLE",
+    "visible": true,
+    "rect": {
+     "x": 990,
+     "y": 0,
+     "w": 90,
+     "h": 851
+    }
+   }
+  ]
+ },
+ "intrusions": [
+  {
+   "masterNodeId": "28:166",
+   "cloneNodeId": "2096:150",
+   "name": "BOTÓN",
+   "exclusion": "Safe zone right 2",
+   "overlapPx": {
+    "w": 14.7,
+    "h": 71.6
+   }
+  },
+  {
+   "masterNodeId": "28:177",
+   "cloneNodeId": "2096:161",
+   "name": "*Rentabilidad bruta garantizada siempre ",
+   "exclusion": "Safe zone right 2",
+   "overlapPx": {
+    "w": 15.3,
+    "h": 25.9
+   }
+  }
+ ],
+ "importantNodeIds": [
+  "28:141",
+  "28:164",
+  "28:160",
+  "28:161",
+  "28:163",
+  "28:162",
+  "28:176",
+  "28:165",
+  "28:166",
+  "28:167",
+  "28:177"
+ ],
+ "decorationNote": "La forma verde (decoración, 28:159→2096:143) también entra 17 px en «Safe zone right 2»; no es contenido importante.",
+ "evidence": [
+  "evidence/demo-2096-122-v1-overlay-reel-67-301.png",
+  "safe-zone-resolution-reel-67-301.json"
+ ]
+}

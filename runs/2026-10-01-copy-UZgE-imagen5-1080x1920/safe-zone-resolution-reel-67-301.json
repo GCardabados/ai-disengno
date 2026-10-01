@@ -1,0 +1,162 @@
+{
+  "schema": "pcb.safe-zone-resolution.v1",
+  "source": {
+    "page": {
+      "id": "67:51",
+      "name": "Safe Zones"
+    }
+  },
+  "provenance": "internal",
+  "status": "applicable",
+  "templatesSameSize": [
+    {
+      "id": "67:112",
+      "name": "XX - Template Reel 9:16 – Grid and Safe Zone"
+    },
+    {
+      "id": "67:183",
+      "name": "XX - Template Story 9:16 – Grid and Safe Zone"
+    },
+    {
+      "id": "67:301",
+      "name": "XX - Template Reel 9:16 – Grid and Safe Zone"
+    },
+    {
+      "id": "67:372",
+      "name": "XX - Template Story 9:16 – Grid and Safe Zone"
+    },
+    {
+      "id": "74:610",
+      "name": "XX - Template Tiktok 9:16 – Grid and Safe Zone"
+    }
+  ],
+  "destination": {
+    "width": 1080,
+    "height": 1920
+  },
+  "reason": "2 plantillas con la misma geometría; se usa la primera.",
+  "chosen": {
+    "templateId": "67:112",
+    "templateName": "XX - Template Reel 9:16 – Grid and Safe Zone",
+    "layerId": "67:121",
+    "layerName": "🔵  Safe Zone – System Icons"
+  },
+  "allowed": {
+    "x": 88,
+    "y": 218,
+    "width": 906,
+    "height": 1254
+  },
+  "exclusions": [
+    {
+      "name": "Safe zone bottom",
+      "rect": {
+        "x": 90,
+        "y": 1470,
+        "width": 820,
+        "height": 450
+      }
+    },
+    {
+      "name": "Safe zone top",
+      "rect": {
+        "x": 90,
+        "y": 0,
+        "width": 900,
+        "height": 220
+      }
+    },
+    {
+      "name": "Safe zone right 2",
+      "rect": {
+        "x": 910,
+        "y": 851,
+        "width": 170,
+        "height": 1069
+      }
+    },
+    {
+      "name": "Safe zone left",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 90,
+        "height": 1920
+      }
+    },
+    {
+      "name": "Safe zone right",
+      "rect": {
+        "x": 990,
+        "y": 0,
+        "width": 90,
+        "height": 851
+      }
+    }
+  ],
+  "safeArea": {
+    "kind": "safe_zone_rule",
+    "ruleId": "figma:67:112/67:121",
+    "version": "plantilla leída en esta ejecución",
+    "provenance": "internal",
+    "allowed": {
+      "x": 88,
+      "y": 218,
+      "width": 906,
+      "height": 1254
+    },
+    "exclusions": [
+      {
+        "name": "Safe zone bottom",
+        "rect": {
+          "x": 90,
+          "y": 1470,
+          "width": 820,
+          "height": 450
+        }
+      },
+      {
+        "name": "Safe zone top",
+        "rect": {
+          "x": 90,
+          "y": 0,
+          "width": 900,
+          "height": 220
+        }
+      },
+      {
+        "name": "Safe zone right 2",
+        "rect": {
+          "x": 910,
+          "y": 851,
+          "width": 170,
+          "height": 1069
+        }
+      },
+      {
+        "name": "Safe zone left",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 90,
+          "height": 1920
+        }
+      },
+      {
+        "name": "Safe zone right",
+        "rect": {
+          "x": 990,
+          "y": 0,
+          "width": 90,
+          "height": 851
+        }
+      }
+    ],
+    "note": "Plantilla «XX - Template Reel 9:16 – Grid and Safe Zone», capa «🔵  Safe Zone – System Icons» de undefined (undefined).",
+    "source": {
+      "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+      "templateNodeId": "67:112",
+      "layerNodeId": "67:121"
+    }
+  }
+}

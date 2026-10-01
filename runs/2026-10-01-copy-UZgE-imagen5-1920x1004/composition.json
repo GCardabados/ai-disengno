@@ -1,0 +1,131 @@
+{
+ "schema": "pcb.demo-composition.v1",
+ "label": "Prueba interna 1920×1004 (horizontal) a partir de 28:140 «960x1200_PAM_Meta_2» (sección «Imagen 5»); composición específica de esta pieza y destino (distribución D2: oferta a la izquierda, columna de texto a la derecha)",
+ "masterNodeId": "28:140",
+ "masterSize": {
+  "width": 960,
+  "height": 1200
+ },
+ "target": {
+  "width": 1920,
+  "height": 1004,
+  "name": "test_1920x1004"
+ },
+ "safeArea": {
+  "kind": "internal_demo_rule",
+  "marginPx": 0,
+  "note": "SIN safe zone: la plantilla indicada (sección 67:75 «Foundation Grid / Safe Zone / Meta / Tiktok», página «Safe Zones») solo tiene guías 1:1, 4:5, 3:4, Reel 9:16, Story 9:16 y TikTok 9:16; ninguna de 1920×1004 ni horizontal. Por instrucción de la persona no se aplica ninguna ni se escala otra. Solo se exige que el contenido quede dentro del frame; los márgenes de 100 px son una decisión de composición, no una zona segura."
+ },
+ "output": {
+  "sectionName": "PCB · Salida DEMO Imagen 5 (no producción)",
+  "gapFromContentPx": 400
+ },
+ "units": [
+  {
+   "unitId": "offer",
+   "nodeIds": [
+    "28:158"
+   ],
+   "anchorNodeId": "28:158",
+   "to": {
+    "x": 100,
+    "y": 111
+   },
+   "why": "Columna izquierda: bloque de oferta (forma verde + titular + 4,10 % + rentabilidad) sin editar, centrado en vertical junto con el sello (111…893)."
+  },
+  {
+   "unitId": "badge",
+   "nodeIds": [
+    "28:174"
+   ],
+   "anchorNodeId": "28:174",
+   "to": {
+    "x": 381,
+    "y": 674
+   },
+   "why": "Sello en la muesca de la forma con la misma relación que en la maestra (+281, +563 respecto al bloque)."
+  },
+  {
+   "unitId": "logo",
+   "nodeIds": [
+    "28:141"
+   ],
+   "anchorNodeId": "28:141",
+   "to": {
+    "x": 1030,
+    "y": 111
+   },
+   "why": "Columna derecha, arriba: alineado con el borde superior de la forma verde."
+  },
+  {
+   "unitId": "claim",
+   "nodeIds": [
+    "28:165"
+   ],
+   "anchorNodeId": "28:165",
+   "to": {
+    "x": 1030,
+    "y": 490
+   },
+   "why": "Claim con su línea superior alineada con «de rentabilidad garantizada 1 año» (la lectura continúa de la oferta a la columna derecha)."
+  },
+  {
+   "unitId": "cta",
+   "nodeIds": [
+    "28:166"
+   ],
+   "anchorNodeId": "28:166",
+   "to": {
+    "x": 1539,
+    "y": 501
+   },
+   "why": "CTA a la derecha del claim con la misma relación que en la maestra (+509, +11)."
+  },
+  {
+   "unitId": "legal",
+   "nodeIds": [
+    "28:177"
+   ],
+   "anchorNodeId": "28:177",
+   "to": {
+    "x": 1030,
+    "y": 865
+   },
+   "why": "Legal al pie de la columna derecha; su base coincide con la del sello (y≈893)."
+  }
+ ],
+ "effectResizes": [],
+ "vectorEdits": [],
+ "imageScales": [],
+ "layoutChecks": {
+  "readingOrder": [
+   "28:164",
+   "28:160",
+   "28:162",
+   "28:165",
+   "28:166",
+   "28:177"
+  ],
+  "cta": null,
+  "decorationMasks": []
+ },
+ "importantNodeIds": [
+  "28:141",
+  "28:164",
+  "28:160",
+  "28:161",
+  "28:163",
+  "28:162",
+  "28:176",
+  "28:165",
+  "28:166",
+  "28:167",
+  "28:177"
+ ],
+ "sizeLockedNodeIds": [
+  "28:141"
+ ],
+ "protectedRegions": [],
+ "mustCoverWidthNodeIds": [],
+ "mustCoverEdges": []
+}

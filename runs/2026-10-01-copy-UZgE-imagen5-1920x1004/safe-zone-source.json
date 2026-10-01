@@ -1,0 +1,98 @@
+{
+ "schema": "pcb.safe-zone-source.v1",
+ "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+ "sourceNodeId": "67:75",
+ "sourceType": "SECTION",
+ "sourceName": "Foundation Grid / Safe Zone / Meta / Tiktok",
+ "page": {
+  "id": "67:51",
+  "name": "Safe Zones"
+ },
+ "templatesFound": [
+  {
+   "nodeId": "67:78",
+   "name": "XX - Template Post 3:4 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1440
+  },
+  {
+   "nodeId": "67:112",
+   "name": "XX - Template Reel 9:16 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1920
+  },
+  {
+   "nodeId": "67:183",
+   "name": "XX - Template Story 9:16 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1920
+  },
+  {
+   "nodeId": "67:212",
+   "name": "XX - Template Post 4:5 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1350
+  },
+  {
+   "nodeId": "67:244",
+   "name": "XX - Template Post 4:5 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1350
+  },
+  {
+   "nodeId": "67:276",
+   "name": "XX - Template Post 1:1 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1080
+  },
+  {
+   "nodeId": "67:301",
+   "name": "XX - Template Reel 9:16 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1920
+  },
+  {
+   "nodeId": "67:372",
+   "name": "XX - Template Story 9:16 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1920
+  },
+  {
+   "nodeId": "67:401",
+   "name": "XX - Template Post 1:1 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1080
+  },
+  {
+   "nodeId": "67:426",
+   "name": "XX - Template Post 3:4 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1440
+  },
+  {
+   "nodeId": "74:610",
+   "name": "XX - Template Tiktok 9:16 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1920
+  }
+ ],
+ "destination": {
+  "width": 1920,
+  "height": 1004
+ },
+ "applicableTemplate": null,
+ "decision": "No hay plantilla dedicada a 1920×1004 ni horizontal. Por instrucción de la persona («si no hay safe zones dedicadas no hay que aplicarlas») no se aplica ninguna y no se escala ni interpreta otra.",
+ "allowedRegion": {
+  "x": 0,
+  "y": 0,
+  "width": 1920,
+  "height": 1004,
+  "note": "solo el frame"
+ },
+ "exclusions": [],
+ "provenance": "plantilla del archivo de Figma (página «Safe Zones»); NO consta en Figma si es de cliente o interna → pendiente de confirmar por la persona",
+ "evidence": [
+  "pre/safe-zone-templates-67-75.json (respuesta de solo lectura)",
+  "pre/calls-templates.json"
+ ]
+}

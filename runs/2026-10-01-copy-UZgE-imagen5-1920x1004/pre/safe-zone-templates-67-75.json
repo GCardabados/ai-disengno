@@ -1,0 +1,1816 @@
+{
+ "sectionId": "67:75",
+ "sectionName": "Foundation Grid / Safe Zone / Meta / Tiktok",
+ "sectionType": "SECTION",
+ "page": {
+  "id": "67:51",
+  "name": "Safe Zones"
+ },
+ "templates": [
+  {
+   "id": "67:78",
+   "name": "XX - Template Post 3:4 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1440,
+   "layers": [
+    {
+     "id": "67:79",
+     "name": "🔘  Safe Zone – Profile grid",
+     "type": "GROUP",
+     "visible": false,
+     "shapes": [
+      {
+       "id": "67:81",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 34,
+        "h": 1440
+       }
+      },
+      {
+       "id": "67:82",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 1046,
+        "y": 0,
+        "w": 34,
+        "h": 1440
+       }
+      },
+      {
+       "id": "67:83",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 34,
+        "y": 1395,
+        "w": 1012,
+        "h": 45
+       }
+      },
+      {
+       "id": "67:84",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 34,
+        "y": 0,
+        "w": 1012,
+        "h": 45
+       }
+      },
+      {
+       "id": "67:85",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 32,
+        "y": 43,
+        "w": 1016,
+        "h": 1354
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:88",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:90",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 1320,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:91",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 0,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:92",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 990,
+        "y": 0,
+        "w": 90,
+        "h": 1440
+       }
+      },
+      {
+       "id": "67:93",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 1440
+       }
+      },
+      {
+       "id": "67:94",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 88,
+        "y": 118,
+        "w": 904,
+        "h": 1204
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:97",
+     "name": "🔴  Safe Zone – Explore grid",
+     "type": "GROUP",
+     "visible": false,
+     "shapes": [
+      {
+       "id": "67:99",
+       "name": "Safe zone top",
+       "type": "VECTOR",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 181
+       }
+      },
+      {
+       "id": "67:100",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 1259,
+        "w": 1080,
+        "h": 181
+       }
+      },
+      {
+       "id": "67:101",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": -2,
+        "y": 179,
+        "w": 1084,
+        "h": 1082
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:104",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": false,
+     "shapes": []
+    },
+    {
+     "id": "67:111",
+     "name": "3:4 Aspect ratio 1440 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "3:4 Aspect ratio\n1440 × 1080 px"
+    }
+   ]
+  },
+  {
+   "id": "67:112",
+   "name": "XX - Template Reel 9:16 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1920,
+   "layers": [
+    {
+     "id": "67:113",
+     "name": "9:16 Aspect ratio 1920 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "9:16 Aspect ratio\n1920 × 1080 px"
+    },
+    {
+     "id": "67:114",
+     "name": "🔘  Safe Zone – Profile grid",
+     "type": "GROUP",
+     "visible": false,
+     "shapes": [
+      {
+       "id": "67:116",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 1680,
+        "w": 1080,
+        "h": 240
+       }
+      },
+      {
+       "id": "67:117",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 240
+       }
+      },
+      {
+       "id": "67:118",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": -1,
+        "y": 238,
+        "w": 1082,
+        "h": 1444
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:121",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:123",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 1470,
+        "w": 820,
+        "h": 450
+       }
+      },
+      {
+       "id": "67:124",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 0,
+        "w": 900,
+        "h": 220
+       }
+      },
+      {
+       "id": "67:125",
+       "name": "Safe zone right 2",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 910,
+        "y": 851,
+        "w": 170,
+        "h": 1069
+       }
+      },
+      {
+       "id": "67:126",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 1920
+       }
+      },
+      {
+       "id": "67:127",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 990,
+        "y": 0,
+        "w": 90,
+        "h": 851
+       }
+      },
+      {
+       "id": "67:128",
+       "name": "Square (Profile safe zone)",
+       "type": "VECTOR",
+       "visible": true,
+       "rect": {
+        "x": 88,
+        "y": 218,
+        "w": 906,
+        "h": 1254
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:131",
+     "name": "🔴  Safe Zone – Explore grid",
+     "type": "GROUP",
+     "visible": false,
+     "shapes": [
+      {
+       "id": "67:133",
+       "name": "Safe zone top",
+       "type": "VECTOR",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 420
+       }
+      },
+      {
+       "id": "67:134",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 1500,
+        "w": 1080,
+        "h": 420
+       }
+      },
+      {
+       "id": "67:135",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": -2,
+        "y": 418,
+        "w": 1084,
+        "h": 1084
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:138",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": false,
+     "shapes": []
+    }
+   ]
+  },
+  {
+   "id": "67:183",
+   "name": "XX - Template Story 9:16 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1920,
+   "layers": [
+    {
+     "id": "67:184",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:186",
+       "name": "Footer Rectangle",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 1700,
+        "w": 900,
+        "h": 220
+       }
+      },
+      {
+       "id": "67:187",
+       "name": "Header Rectangle",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 0,
+        "w": 900,
+        "h": 220
+       }
+      },
+      {
+       "id": "67:188",
+       "name": "Right Rectangle",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 990,
+        "y": 0,
+        "w": 90,
+        "h": 1920
+       }
+      },
+      {
+       "id": "67:189",
+       "name": "Left Rectangle",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 1920
+       }
+      },
+      {
+       "id": "67:190",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 88,
+        "y": 218,
+        "w": 904,
+        "h": 1484
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:193",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": false,
+     "shapes": []
+    },
+    {
+     "id": "67:211",
+     "name": "9:16 Aspect ratio 1920 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "9:16 Aspect ratio\n1920 × 1080 px"
+    }
+   ]
+  },
+  {
+   "id": "67:212",
+   "name": "XX - Template Post 4:5 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1350,
+   "layers": [
+    {
+     "id": "67:213",
+     "name": "🔘  Safe Zone – Profile grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:215",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 33,
+        "y": -2,
+        "w": 1014,
+        "h": 1373
+       }
+      },
+      {
+       "id": "67:216",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 35,
+        "h": 1350
+       }
+      },
+      {
+       "id": "67:217",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 1045,
+        "y": 0,
+        "w": 35,
+        "h": 1350
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:220",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:222",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 1230,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:223",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 0,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:224",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 990,
+        "y": 0,
+        "w": 90,
+        "h": 1350
+       }
+      },
+      {
+       "id": "67:225",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 1350
+       }
+      },
+      {
+       "id": "67:226",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 88,
+        "y": 118,
+        "w": 904,
+        "h": 1114
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:229",
+     "name": "🔴  Safe Zone – Explore grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:231",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": -2,
+        "y": 131,
+        "w": 1084,
+        "h": 1089
+       }
+      },
+      {
+       "id": "67:232",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 133
+       }
+      },
+      {
+       "id": "67:233",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 1218,
+        "w": 1080,
+        "h": 132
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:236",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": []
+    },
+    {
+     "id": "67:243",
+     "name": "4:5 Aspect ratio 1350 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "4:5 Aspect ratio\n1350 × 1080 px"
+    }
+   ]
+  },
+  {
+   "id": "67:244",
+   "name": "XX - Template Post 4:5 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1350,
+   "layers": [
+    {
+     "id": "67:245",
+     "name": "🔘  Safe Zone – Profile grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:247",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 33,
+        "y": -2,
+        "w": 1014,
+        "h": 1373
+       }
+      },
+      {
+       "id": "67:248",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 35,
+        "h": 1350
+       }
+      },
+      {
+       "id": "67:249",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 1045,
+        "y": 0,
+        "w": 35,
+        "h": 1350
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:252",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:254",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 1230,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:255",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 0,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:256",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 990,
+        "y": 0,
+        "w": 90,
+        "h": 1350
+       }
+      },
+      {
+       "id": "67:257",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 1350
+       }
+      },
+      {
+       "id": "67:258",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 88,
+        "y": 118,
+        "w": 904,
+        "h": 1114
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:261",
+     "name": "🔴  Safe Zone – Explore grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:263",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": -2,
+        "y": 131,
+        "w": 1084,
+        "h": 1089
+       }
+      },
+      {
+       "id": "67:264",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 133
+       }
+      },
+      {
+       "id": "67:265",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 1218,
+        "w": 1080,
+        "h": 132
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:268",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": []
+    },
+    {
+     "id": "67:275",
+     "name": "4:5 Aspect ratio 1350 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "4:5 Aspect ratio\n1350 × 1080 px"
+    }
+   ]
+  },
+  {
+   "id": "67:276",
+   "name": "XX - Template Post 1:1 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1080,
+   "layers": [
+    {
+     "id": "67:277",
+     "name": "🔘  Safe Zone – Profile grid",
+     "type": "GROUP",
+     "visible": false,
+     "shapes": [
+      {
+       "id": "67:279",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 135,
+        "h": 1080
+       }
+      },
+      {
+       "id": "67:280",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 945,
+        "y": 0,
+        "w": 135,
+        "h": 1080
+       }
+      },
+      {
+       "id": "67:281",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 133,
+        "y": -1,
+        "w": 814,
+        "h": 1082
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:284",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:286",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 960,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:287",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 0,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:288",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 990,
+        "y": 0,
+        "w": 90,
+        "h": 1080
+       }
+      },
+      {
+       "id": "67:289",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 1080
+       }
+      },
+      {
+       "id": "67:290",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 88,
+        "y": 118,
+        "w": 904,
+        "h": 844
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:293",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": false,
+     "shapes": []
+    },
+    {
+     "id": "67:300",
+     "name": "1:1 Aspect ratio 1080 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "1:1 Aspect ratio\n1080 × 1080 px"
+    }
+   ]
+  },
+  {
+   "id": "67:301",
+   "name": "XX - Template Reel 9:16 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1920,
+   "layers": [
+    {
+     "id": "67:302",
+     "name": "🔘  Safe Zone – Profile grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:304",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 1680,
+        "w": 1080,
+        "h": 240
+       }
+      },
+      {
+       "id": "67:305",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 240
+       }
+      },
+      {
+       "id": "67:306",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": -1,
+        "y": 238,
+        "w": 1082,
+        "h": 1444
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:309",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:311",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 1470,
+        "w": 820,
+        "h": 450
+       }
+      },
+      {
+       "id": "67:312",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 0,
+        "w": 900,
+        "h": 220
+       }
+      },
+      {
+       "id": "67:313",
+       "name": "Safe zone right 2",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 910,
+        "y": 851,
+        "w": 170,
+        "h": 1069
+       }
+      },
+      {
+       "id": "67:314",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 1920
+       }
+      },
+      {
+       "id": "67:315",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 990,
+        "y": 0,
+        "w": 90,
+        "h": 851
+       }
+      },
+      {
+       "id": "67:316",
+       "name": "Square (Profile safe zone)",
+       "type": "VECTOR",
+       "visible": true,
+       "rect": {
+        "x": 88,
+        "y": 218,
+        "w": 906,
+        "h": 1254
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:319",
+     "name": "🔴  Safe Zone – Explore grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:321",
+       "name": "Safe zone top",
+       "type": "VECTOR",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 420
+       }
+      },
+      {
+       "id": "67:322",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 1500,
+        "w": 1080,
+        "h": 420
+       }
+      },
+      {
+       "id": "67:323",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": -2,
+        "y": 418,
+        "w": 1084,
+        "h": 1084
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:326",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": []
+    },
+    {
+     "id": "67:371",
+     "name": "9:16 Aspect ratio 1920 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "9:16 Aspect ratio\n1920 × 1080 px"
+    }
+   ]
+  },
+  {
+   "id": "67:372",
+   "name": "XX - Template Story 9:16 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1920,
+   "layers": [
+    {
+     "id": "67:373",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:375",
+       "name": "Footer Rectangle",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 1700,
+        "w": 900,
+        "h": 220
+       }
+      },
+      {
+       "id": "67:376",
+       "name": "Header Rectangle",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 0,
+        "w": 900,
+        "h": 220
+       }
+      },
+      {
+       "id": "67:377",
+       "name": "Right Rectangle",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 990,
+        "y": 0,
+        "w": 90,
+        "h": 1920
+       }
+      },
+      {
+       "id": "67:378",
+       "name": "Left Rectangle",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 1920
+       }
+      },
+      {
+       "id": "67:379",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 88,
+        "y": 218,
+        "w": 904,
+        "h": 1484
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:382",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": []
+    },
+    {
+     "id": "67:400",
+     "name": "9:16 Aspect ratio 1920 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "9:16 Aspect ratio\n1920 × 1080 px"
+    }
+   ]
+  },
+  {
+   "id": "67:401",
+   "name": "XX - Template Post 1:1 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1080,
+   "layers": [
+    {
+     "id": "67:402",
+     "name": "🔘  Safe Zone – Profile grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:404",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 945,
+        "y": 0,
+        "w": 135,
+        "h": 1080
+       }
+      },
+      {
+       "id": "67:405",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 133,
+        "y": -1,
+        "w": 814,
+        "h": 1082
+       }
+      },
+      {
+       "id": "67:406",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": -1,
+        "y": 0,
+        "w": 135,
+        "h": 1080
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:409",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:411",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 960,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:412",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 0,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:413",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 990,
+        "y": 0,
+        "w": 90,
+        "h": 1080
+       }
+      },
+      {
+       "id": "67:414",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 1080
+       }
+      },
+      {
+       "id": "67:415",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 88,
+        "y": 118,
+        "w": 904,
+        "h": 844
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:418",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": []
+    },
+    {
+     "id": "67:425",
+     "name": "1:1 Aspect ratio 1080 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "1:1 Aspect ratio\n1080 × 1080 px"
+    }
+   ]
+  },
+  {
+   "id": "67:426",
+   "name": "XX - Template Post 3:4 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1440,
+   "layers": [
+    {
+     "id": "67:427",
+     "name": "🔘  Safe Zone – Profile grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:429",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 34,
+        "h": 1440
+       }
+      },
+      {
+       "id": "67:430",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 1046,
+        "y": 0,
+        "w": 34,
+        "h": 1440
+       }
+      },
+      {
+       "id": "67:431",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 34,
+        "y": 1395,
+        "w": 1012,
+        "h": 45
+       }
+      },
+      {
+       "id": "67:432",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 34,
+        "y": 0,
+        "w": 1012,
+        "h": 45
+       }
+      },
+      {
+       "id": "67:433",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 32,
+        "y": 43,
+        "w": 1016,
+        "h": 1354
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:436",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:438",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 1320,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:439",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 90,
+        "y": 0,
+        "w": 900,
+        "h": 120
+       }
+      },
+      {
+       "id": "67:440",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 990,
+        "y": 0,
+        "w": 90,
+        "h": 1440
+       }
+      },
+      {
+       "id": "67:441",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 1440
+       }
+      },
+      {
+       "id": "67:442",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 88,
+        "y": 118,
+        "w": 904,
+        "h": 1204
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:445",
+     "name": "🔴  Safe Zone – Explore grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "67:447",
+       "name": "Safe zone top",
+       "type": "VECTOR",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 181
+       }
+      },
+      {
+       "id": "67:448",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 1259,
+        "w": 1080,
+        "h": 181
+       }
+      },
+      {
+       "id": "67:449",
+       "name": "Square (Profile safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": -2,
+        "y": 179,
+        "w": 1084,
+        "h": 1082
+       }
+      }
+     ]
+    },
+    {
+     "id": "67:452",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": []
+    },
+    {
+     "id": "67:459",
+     "name": "3:4 Aspect ratio 1440 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "3:4 Aspect ratio\n1440 × 1080 px"
+    }
+   ]
+  },
+  {
+   "id": "74:610",
+   "name": "XX - Template Tiktok 9:16 – Grid and Safe Zone",
+   "width": 1080,
+   "height": 1920,
+   "layers": [
+    {
+     "id": "74:613",
+     "name": "🔘  Safe Zone – Profile grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "74:615",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 841,
+        "y": 361,
+        "w": 239,
+        "h": 1559
+       }
+      },
+      {
+       "id": "80:1203",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 1280,
+        "w": 841,
+        "h": 640
+       }
+      }
+     ]
+    },
+    {
+     "id": "74:620",
+     "name": "🔵  Safe Zone – System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "74:622",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 120,
+        "y": 1280,
+        "w": 721,
+        "h": 640
+       }
+      },
+      {
+       "id": "74:623",
+       "name": "Safe zone top",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 120,
+        "y": 0,
+        "w": 840,
+        "h": 252
+       }
+      },
+      {
+       "id": "74:624",
+       "name": "Safe zone right 2",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 841,
+        "y": 361,
+        "w": 239,
+        "h": 1559
+       }
+      },
+      {
+       "id": "74:625",
+       "name": "Safe zone left",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 120,
+        "h": 1920
+       }
+      },
+      {
+       "id": "74:626",
+       "name": "Safe zone right",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": 960,
+        "y": 0,
+        "w": 120,
+        "h": 361
+       }
+      },
+      {
+       "id": "74:627",
+       "name": "Square (Profile safe zone)",
+       "type": "VECTOR",
+       "visible": true,
+       "rect": {
+        "x": 120,
+        "y": 252,
+        "w": 840.36,
+        "h": 1028
+       }
+      }
+     ]
+    },
+    {
+     "id": "74:630",
+     "name": "🔴  Safe Zone – Explore grid",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": [
+      {
+       "id": "74:632",
+       "name": "Safe zone top",
+       "type": "VECTOR",
+       "visible": true,
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 143
+       }
+      },
+      {
+       "id": "74:633",
+       "name": "Safe zone bottom",
+       "type": "RECTANGLE",
+       "visible": false,
+       "rect": {
+        "x": 0,
+        "y": 1280,
+        "w": 1080,
+        "h": 640
+       }
+      },
+      {
+       "id": "74:634",
+       "name": "Square (Search safe zone)",
+       "type": "RECTANGLE",
+       "visible": true,
+       "rect": {
+        "x": -2,
+        "y": 143,
+        "w": 1084,
+        "h": 1137
+       }
+      }
+     ]
+    },
+    {
+     "id": "74:635",
+     "name": "Label",
+     "type": "FRAME",
+     "visible": true,
+     "shapes": []
+    },
+    {
+     "id": "74:637",
+     "name": "⚙️  System Icons",
+     "type": "GROUP",
+     "visible": true,
+     "shapes": []
+    },
+    {
+     "id": "74:682",
+     "name": "9:16 Aspect ratio 1920 × 1080 px",
+     "type": "TEXT",
+     "visible": true,
+     "shapes": [],
+     "text": "9:16 Aspect ratio\n1920 × 1080 px"
+    },
+    {
+     "id": "74:683",
+     "name": "Subtract",
+     "type": "BOOLEAN_OPERATION",
+     "visible": false,
+     "shapes": []
+    }
+   ]
+  }
+ ],
+ "labels": [
+  {
+   "id": "67:76",
+   "text": "Foundation Grid Meta"
+  },
+  {
+   "id": "67:77",
+   "text": "Safe Zone Meta"
+  },
+  {
+   "id": "70:603",
+   "text": "Safe Zone Tiktok"
+  }
+ ]
+}

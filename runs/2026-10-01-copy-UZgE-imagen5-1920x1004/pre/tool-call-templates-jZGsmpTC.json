@@ -1,0 +1,9 @@
+{
+  "tool_use_id": "toolu_01JHLRcj2hiTyZvgjZGsmpTC",
+  "input": {
+    "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+    "description": "Solo lectura: inventario de plantillas de safe zone en la sección 67:75 (tamaños y rectángulos en coordenadas de cada plantilla)",
+    "skillNames": "resource:figma-use",
+    "code": "var sec = await figma.getNodeByIdAsync(\"67:75\");\nif (!sec) throw new Error(\"PCB_NOT_FOUND 67:75\");\nvar page = sec.parent; while (page && page.type !== 'PAGE') page = page.parent;\nvar out = { sectionId: sec.id, sectionName: String(sec.name), sectionType: sec.type, page: page ? { id: page.id, name: String(page.name) } : null, templates: [], labels: [] };\nfor (var i = 0; i < sec.children.length; i++) {\n  var t = sec.children[i];\n  if (t.type === 'TEXT') { out.labels.push({ id: t.id, text: String(t.characters) }); continue; }\n  if (t.type !== 'FRAME') continue;\n  var ob = t.absoluteBoundingBox;\n  var rec = { id: t.id, name: String(t.name), width: t.width, height: t.height, layers: [] };\n  for (var j = 0; j < t.children.length; j++) {\n    var L = t.children[j];\n    var lr = { id: L.id, name: String(L.name), type: L.type, visible: L.visible, shapes: [] };\n    if (L.type === 'TEXT') lr.text = String(L.characters);\n    var shapesFrame = ('children' in L) ? L.children.filter(function (c) { return c.name === 'Shapes'; })[0] : null;\n    if (shapesFrame) {\n      for (var k = 0; k < shapesFrame.children.length; k++) {\n        var s = shapesFrame.children[k], b = s.absoluteBoundingBox;\n        lr.shapes.push({ id: s.id, name: String(s.name), type: s.type, visible: s.visible, rect: b ? { x: Math.round((b.x - ob.x) * 100) / 100, y: Math.round((b.y - ob.y) * 100) / 100, w: Math.round(b.width * 100) / 100, h: Math.round(b.height * 100) / 100 } : null });\n      }\n    }\n    rec.layers.push(lr);\n  }\n  out.templates.push(rec);\n}\nreturn out;"
+  }
+}

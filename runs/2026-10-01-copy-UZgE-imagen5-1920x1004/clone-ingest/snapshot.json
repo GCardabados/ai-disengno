@@ -1,0 +1,5163 @@
+{
+  "schema": "pcb.snapshot.v2",
+  "source": "FIGMA_MCP_USE_FIGMA",
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "rootNodeId": "2118:121",
+  "page": {
+    "id": "1:484",
+    "name": "Figma Agents"
+  },
+  "editorType": "figma",
+  "scriptVersion": "pcb.read-script.v4",
+  "ingestedAt": "2026-10-01T11:52:09.484Z",
+  "transport": {
+    "mode": "chunked",
+    "setId": "set_dead7e6cd68725a0_b12000",
+    "payloadSha256": "sha256:dead7e6cd68725a00f0e73517729eda0ad2ee9501ffe285f5c633e6a9e769cd5",
+    "payloadBytes": 66901,
+    "byteBudget": 12000,
+    "chunkCount": 7,
+    "calls": [
+      {
+        "chunkIndex": 0,
+        "rawResponseSha256": "sha256:cd819f55a03006c042de7c03ad872c2ab79793e8bb9bc62184e374192b27238d",
+        "rawResponsePath": "runs/2026-10-01-copy-UZgE-imagen5-1920x1004/clone-ingest/raw-response-0.txt",
+        "envelopeExtraction": "embedded_json_block",
+        "skipInvisibleInstanceChildrenBefore": true,
+        "missingFontNodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ],
+        "responseBytes": 12638
+      },
+      {
+        "chunkIndex": 1,
+        "rawResponseSha256": "sha256:735c6aa1d7a38761887d8b40e569695e8180d6ed38e6e4b7a9689e6dbd9b6c22",
+        "rawResponsePath": "runs/2026-10-01-copy-UZgE-imagen5-1920x1004/clone-ingest/raw-response-6.txt",
+        "envelopeExtraction": "embedded_json_block",
+        "skipInvisibleInstanceChildrenBefore": true,
+        "missingFontNodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ],
+        "responseBytes": 12637
+      },
+      {
+        "chunkIndex": 2,
+        "rawResponseSha256": "sha256:9c82e1af5512ba70aebacdb9b005dc6582e0c23dc307afe7fa9fbecd66df651b",
+        "rawResponsePath": "runs/2026-10-01-copy-UZgE-imagen5-1920x1004/clone-ingest/raw-response-3.txt",
+        "envelopeExtraction": "embedded_json_block",
+        "skipInvisibleInstanceChildrenBefore": true,
+        "missingFontNodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ],
+        "responseBytes": 12638
+      },
+      {
+        "chunkIndex": 3,
+        "rawResponseSha256": "sha256:e0717f1803d8dc9a99aa408f0649f1d14a2dd4517925ce0c36560a1fcca0c3e6",
+        "rawResponsePath": "runs/2026-10-01-copy-UZgE-imagen5-1920x1004/clone-ingest/raw-response-2.txt",
+        "envelopeExtraction": "embedded_json_block",
+        "skipInvisibleInstanceChildrenBefore": true,
+        "missingFontNodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ],
+        "responseBytes": 12638
+      },
+      {
+        "chunkIndex": 4,
+        "rawResponseSha256": "sha256:08dd7fb01f438d39c960c3dbaa5d92921e9f0bb4e238cff845843077f4627f6b",
+        "rawResponsePath": "runs/2026-10-01-copy-UZgE-imagen5-1920x1004/clone-ingest/raw-response-4.txt",
+        "envelopeExtraction": "embedded_json_block",
+        "skipInvisibleInstanceChildrenBefore": true,
+        "missingFontNodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ],
+        "responseBytes": 12638
+      },
+      {
+        "chunkIndex": 5,
+        "rawResponseSha256": "sha256:f55999ef445ad868d019f78e3431fa310815c6057a9a2d3cf03dc68e4573b34a",
+        "rawResponsePath": "runs/2026-10-01-copy-UZgE-imagen5-1920x1004/clone-ingest/raw-response-5.txt",
+        "envelopeExtraction": "embedded_json_block",
+        "skipInvisibleInstanceChildrenBefore": true,
+        "missingFontNodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ],
+        "responseBytes": 12638
+      },
+      {
+        "chunkIndex": 6,
+        "rawResponseSha256": "sha256:67edc6326026dd2f5cab647063d2ee38b2229808102b0cf9db065fc3af3bd8f1",
+        "rawResponsePath": "runs/2026-10-01-copy-UZgE-imagen5-1920x1004/clone-ingest/raw-response-1.txt",
+        "envelopeExtraction": "embedded_json_block",
+        "skipInvisibleInstanceChildrenBefore": true,
+        "missingFontNodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ],
+        "responseBytes": 4365
+      }
+    ],
+    "duplicatesDiscarded": 0
+  },
+  "entry": null,
+  "environment": {
+    "nodesWithMissingFont": [
+      "2118:143",
+      "2118:144",
+      "2118:150",
+      "2118:159",
+      "2118:160"
+    ],
+    "missingFontByCall": [
+      {
+        "chunkIndex": 0,
+        "nodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ]
+      },
+      {
+        "chunkIndex": 1,
+        "nodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ]
+      },
+      {
+        "chunkIndex": 2,
+        "nodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ]
+      },
+      {
+        "chunkIndex": 3,
+        "nodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ]
+      },
+      {
+        "chunkIndex": 4,
+        "nodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ]
+      },
+      {
+        "chunkIndex": 5,
+        "nodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ]
+      },
+      {
+        "chunkIndex": 6,
+        "nodeIds": [
+          "2118:143",
+          "2118:144",
+          "2118:150",
+          "2118:159",
+          "2118:160"
+        ]
+      }
+    ],
+    "missingFontStable": true
+  },
+  "nodes": [
+    {
+      "id": "2118:121",
+      "type": "FRAME",
+      "name": "DEMO_1920x1004 · 960x1200_PAM_Meta_2 · pendiente de revisión humana",
+      "parentId": "2096:121",
+      "childIds": [
+        "2118:124",
+        "2118:141",
+        "2118:148",
+        "2118:149",
+        "2118:151",
+        "2118:157",
+        "2118:160"
+      ],
+      "depth": 0,
+      "indexInParent": 1,
+      "paintOrder": 0,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 1920,
+      "height": 1004,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1280
+        ],
+        [
+          0,
+          1,
+          100
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          19880
+        ],
+        [
+          0,
+          1,
+          10141
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 19880,
+        "y": 10141,
+        "width": 1920,
+        "height": 1004
+      },
+      "absoluteRenderBounds": {
+        "x": 19880,
+        "y": 10141,
+        "width": 1920,
+        "height": 1004
+      },
+      "clipsContent": true,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": "NONE",
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.9137254953384399,
+              "g": 0.7803921699523926,
+              "b": 0.8627451062202454
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:286720a4c0e2b857af485b1a08a5a19f93b7d069/4146:12"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 1.600000023841858,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:124",
+      "type": "GROUP",
+      "name": "Logo Mutualidad",
+      "parentId": "2118:121",
+      "childIds": [
+        "2118:125",
+        "2118:126",
+        "2118:129"
+      ],
+      "depth": 1,
+      "indexInParent": 0,
+      "paintOrder": 1,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 270.9972229003906,
+      "height": 48,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1030
+        ],
+        [
+          0,
+          1,
+          111
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20910
+        ],
+        [
+          0,
+          1,
+          10252
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20910,
+        "y": 10252,
+        "width": 270.9972229003906,
+        "height": 48
+      },
+      "absoluteRenderBounds": {
+        "x": 20910,
+        "y": 10252,
+        "width": 270.998046875,
+        "height": 48
+      },
+      "clipsContent": null,
+      "constraints": null,
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": null,
+      "strokeAlign": null,
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:125",
+      "type": "RECTANGLE",
+      "name": "Rectangle 206",
+      "parentId": "2118:124",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 0,
+      "paintOrder": 2,
+      "visible": false,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 307,
+      "height": 86,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1012
+        ],
+        [
+          0,
+          1,
+          91
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20892
+        ],
+        [
+          0,
+          1,
+          10232
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20892,
+        "y": 10232,
+        "width": 307,
+        "height": 86
+      },
+      "absoluteRenderBounds": null,
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.9686274528503418,
+              "g": 0.9686274528503418,
+              "b": 0.9686274528503418
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:69f4c4fccf3c6033e1107cf61a978f09162fb00c/4045:54"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 1,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:7c5069fae19e5930f297aa22cd08dc4461473889ed35065272eccdb7c4976d35",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:126",
+      "type": "GROUP",
+      "name": "Group",
+      "parentId": "2118:124",
+      "childIds": [
+        "2118:127",
+        "2118:128"
+      ],
+      "depth": 2,
+      "indexInParent": 1,
+      "paintOrder": 3,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 54.68008804321289,
+      "height": 48,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1030
+        ],
+        [
+          0,
+          1,
+          111
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20910
+        ],
+        [
+          0,
+          1,
+          10252
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20910,
+        "y": 10252,
+        "width": 54.68008804321289,
+        "height": 48
+      },
+      "absoluteRenderBounds": {
+        "x": 20910,
+        "y": 10252,
+        "width": 54.68008804321289,
+        "height": 48
+      },
+      "clipsContent": null,
+      "constraints": null,
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": null,
+      "strokeAlign": null,
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:127",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:126",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 0,
+      "paintOrder": 4,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 17.819828033447266,
+      "height": 48,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1066.8602485656738
+        ],
+        [
+          0,
+          1,
+          111.00002750864041
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20946.859375
+        ],
+        [
+          0,
+          1,
+          10252
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20946.859375,
+        "y": 10252,
+        "width": 17.819828033447266,
+        "height": 48
+      },
+      "absoluteRenderBounds": {
+        "x": 20946.859375,
+        "y": 10252,
+        "width": 17.8203125,
+        "height": 48
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:470ced484051300a2d0bd8bde1ac2d436ed6c3a633c17cb01938874fa3dccde8",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:128",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:126",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 1,
+      "paintOrder": 5,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 29.26878547668457,
+      "height": 48,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1030
+        ],
+        [
+          0,
+          1,
+          111
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20910
+        ],
+        [
+          0,
+          1,
+          10252
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20910,
+        "y": 10252,
+        "width": 29.26878547668457,
+        "height": 48
+      },
+      "absoluteRenderBounds": {
+        "x": 20910,
+        "y": 10252,
+        "width": 29.26953125,
+        "height": 48
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:adadae8ec81e73b96c3db3d6f6e06d17d06ba073b2e74a302aa4b546bbee6172",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:129",
+      "type": "GROUP",
+      "name": "Group",
+      "parentId": "2118:124",
+      "childIds": [
+        "2118:130",
+        "2118:131",
+        "2118:132",
+        "2118:133",
+        "2118:134",
+        "2118:135",
+        "2118:136",
+        "2118:137",
+        "2118:138",
+        "2118:139",
+        "2118:140"
+      ],
+      "depth": 2,
+      "indexInParent": 2,
+      "paintOrder": 6,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 194.25894165039062,
+      "height": 26.97293472290039,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1106.73828125
+        ],
+        [
+          0,
+          1,
+          121.517578125
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20986.73828125
+        ],
+        [
+          0,
+          1,
+          10262.517578125
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20986.73828125,
+        "y": 10262.517578125,
+        "width": 194.25894165039062,
+        "height": 26.97293472290039
+      },
+      "absoluteRenderBounds": {
+        "x": 20986.73828125,
+        "y": 10262.517578125,
+        "width": 194.259765625,
+        "height": 26.97293472290039
+      },
+      "clipsContent": null,
+      "constraints": null,
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": null,
+      "strokeAlign": null,
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:130",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 0,
+      "paintOrder": 7,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 25.328365325927734,
+      "height": 24.25043487548828,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1106.7382753096913
+        ],
+        [
+          0,
+          1,
+          123.92144656181335
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20986.73828125
+        ],
+        [
+          0,
+          1,
+          10264.921875
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20986.73828125,
+        "y": 10264.921875,
+        "width": 25.328365325927734,
+        "height": 24.25043487548828
+      },
+      "absoluteRenderBounds": {
+        "x": 20986.73828125,
+        "y": 10264.921875,
+        "width": 25.328125,
+        "height": 24.25
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:dac50e258d909ff3a4703606d3f527815ad5dae63d98709635a0ed7c4eaee18c",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:131",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 1,
+      "paintOrder": 8,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 17.447507858276367,
+      "height": 19.492176055908203,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1136.698823928833
+        ],
+        [
+          0,
+          1,
+          128.94742059707642
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21016.69921875
+        ],
+        [
+          0,
+          1,
+          10269.947265625
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21016.69921875,
+        "y": 10269.947265625,
+        "width": 17.447507858276367,
+        "height": 19.492176055908203
+      },
+      "absoluteRenderBounds": {
+        "x": 21016.69921875,
+        "y": 10269.947265625,
+        "width": 17.447265625,
+        "height": 19.4921875
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:c5841bf9e22a696ef568df9c12c2f43974180c4d05e08f428cdd3aea05ea5451",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:132",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 2,
+      "paintOrder": 9,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 17.44750213623047,
+      "height": 19.492176055908203,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1171.2545471191406
+        ],
+        [
+          0,
+          1,
+          128.94742059707642
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21051.25390625
+        ],
+        [
+          0,
+          1,
+          10269.947265625
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21051.25390625,
+        "y": 10269.947265625,
+        "width": 17.44750213623047,
+        "height": 19.492176055908203
+      },
+      "absoluteRenderBounds": {
+        "x": 21051.25390625,
+        "y": 10269.947265625,
+        "width": 17.447265625,
+        "height": 19.4921875
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:a55f2c84a7633e7f1b76e45a8100893f1ea4b1a96372aa6ef889bb1973882277",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:133",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 3,
+      "paintOrder": 10,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 3.95076060295105,
+      "height": 19.231304168701172,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1227.4960403442383
+        ],
+        [
+          0,
+          1,
+          128.93573236465454
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21107.49609375
+        ],
+        [
+          0,
+          1,
+          10269.935546875
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21107.49609375,
+        "y": 10269.935546875,
+        "width": 3.95076060295105,
+        "height": 19.231304168701172
+      },
+      "absoluteRenderBounds": {
+        "x": 21107.49609375,
+        "y": 10269.935546875,
+        "width": 3.951171875,
+        "height": 19.2314453125
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:8d729a1ccbe00a737b8db7d8d1ce43bb1bd67c46e0cf82f7a6f11296bb1a10d9",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:134",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 4,
+      "paintOrder": 11,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 4.14728307723999,
+      "height": 4.1530442237854,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1227.4006652832031
+        ],
+        [
+          0,
+          1,
+          121.51755062284974
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21107.400390625
+        ],
+        [
+          0,
+          1,
+          10262.517578125
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21107.400390625,
+        "y": 10262.517578125,
+        "width": 4.14728307723999,
+        "height": 4.1530442237854
+      },
+      "absoluteRenderBounds": {
+        "x": 21107.400390625,
+        "y": 10262.517578125,
+        "width": 4.146484375,
+        "height": 4.1533203125
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:4ebc249ff8aae1537c028a4ce7aa5be0be0ddbcf373caf689713a046bb334cb7",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:135",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 5,
+      "paintOrder": 12,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 19.56769561767578,
+      "height": 26.139131546020508,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1234.8171081542969
+        ],
+        [
+          0,
+          1,
+          122.3435246348381
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21114.81640625
+        ],
+        [
+          0,
+          1,
+          10263.34375
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21114.81640625,
+        "y": 10263.34375,
+        "width": 19.56769561767578,
+        "height": 26.139131546020508
+      },
+      "absoluteRenderBounds": {
+        "x": 21114.81640625,
+        "y": 10263.34375,
+        "width": 19.568359375,
+        "height": 26.138671875
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:78108596a905f98215af53e49a559ecb4b7762358a2627ca22218f0dd410b907",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:136",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 6,
+      "paintOrder": 13,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 19.56768226623535,
+      "height": 26.139131546020508,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1281.4295349121094
+        ],
+        [
+          0,
+          1,
+          122.3435246348381
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21161.4296875
+        ],
+        [
+          0,
+          1,
+          10263.34375
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21161.4296875,
+        "y": 10263.34375,
+        "width": 19.56768226623535,
+        "height": 26.139131546020508
+      },
+      "absoluteRenderBounds": {
+        "x": 21161.4296875,
+        "y": 10263.34375,
+        "width": 19.568359375,
+        "height": 26.138671875
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:53a02967e3dbe671128efce8122450c2d974367fede0aa1dfd6036918aed45c5",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:137",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 7,
+      "paintOrder": 14,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 11.542040824890137,
+      "height": 24,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1157.0424499511719
+        ],
+        [
+          0,
+          1,
+          124.15521287918091
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21037.04296875
+        ],
+        [
+          0,
+          1,
+          10265.1552734375
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21037.04296875,
+        "y": 10265.1552734375,
+        "width": 11.542040824890137,
+        "height": 24
+      },
+      "absoluteRenderBounds": {
+        "x": 21037.04296875,
+        "y": 10265.1552734375,
+        "width": 11.54296875,
+        "height": 24
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:faacb12b74f80299d57216da742f0620d131c2306b12c5896381a4d1e34fddc0",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:138",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 8,
+      "paintOrder": 15,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 22.070520401000977,
+      "height": 19.84695816040039,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1192.113182067871
+        ],
+        [
+          0,
+          1,
+          128.64352464675903
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21072.11328125
+        ],
+        [
+          0,
+          1,
+          10269.6435546875
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21072.11328125,
+        "y": 10269.6435546875,
+        "width": 22.070520401000977,
+        "height": 19.84695816040039
+      },
+      "absoluteRenderBounds": {
+        "x": 21072.11328125,
+        "y": 10269.6435546875,
+        "width": 22.0703125,
+        "height": 19.8466796875
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:c91b6a9811139f4d86b03f95047104104a5186a750c3a8806c55aff4d99fe589",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:139",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 9,
+      "paintOrder": 16,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 8.60482406616211,
+      "height": 25.98261260986328,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1216.5733947753906
+        ],
+        [
+          0,
+          1,
+          122.17599219083786
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21096.57421875
+        ],
+        [
+          0,
+          1,
+          10263.17578125
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21096.57421875,
+        "y": 10263.17578125,
+        "width": 8.60482406616211,
+        "height": 25.98261260986328
+      },
+      "absoluteRenderBounds": {
+        "x": 21096.57421875,
+        "y": 10263.17578125,
+        "width": 8.60546875,
+        "height": 25.982421875
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:5a5aee829dcd13c4c2617aa2bd75acdc6cdea95ccdd1f62e965e08b4e75a3816",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:140",
+      "type": "VECTOR",
+      "name": "Vector",
+      "parentId": "2118:129",
+      "childIds": [],
+      "depth": 3,
+      "indexInParent": 10,
+      "paintOrder": 17,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 22.070520401000977,
+      "height": 19.84695816040039,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1257.7548370361328
+        ],
+        [
+          0,
+          1,
+          128.64352464675903
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21137.75390625
+        ],
+        [
+          0,
+          1,
+          10269.6435546875
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21137.75390625,
+        "y": 10269.6435546875,
+        "width": 22.070520401000977,
+        "height": 19.84695816040039
+      },
+      "absoluteRenderBounds": {
+        "x": 21137.75390625,
+        "y": 10269.6435546875,
+        "width": 22.0703125,
+        "height": 19.8466796875
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "SCALE",
+        "vertical": "SCALE"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.9675194621086121,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:64876ad09585067eb3c48891fd1a1586298d4e23587048308963b3da7261bfd1",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:141",
+      "type": "GROUP",
+      "name": "Group 1000007941",
+      "parentId": "2118:121",
+      "childIds": [
+        "2118:142",
+        "2118:143",
+        "2118:144",
+        "2118:145",
+        "2118:146",
+        "2118:147"
+      ],
+      "depth": 1,
+      "indexInParent": 1,
+      "paintOrder": 18,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 774,
+      "height": 661,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          100
+        ],
+        [
+          0,
+          1,
+          111
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          19980
+        ],
+        [
+          0,
+          1,
+          10252
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 19980,
+        "y": 10252,
+        "width": 774,
+        "height": 661
+      },
+      "absoluteRenderBounds": {
+        "x": 19980,
+        "y": 10252,
+        "width": 774,
+        "height": 661
+      },
+      "clipsContent": null,
+      "constraints": null,
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": null,
+      "strokeAlign": null,
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:142",
+      "type": "VECTOR",
+      "name": "Rectangle 208",
+      "parentId": "2118:141",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 0,
+      "paintOrder": 19,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 774,
+      "height": 661,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          100
+        ],
+        [
+          0,
+          -1,
+          772
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          19980
+        ],
+        [
+          0,
+          -1,
+          10913
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 19980,
+        "y": 10252,
+        "width": 774,
+        "height": 661
+      },
+      "absoluteRenderBounds": {
+        "x": 19980,
+        "y": 10252,
+        "width": 774,
+        "height": 596.5625
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "CENTER",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 1.6238762140274048,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:6a384dee98d71cfc20b172a6aeeea098af984bbbf500fed9742b71465f0663e8",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:143",
+      "type": "TEXT",
+      "name": "4",
+      "parentId": "2118:141",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 1,
+      "paintOrder": 20,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 300,
+      "height": 519,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          141.84375
+        ],
+        [
+          0,
+          1,
+          172
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20021.84375
+        ],
+        [
+          0,
+          1,
+          10313
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20021.84375,
+        "y": 10313,
+        "width": 300,
+        "height": 519
+      },
+      "absoluteRenderBounds": {
+        "x": 20033.5234375,
+        "y": 10410.2470703125,
+        "width": 277.306640625,
+        "height": 309.7529296875
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.8196078538894653,
+              "g": 0.6431372761726379,
+              "b": 0.7686274647712708
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:9f2f6aa646e9bf93d69e376c1c05e1ed167f505e/4146:3"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 8.325190544128418,
+      "strokeAlign": "OUTSIDE",
+      "effects": [],
+      "text": {
+        "characters": "4",
+        "hasMissingFont": null,
+        "autoResize": "WIDTH_AND_HEIGHT",
+        "truncation": "DISABLED",
+        "maxLines": null,
+        "alignHorizontal": "LEFT",
+        "alignVertical": "TOP",
+        "leadingTrim": "NONE",
+        "segmentFields": "full",
+        "segments": [
+          {
+            "start": 0,
+            "end": 1,
+            "characters": "4",
+            "fontName": {
+              "family": "Mutualidad",
+              "style": "Black"
+            },
+            "fontSize": 432.6152038574219,
+            "fontWeight": 900,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 120.00000476837158
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.8196078538894653,
+                    "g": 0.6431372761726379,
+                    "b": 0.7686274647712708
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:9f2f6aa646e9bf93d69e376c1c05e1ed167f505e/4146:3"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          }
+        ]
+      },
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:144",
+      "type": "TEXT",
+      "name": ",10%",
+      "parentId": "2118:141",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 2,
+      "paintOrder": 21,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 387,
+      "height": 200,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          433.203125
+        ],
+        [
+          0,
+          1,
+          277.859375
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20313.203125
+        ],
+        [
+          0,
+          1,
+          10418.859375
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20313.203125,
+        "y": 10418.859375,
+        "width": 387,
+        "height": 200
+      },
+      "absoluteRenderBounds": {
+        "x": 20317.587890625,
+        "y": 10456.275390625,
+        "width": 375.59765625,
+        "height": 143.0244140625
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.20392157137393951,
+              "g": 0.16078431904315948,
+              "b": 0.1921568661928177
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:56c6e01808f58a3925d67e4e51246004ac754c0a/4146:19"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 3.2140581607818604,
+      "strokeAlign": "OUTSIDE",
+      "effects": [],
+      "text": {
+        "characters": ",10%",
+        "hasMissingFont": null,
+        "autoResize": "WIDTH_AND_HEIGHT",
+        "truncation": "DISABLED",
+        "maxLines": null,
+        "alignHorizontal": "LEFT",
+        "alignVertical": "TOP",
+        "leadingTrim": "NONE",
+        "segmentFields": "full",
+        "segments": [
+          {
+            "start": 0,
+            "end": 1,
+            "characters": ",",
+            "fontName": {
+              "family": "Mutualidad",
+              "style": "Black"
+            },
+            "fontSize": 151.22604370117188,
+            "fontWeight": 900,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 120.00000476837158
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.8196078538894653,
+                    "g": 0.6431372761726379,
+                    "b": 0.7686274647712708
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:9f2f6aa646e9bf93d69e376c1c05e1ed167f505e/4146:3"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          },
+          {
+            "start": 1,
+            "end": 4,
+            "characters": "10%",
+            "fontName": {
+              "family": "Mutualidad",
+              "style": "Black"
+            },
+            "fontSize": 167.01727294921875,
+            "fontWeight": 900,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 120.00000476837158
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.8196078538894653,
+                    "g": 0.6431372761726379,
+                    "b": 0.7686274647712708
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:9f2f6aa646e9bf93d69e376c1c05e1ed167f505e/4146:3"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          }
+        ]
+      },
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:145",
+      "type": "TEXT",
+      "name": "de rentabilidad garantizada 1 año",
+      "parentId": "2118:141",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 3,
+      "paintOrder": 22,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 366.79132080078125,
+      "height": 110.55400085449219,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          468.1171875
+        ],
+        [
+          0,
+          1,
+          489.6171875
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20348.1171875
+        ],
+        [
+          0,
+          1,
+          10630.6171875
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20348.1171875,
+        "y": 10630.6171875,
+        "width": 366.79132080078125,
+        "height": 110.55400085449219
+      },
+      "absoluteRenderBounds": {
+        "x": 20349.53125,
+        "y": 10636.5419921875,
+        "width": 315.607421875,
+        "height": 86.283203125
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 1,
+              "g": 1,
+              "b": 1
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:4fdc03ad0bdde6dfe104761ee93c1a8927042d9c/4146:7"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 4.522959232330322,
+      "strokeAlign": "OUTSIDE",
+      "effects": [],
+      "text": {
+        "characters": "de rentabilidad garantizada 1 año",
+        "hasMissingFont": null,
+        "autoResize": "NONE",
+        "truncation": "DISABLED",
+        "maxLines": null,
+        "alignHorizontal": "LEFT",
+        "alignVertical": "TOP",
+        "leadingTrim": "NONE",
+        "segmentFields": "full",
+        "segments": [
+          {
+            "start": 0,
+            "end": 16,
+            "characters": "de rentabilidad ",
+            "fontName": {
+              "family": "Rufina",
+              "style": "Regular"
+            },
+            "fontSize": 39.26216506958008,
+            "fontWeight": 400,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 120.00000476837158
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 1,
+                    "g": 1,
+                    "b": 1
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:4fdc03ad0bdde6dfe104761ee93c1a8927042d9c/4146:7"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          },
+          {
+            "start": 16,
+            "end": 27,
+            "characters": "garantizada",
+            "fontName": {
+              "family": "Rufina",
+              "style": "Regular"
+            },
+            "fontSize": 39.26216506958008,
+            "fontWeight": 400,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 89.99999761581421
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 1,
+                    "g": 1,
+                    "b": 1
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:4fdc03ad0bdde6dfe104761ee93c1a8927042d9c/4146:7"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          },
+          {
+            "start": 27,
+            "end": 28,
+            "characters": " ",
+            "fontName": {
+              "family": "Rufina",
+              "style": "Bold"
+            },
+            "fontSize": 39.26216506958008,
+            "fontWeight": 700,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 89.99999761581421
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 1,
+                    "g": 1,
+                    "b": 1
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:4fdc03ad0bdde6dfe104761ee93c1a8927042d9c/4146:7"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          },
+          {
+            "start": 28,
+            "end": 29,
+            "characters": "1",
+            "fontName": {
+              "family": "Rufina",
+              "style": "Bold"
+            },
+            "fontSize": 51.660743713378906,
+            "fontWeight": 700,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 89.99999761581421
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 1,
+                    "g": 1,
+                    "b": 1
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:4fdc03ad0bdde6dfe104761ee93c1a8927042d9c/4146:7"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          },
+          {
+            "start": 29,
+            "end": 33,
+            "characters": " año",
+            "fontName": {
+              "family": "Rufina",
+              "style": "Bold"
+            },
+            "fontSize": 39.26216506958008,
+            "fontWeight": 700,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 89.99999761581421
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 1,
+                    "g": 1,
+                    "b": 1
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:4fdc03ad0bdde6dfe104761ee93c1a8927042d9c/4146:7"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          }
+        ]
+      },
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:146",
+      "type": "TEXT",
+      "name": "*",
+      "parentId": "2118:141",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 4,
+      "paintOrder": 23,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 17,
+      "height": 43,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          811
+        ],
+        [
+          0,
+          1,
+          311
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20691
+        ],
+        [
+          0,
+          1,
+          10452
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20691,
+        "y": 10452,
+        "width": 17,
+        "height": 43
+      },
+      "absoluteRenderBounds": {
+        "x": 20693.232421875,
+        "y": 10460.4482421875,
+        "width": 11.6640625,
+        "height": 12.095703125
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.8196078538894653,
+              "g": 0.6431372761726379,
+              "b": 0.7686274647712708
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:9f2f6aa646e9bf93d69e376c1c05e1ed167f505e/4146:3"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 4.522959232330322,
+      "strokeAlign": "OUTSIDE",
+      "effects": [],
+      "text": {
+        "characters": "*",
+        "hasMissingFont": null,
+        "autoResize": "WIDTH_AND_HEIGHT",
+        "truncation": "DISABLED",
+        "maxLines": null,
+        "alignHorizontal": "LEFT",
+        "alignVertical": "TOP",
+        "leadingTrim": "NONE",
+        "segmentFields": "full",
+        "segments": [
+          {
+            "start": 0,
+            "end": 1,
+            "characters": "*",
+            "fontName": {
+              "family": "Rufina",
+              "style": "Regular"
+            },
+            "fontSize": 36,
+            "fontWeight": 400,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 120.00000476837158
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.8196078538894653,
+                    "g": 0.6431372761726379,
+                    "b": 0.7686274647712708
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:9f2f6aa646e9bf93d69e376c1c05e1ed167f505e/4146:3"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          }
+        ]
+      },
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:147",
+      "type": "TEXT",
+      "name": "Aprovecha la nueva emisión",
+      "parentId": "2118:141",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 5,
+      "paintOrder": 24,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 612,
+      "height": 50,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          181
+        ],
+        [
+          0,
+          1,
+          188
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20061
+        ],
+        [
+          0,
+          1,
+          10329
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20061,
+        "y": 10329,
+        "width": 612,
+        "height": 50
+      },
+      "absoluteRenderBounds": {
+        "x": 20060.4296875,
+        "y": 10333.3232421875,
+        "width": 611.666015625,
+        "height": 47.2900390625
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "CENTER",
+        "vertical": "CENTER"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 1,
+              "g": 1,
+              "b": 1
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:4fdc03ad0bdde6dfe104761ee93c1a8927042d9c/4146:7"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 5.78525972366333,
+      "strokeAlign": "OUTSIDE",
+      "effects": [],
+      "text": {
+        "characters": "Aprovecha la nueva emisión",
+        "hasMissingFont": null,
+        "autoResize": "WIDTH_AND_HEIGHT",
+        "truncation": "DISABLED",
+        "maxLines": null,
+        "alignHorizontal": "CENTER",
+        "alignVertical": "TOP",
+        "leadingTrim": "NONE",
+        "segmentFields": "full",
+        "segments": [
+          {
+            "start": 0,
+            "end": 26,
+            "characters": "Aprovecha la nueva emisión",
+            "fontName": {
+              "family": "Rufina",
+              "style": "Bold"
+            },
+            "fontSize": 46.45378112792969,
+            "fontWeight": 700,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 108.00000429153442
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 1,
+                    "g": 1,
+                    "b": 1
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:4fdc03ad0bdde6dfe104761ee93c1a8927042d9c/4146:7"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          }
+        ]
+      },
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:148",
+      "type": "TEXT",
+      "name": "Plan Ahorro Multiplica. Ahorro sin sorpresas.",
+      "parentId": "2118:121",
+      "childIds": [],
+      "depth": 1,
+      "indexInParent": 2,
+      "paintOrder": 25,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 450,
+      "height": 86,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1030
+        ],
+        [
+          0,
+          1,
+          490
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20910
+        ],
+        [
+          0,
+          1,
+          10631
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20910,
+        "y": 10631,
+        "width": 450,
+        "height": 86
+      },
+      "absoluteRenderBounds": {
+        "x": 20909.640625,
+        "y": 10636.3515625,
+        "width": 390.791015625,
+        "height": 79.6484375
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 4.00922966003418,
+      "strokeAlign": "OUTSIDE",
+      "effects": [],
+      "text": {
+        "characters": "Plan Ahorro Multiplica. Ahorro sin sorpresas.",
+        "hasMissingFont": null,
+        "autoResize": "HEIGHT",
+        "truncation": "DISABLED",
+        "maxLines": null,
+        "alignHorizontal": "LEFT",
+        "alignVertical": "TOP",
+        "leadingTrim": "NONE",
+        "segmentFields": "full",
+        "segments": [
+          {
+            "start": 0,
+            "end": 24,
+            "characters": "Plan Ahorro Multiplica. ",
+            "fontName": {
+              "family": "Rufina",
+              "style": "Bold"
+            },
+            "fontSize": 36,
+            "fontWeight": 700,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 120.00000476837158
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0,
+                    "g": 0.21960784494876862,
+                    "b": 0.1568627506494522
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          },
+          {
+            "start": 24,
+            "end": 45,
+            "characters": "Ahorro sin sorpresas.",
+            "fontName": {
+              "family": "Rufina",
+              "style": "Regular"
+            },
+            "fontSize": 36,
+            "fontWeight": 400,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 120.00000476837158
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0,
+                    "g": 0.21960784494876862,
+                    "b": 0.1568627506494522
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          }
+        ]
+      },
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:149",
+      "type": "FRAME",
+      "name": "BOTÓN",
+      "parentId": "2118:121",
+      "childIds": [
+        "2118:150"
+      ],
+      "depth": 1,
+      "indexInParent": 3,
+      "paintOrder": 26,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 264.70672607421875,
+      "height": 71.64434814453125,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1539
+        ],
+        [
+          0,
+          1,
+          501
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21419
+        ],
+        [
+          0,
+          1,
+          10642
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21419,
+        "y": 10642,
+        "width": 264.70672607421875,
+        "height": 71.64434814453125
+      },
+      "absoluteRenderBounds": {
+        "x": 21419,
+        "y": 10642,
+        "width": 264.70703125,
+        "height": 71.64453125
+      },
+      "clipsContent": false,
+      "constraints": {
+        "horizontal": "CENTER",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": "HORIZONTAL",
+        "positioning": "AUTO",
+        "sizingHorizontal": "HUG",
+        "sizingVertical": "HUG"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 1.967667818069458,
+      "strokeAlign": "OUTSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:150",
+      "type": "TEXT",
+      "name": "Saber más",
+      "parentId": "2118:149",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 0,
+      "paintOrder": 27,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 186,
+      "height": 50,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          39.353355407714844
+        ],
+        [
+          0,
+          1,
+          11.80600643157959
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          21458.353515625
+        ],
+        [
+          0,
+          1,
+          10653.8056640625
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 21458.353515625,
+        "y": 10653.8056640625,
+        "width": 186,
+        "height": 50
+      },
+      "absoluteRenderBounds": {
+        "x": 21460.265625,
+        "y": 10662.11328125,
+        "width": 182.33984375,
+        "height": 29.3046875
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "HUG",
+        "sizingVertical": "HUG"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.7254902124404907,
+              "g": 0.929411768913269,
+              "b": 0.6666666865348816
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:8d203b9e02ecd76cc565fa62e6d0139f6e7e0f95/4146:4"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.983833909034729,
+      "strokeAlign": "OUTSIDE",
+      "effects": [],
+      "text": {
+        "characters": "Saber más",
+        "hasMissingFont": null,
+        "autoResize": "WIDTH_AND_HEIGHT",
+        "truncation": "DISABLED",
+        "maxLines": null,
+        "alignHorizontal": "CENTER",
+        "alignVertical": "TOP",
+        "leadingTrim": "NONE",
+        "segmentFields": "full",
+        "segments": [
+          {
+            "start": 0,
+            "end": 9,
+            "characters": "Saber más",
+            "fontName": {
+              "family": "Mutualidad",
+              "style": "Bold"
+            },
+            "fontSize": 36,
+            "fontWeight": 700,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 139.9999976158142
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.7254902124404907,
+                    "g": 0.929411768913269,
+                    "b": 0.6666666865348816
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:8d203b9e02ecd76cc565fa62e6d0139f6e7e0f95/4146:4"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          }
+        ]
+      },
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:151",
+      "type": "FRAME",
+      "name": "Zonasegura_Feed",
+      "parentId": "2118:121",
+      "childIds": [
+        "2118:152",
+        "2118:153",
+        "2118:154",
+        "2118:155",
+        "2118:156"
+      ],
+      "depth": 1,
+      "indexInParent": 4,
+      "paintOrder": 28,
+      "visible": false,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 960,
+      "height": 1200,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          19880
+        ],
+        [
+          0,
+          1,
+          10141
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 19880,
+        "y": 10141,
+        "width": 960,
+        "height": 1200
+      },
+      "absoluteRenderBounds": null,
+      "clipsContent": true,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": "NONE",
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": false,
+          "opacity": 0.30000001192092896,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": false,
+            "opacity": 0.30000001192092896,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.7686274647712708,
+              "g": 0.7686274647712708,
+              "b": 0.7686274647712708
+            },
+            "boundVariables": {}
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.8888888955116272,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:152",
+      "type": "RECTANGLE",
+      "name": "Rectangle 141",
+      "parentId": "2118:151",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 0,
+      "paintOrder": 29,
+      "visible": false,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 853.3333129882812,
+      "height": 337.7777404785156,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          53.33333206176758
+        ],
+        [
+          0,
+          1,
+          773.3333740234375
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          19933.333984375
+        ],
+        [
+          0,
+          1,
+          10914.3330078125
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 19933.333984375,
+        "y": 10914.3330078125,
+        "width": 853.3333129882812,
+        "height": 337.7777404785156
+      },
+      "absoluteRenderBounds": null,
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "CENTER",
+        "vertical": "CENTER"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 0.15000000596046448,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 0.15000000596046448,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 1,
+              "g": 1,
+              "b": 1
+            },
+            "boundVariables": {}
+          }
+        },
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 0.20000000298023224,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 0.20000000298023224,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0
+            },
+            "boundVariables": {}
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.8888888955116272,
+      "strokeAlign": "INSIDE",
+      "effects": [
+        {
+          "type": "BACKGROUND_BLUR",
+          "visible": true,
+          "raw": {
+            "type": "BACKGROUND_BLUR",
+            "visible": true,
+            "radius": 21.15555763244629,
+            "boundVariables": {},
+            "blurType": "NORMAL"
+          }
+        }
+      ],
+      "text": null,
+      "vectorGeometryDigest": "sha256:cc7acd2f8cda4372ef7048df029a308f7b33b5ae7a051e85134fc60644498684",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:153",
+      "type": "RECTANGLE",
+      "name": "Rectangle 195",
+      "parentId": "2118:151",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 1,
+      "paintOrder": 30,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 960,
+      "height": 90,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          19880
+        ],
+        [
+          0,
+          1,
+          10141
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 19880,
+        "y": 10141,
+        "width": 960,
+        "height": 90
+      },
+      "absoluteRenderBounds": null,
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 0.5,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 0.5,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.9686274528503418,
+              "g": 0,
+              "b": 0.8823529481887817
+            },
+            "boundVariables": {}
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 1,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:880aaa9b17991ff3ebbd8eae27ac35f61bd1d3cf1bf3ebb6b06437ffe3029f8f",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:154",
+      "type": "RECTANGLE",
+      "name": "Rectangle 201",
+      "parentId": "2118:151",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 2,
+      "paintOrder": 31,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 960,
+      "height": 90,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          1110
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          19880
+        ],
+        [
+          0,
+          1,
+          11251
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 19880,
+        "y": 11251,
+        "width": 960,
+        "height": 90
+      },
+      "absoluteRenderBounds": null,
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MAX"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 0.5,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 0.5,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.9686274528503418,
+              "g": 0,
+              "b": 0.8823529481887817
+            },
+            "boundVariables": {}
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 1,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:880aaa9b17991ff3ebbd8eae27ac35f61bd1d3cf1bf3ebb6b06437ffe3029f8f",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:155",
+      "type": "RECTANGLE",
+      "name": "Rectangle 197",
+      "parentId": "2118:151",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 3,
+      "paintOrder": 32,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": -90.00000250447808,
+      "width": 1200,
+      "height": 89.99994659423828,
+      "relativeTransform": [
+        [
+          -4.371138828673793e-8,
+          -1,
+          960
+        ],
+        [
+          1,
+          -4.371138828673793e-8,
+          2.2737367544323206e-13
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          -4.371138828673793e-8,
+          -1,
+          20840
+        ],
+        [
+          1,
+          -4.371138828673793e-8,
+          10141
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20750.000000952095,
+        "y": 10140.999996065977,
+        "width": 89.99999904790457,
+        "height": 1200.000003934023
+      },
+      "absoluteRenderBounds": null,
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 0.5,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 0.5,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.9686274528503418,
+              "g": 0,
+              "b": 0.8823529481887817
+            },
+            "boundVariables": {}
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.8888888955116272,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:88cd91d431c4483367a6589429ada1aea87bc5fa5d8eaaa8ec0ebb84a264fd20",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:156",
+      "type": "RECTANGLE",
+      "name": "Rectangle 198",
+      "parentId": "2118:151",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 4,
+      "paintOrder": 33,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": -90.00000250447808,
+      "width": 1200,
+      "height": 89.99994659423828,
+      "relativeTransform": [
+        [
+          -4.371138828673793e-8,
+          -1,
+          90
+        ],
+        [
+          1,
+          -4.371138828673793e-8,
+          2.2737367544323206e-13
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          -4.371138828673793e-8,
+          -1,
+          19970
+        ],
+        [
+          1,
+          -4.371138828673793e-8,
+          10141
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 19880.000000952095,
+        "y": 10140.999996065977,
+        "width": 89.99999904790457,
+        "height": 1200.000003934023
+      },
+      "absoluteRenderBounds": null,
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 0.5,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 0.5,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.9686274528503418,
+              "g": 0,
+              "b": 0.8823529481887817
+            },
+            "boundVariables": {}
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.8888888955116272,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:88cd91d431c4483367a6589429ada1aea87bc5fa5d8eaaa8ec0ebb84a264fd20",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:157",
+      "type": "GROUP",
+      "name": "Group 1000007954",
+      "parentId": "2118:121",
+      "childIds": [
+        "2118:158",
+        "2118:159"
+      ],
+      "depth": 1,
+      "indexInParent": 5,
+      "paintOrder": 34,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 219,
+      "height": 219,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          381
+        ],
+        [
+          0,
+          1,
+          674
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20261
+        ],
+        [
+          0,
+          1,
+          10815
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20261,
+        "y": 10815,
+        "width": 219,
+        "height": 219
+      },
+      "absoluteRenderBounds": {
+        "x": 20261,
+        "y": 10815,
+        "width": 219,
+        "height": 219
+      },
+      "clipsContent": null,
+      "constraints": null,
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": null,
+      "strokeAlign": null,
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:158",
+      "type": "ELLIPSE",
+      "name": "Ellipse 15",
+      "parentId": "2118:157",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 0,
+      "paintOrder": 35,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 219,
+      "height": 219,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          381
+        ],
+        [
+          0,
+          1,
+          674
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20261
+        ],
+        [
+          0,
+          1,
+          10815
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20261,
+        "y": 10815,
+        "width": 219,
+        "height": 219
+      },
+      "absoluteRenderBounds": {
+        "x": 20261,
+        "y": 10815,
+        "width": 219,
+        "height": 219
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "MIN",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokeWeight": 2.1315228939056396,
+      "strokeAlign": "INSIDE",
+      "effects": [],
+      "text": null,
+      "vectorGeometryDigest": "sha256:285546760f8f50971890208ce75b5d2ad2a0ca9251014e6bcdb5fc8680d9c184",
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:159",
+      "type": "TEXT",
+      "name": "Disponible hasta agotar la emisión o hasta 31/10/2026",
+      "parentId": "2118:157",
+      "childIds": [],
+      "depth": 2,
+      "indexInParent": 1,
+      "paintOrder": 36,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 191,
+      "height": 122,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          395
+        ],
+        [
+          0,
+          1,
+          737
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20275
+        ],
+        [
+          0,
+          1,
+          10878
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20275,
+        "y": 10878,
+        "width": 191,
+        "height": 122
+      },
+      "absoluteRenderBounds": {
+        "x": 20277.0703125,
+        "y": 10881.81640625,
+        "width": 187.58984375,
+        "height": 117.439453125
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "CENTER",
+        "vertical": "CENTER"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0.7254902124404907,
+              "g": 0.929411768913269,
+              "b": 0.6666666865348816
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:8d203b9e02ecd76cc565fa62e6d0139f6e7e0f95/4146:4"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 0.6985740065574646,
+      "strokeAlign": "OUTSIDE",
+      "effects": [],
+      "text": {
+        "characters": "Disponible\nhasta agotar\nla emisión \no hasta \n31/10/2026",
+        "hasMissingFont": null,
+        "autoResize": "WIDTH_AND_HEIGHT",
+        "truncation": "DISABLED",
+        "maxLines": null,
+        "alignHorizontal": "CENTER",
+        "alignVertical": "CENTER",
+        "leadingTrim": "NONE",
+        "segmentFields": "full",
+        "segments": [
+          {
+            "start": 0,
+            "end": 11,
+            "characters": "Disponible\n",
+            "fontName": {
+              "family": "Mutualidad",
+              "style": "Regular"
+            },
+            "fontSize": 24,
+            "fontWeight": 400,
+            "lineHeight": {
+              "unit": "PIXELS",
+              "value": 25.868696212768555
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "UPPER",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.20392157137393951,
+                    "g": 0.16078431904315948,
+                    "b": 0.1921568661928177
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:56c6e01808f58a3925d67e4e51246004ac754c0a/4146:19"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          },
+          {
+            "start": 11,
+            "end": 24,
+            "characters": "hasta agotar\n",
+            "fontName": {
+              "family": "Mutualidad",
+              "style": "Bold"
+            },
+            "fontSize": 24,
+            "fontWeight": 700,
+            "lineHeight": {
+              "unit": "PIXELS",
+              "value": 25.868696212768555
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "UPPER",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.20392157137393951,
+                    "g": 0.16078431904315948,
+                    "b": 0.1921568661928177
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:56c6e01808f58a3925d67e4e51246004ac754c0a/4146:19"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          },
+          {
+            "start": 24,
+            "end": 36,
+            "characters": "la emisión \n",
+            "fontName": {
+              "family": "Mutualidad",
+              "style": "Bold"
+            },
+            "fontSize": 24,
+            "fontWeight": 700,
+            "lineHeight": {
+              "unit": "PIXELS",
+              "value": 25.868696212768555
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "UPPER",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 12,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.20392157137393951,
+                    "g": 0.16078431904315948,
+                    "b": 0.1921568661928177
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:56c6e01808f58a3925d67e4e51246004ac754c0a/4146:19"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          },
+          {
+            "start": 36,
+            "end": 55,
+            "characters": "o hasta \n31/10/2026",
+            "fontName": {
+              "family": "Mutualidad",
+              "style": "Regular"
+            },
+            "fontSize": 16,
+            "fontWeight": 400,
+            "lineHeight": {
+              "unit": "PIXELS",
+              "value": 16.864864349365234
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "UPPER",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.20392157137393951,
+                    "g": 0.16078431904315948,
+                    "b": 0.1921568661928177
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:56c6e01808f58a3925d67e4e51246004ac754c0a/4146:19"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          }
+        ]
+      },
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    },
+    {
+      "id": "2118:160",
+      "type": "TEXT",
+      "name": "*Rentabilidad bruta garantizada siempre que mantengas la inversión durante el periodo de 1 año con el Plan Ahorro Multiplica. En caso de rescate anticipado, el valor de rescate estará sujeto a las fluctuaciones del mercado. Más información en mutualidad.com.",
+      "parentId": "2118:121",
+      "childIds": [],
+      "depth": 1,
+      "indexInParent": 6,
+      "paintOrder": 37,
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "PASS_THROUGH",
+      "isMask": false,
+      "maskType": "ALPHA",
+      "rotation": 0,
+      "width": 790,
+      "height": 28,
+      "relativeTransform": [
+        [
+          1,
+          0,
+          1030
+        ],
+        [
+          0,
+          1,
+          865
+        ]
+      ],
+      "absoluteTransform": [
+        [
+          1,
+          0,
+          20910
+        ],
+        [
+          0,
+          1,
+          11006
+        ]
+      ],
+      "absoluteBoundingBox": {
+        "x": 20910,
+        "y": 11006,
+        "width": 790,
+        "height": 28
+      },
+      "absoluteRenderBounds": {
+        "x": 20910.732421875,
+        "y": 11007.748046875,
+        "width": 779.5390625,
+        "height": 25.904296875
+      },
+      "clipsContent": null,
+      "constraints": {
+        "horizontal": "CENTER",
+        "vertical": "MIN"
+      },
+      "layout": {
+        "mode": null,
+        "positioning": "AUTO",
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "FIXED"
+      },
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "imageHash": null,
+          "scaleMode": null,
+          "imageTransform": null,
+          "scalingFactor": null,
+          "raw": {
+            "type": "SOLID",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "color": {
+              "r": 0,
+              "g": 0.21960784494876862,
+              "b": 0.1568627506494522
+            },
+            "boundVariables": {
+              "color": {
+                "type": "VARIABLE_ALIAS",
+                "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+              }
+            }
+          }
+        }
+      ],
+      "strokes": [],
+      "strokeWeight": 23.203214645385742,
+      "strokeAlign": "OUTSIDE",
+      "effects": [],
+      "text": {
+        "characters": "*Rentabilidad bruta garantizada siempre que mantengas la inversión durante el periodo de 1 año con el Plan Ahorro Multiplica. En caso de rescate anticipado, el valor de rescate estará sujeto a las fluctuaciones del mercado. Más información en mutualidad.com.",
+        "hasMissingFont": null,
+        "autoResize": "HEIGHT",
+        "truncation": "DISABLED",
+        "maxLines": null,
+        "alignHorizontal": "LEFT",
+        "alignVertical": "TOP",
+        "leadingTrim": "NONE",
+        "segmentFields": "full",
+        "segments": [
+          {
+            "start": 0,
+            "end": 258,
+            "characters": "*Rentabilidad bruta garantizada siempre que mantengas la inversión durante el periodo de 1 año con el Plan Ahorro Multiplica. En caso de rescate anticipado, el valor de rescate estará sujeto a las fluctuaciones del mercado. Más información en mutualidad.com.",
+            "fontName": {
+              "family": "Mutualidad",
+              "style": "Regular"
+            },
+            "fontSize": 12,
+            "fontWeight": 400,
+            "lineHeight": {
+              "unit": "PERCENT",
+              "value": 120.00000476837158
+            },
+            "letterSpacing": {
+              "unit": "PERCENT",
+              "value": 0
+            },
+            "textCase": "ORIGINAL",
+            "textDecoration": "NONE",
+            "paragraphSpacing": 0,
+            "paragraphIndent": 0,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "imageHash": null,
+                "scaleMode": null,
+                "imageTransform": null,
+                "scalingFactor": null,
+                "raw": {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0,
+                    "g": 0.21960784494876862,
+                    "b": 0.1568627506494522
+                  },
+                  "boundVariables": {
+                    "color": {
+                      "type": "VARIABLE_ALIAS",
+                      "id": "VariableID:dee63ce7d3d1311b4d7c9621e16246d2d3db147b/4146:6"
+                    }
+                  }
+                }
+              }
+            ],
+            "other": {
+              "listOptions": {
+                "type": "NONE"
+              },
+              "indentation": 0,
+              "hyperlink": null,
+              "textStyleId": "",
+              "fillStyleId": ""
+            }
+          }
+        ]
+      },
+      "vectorGeometryDigest": null,
+      "component": null,
+      "readErrors": []
+    }
+  ],
+  "fingerprints": {
+    "version": "pcb.fingerprint.v2",
+    "master": "sha256:a1344ab2c673cb9fdd729c73fb85951013fca58698a1759607845fb38d5d6cdd",
+    "structure": "sha256:8f3439f16f20bd53243f491a5e19d30f4d6e9e35fcb31f5b876de3f9af4d48cf",
+    "content": "sha256:88f5f2eca540ff88b20859a5c3e530018897ca660a6458f1f8e3084fe5376ec7",
+    "layout": "sha256:5f59fd7e3b56d0f14deaddb3a0da2e1c61955273561f107df773bc1a16f571e7",
+    "metadata": "sha256:b11e6f27ae931545b13ea7c2a23fdf857ecec5e4e2a652d93625901ab8be294f"
+  }
+}

@@ -4,3 +4,6 @@ node_modules/
 .env.*
 *.pat
 .DS_Store
+
+# Resultados y capturas de ejecuciones: fuera de Git por defecto (versionar solo con git add -f si se decide).
+runs/

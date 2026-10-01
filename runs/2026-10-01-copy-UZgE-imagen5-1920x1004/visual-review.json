@@ -1,0 +1,11 @@
+{
+  "status": "needs_review",
+  "findings": [
+    { "code": "HIERARCHY_PRESERVED", "severity": "info", "nodeIds": ["28:158", "28:174"], "message": "Revisión visual del agente sobre evidence/demo-2118-121-v1.png: el bloque de oferta (forma, titular, 4,10 %, rentabilidad) y el sello se conservan intactos a la izquierda, a toda altura útil; sigue siendo lo dominante. La forma no se edita." },
+    { "code": "READING_ORDER_TWO_COLUMNS", "severity": "info", "nodeIds": ["28:164", "28:160", "28:162", "28:165", "28:166", "28:177"], "message": "Lectura: titular → 4,10 % → rentabilidad → (columna derecha, a la altura de la rentabilidad) claim → «Saber más» → legal. El sello y el logo no entran en la secuencia comprobada: el sello cuelga de la oferta y el logo encabeza la columna derecha como firma." },
+    { "code": "RIGHT_COLUMN_SPARSE", "severity": "warning", "nodeIds": ["28:141", "28:165", "28:166", "28:177"], "message": "La columna derecha queda aireada: ~330 px entre logo y claim y ~290 px entre claim y legal. Los textos conservan cuerpo; con autorización se podría aumentar el claim o el CTA para equilibrar." },
+    { "code": "LOGO_POSITION_CHANGED", "severity": "warning", "nodeIds": ["28:141"], "message": "El logo pasa de arriba a la izquierda (maestra) a arriba a la derecha, alineado con el borde superior de la forma. Solo traslación; tamaño intacto. Confirmar que la marca acepta esa posición." },
+    { "code": "NO_SAFE_ZONE_APPLIED", "severity": "info", "nodeIds": ["28:140"], "message": "La sección 67:75 no tiene plantilla para 1920×1004 (solo 1:1, 4:5, 3:4, Reel/Story/TikTok 9:16). No se aplica ni se escala ninguna; la superposición muestra solo el límite del frame y las guías de composición." },
+    { "code": "MISSING_FONT_ENVIRONMENT", "severity": "info", "nodeIds": ["28:160", "28:161", "28:167", "28:176", "28:177"], "message": "Mutualidad no se puede cargar en este entorno; los textos solo se trasladan y la captura muestra su render original." }
+  ]
+}

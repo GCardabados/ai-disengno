@@ -139,6 +139,10 @@ export const DemoCompositionSchema = z.strictObject({
     z.strictObject({
       kind: z.literal('safe_zone_rule'), ruleId: z.string(), version: z.string(),
       provenance: z.enum(['platform_official', 'client', 'internal']), allowed: RectSchema, note: z.string(),
+      /** Zonas dentro de 'allowed' que el contenido importante no puede tocar (p. ej. iconos de la interfaz). */
+      exclusions: z.array(z.strictObject({ name: z.string(), rect: RectSchema })).default([]),
+      /** Origen cuando la regla sale de una plantilla de Figma (archivo y nodos), para poder recomprobarla. */
+      source: z.strictObject({ fileKey: z.string(), nodeId: z.string(), templateNodeId: z.string(), layerNodeId: z.string() }).nullable().default(null),
     }),
   ]),
   output: z.strictObject({ sectionName: z.string(), gapFromContentPx: z.number().min(0) }),
@@ -174,6 +178,10 @@ export function safeRectOf(c: Pick<DemoComposition, 'safeArea' | 'target'>): { x
   const a = c.safeArea;
   if (a.kind === 'safe_zone_rule') return a.allowed;
   return { x: a.marginPx, y: a.marginPx, width: c.target.width - 2 * a.marginPx, height: c.target.height - 2 * a.marginPx };
+}
+/** Exclusiones de la zona segura (vacío si la regla no las tiene). */
+export function safeExclusionsOf(c: Pick<DemoComposition, 'safeArea'>): Array<{ name: string; rect: { x: number; y: number; width: number; height: number } }> {
+  return c.safeArea.kind === 'safe_zone_rule' ? c.safeArea.exclusions : [];
 }
 export function safeAreaLabel(c: Pick<DemoComposition, 'safeArea'>): string {
   const a = c.safeArea;

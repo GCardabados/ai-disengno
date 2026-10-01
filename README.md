@@ -7,7 +7,11 @@ Diseño y decisiones: [docs/00-auditoria-y-diseno.md](docs/00-auditoria-y-diseno
 - **H0: cerrado.**
 - **H1: implementado; primera lectura real completada** (maestra `4:142`, manifiesto borrador sin aprobar).
 - **DEMO 1080×1080: creada en una copia del archivo** (clon `2009:122`), pendiente de revisión humana. En el archivo original la escritura vía MCP requiere asiento Full (ver §5.6 de la documentación).
-- **T1 pendiente:** validar `npm ci` y `npm run check` en Node 24.21.0 (hasta ahora solo en 25.6.1).
+- **T1 resuelto (2026-10-01):** `npm ci` y `npm run check` validados en Node 24.21.0 (binario oficial de nodejs.org,
+  SHA-256 verificado; npm 11.19.0) y en 25.6.1.
+- **Piloto compartible:** guía de inicio en [docs/03-guia-inicio.md](docs/03-guia-inicio.md), encargo en
+  [plantillas/encargo.md](plantillas/encargo.md), `npm run doctor` (entorno) y `npm run ejemplo` (flujo sin Figma).
+  Los resultados de `runs/` quedan fuera de Git por defecto.
 
 Ningún comando del CLI escribe en Figma. `adapt-request` solo genera el script de escritura (DEMO) que actúa sobre un clon; lo ejecuta `use_figma` y requiere asiento Full.
 

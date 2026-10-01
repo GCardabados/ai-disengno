@@ -28,6 +28,8 @@ import { sha256Hex } from './hash/canonical.ts';
 import { extractEnvelope } from './figma/ingest-envelope.ts';
 import { checkDemo } from './demo/check.ts';
 import { compareNodeDigests } from './figma/digests.ts';
+import { buildSafeZoneTemplateScript, resolveSafeZoneTemplate, SAFE_ZONE_TEMPLATES_SCHEMA_ID, type SafeZoneTemplates } from './figma/safe-zone-template.ts';
+import { runDoctor } from './doctor.ts';
 import { assembleChunks } from './figma/chunks.ts';
 import { renderDemoReport, type DemoReportMeta } from './report/demo-md.ts';
 import type { CheckStatus, Finding } from './contracts/validation.ts';
@@ -61,7 +63,14 @@ const USAGE = `pcb <comando> [opciones]
   vector-probe-request --file-key K --frame-id ID --node-id N [--node-id N2 ...] --out F   Sonda vectorial (solo lectura)
   digests-compare --master-raw F [--master-raw F2 ...] --digests F   ¿La maestra releída es idéntica al inventario?
   demo-check     --snapshot F --clone-snapshot F --adapt-result F --plan F --composition F --config F
-                 --master-raw F... --digests F [--visual F] [--vector-before F --vector-after F] --meta F --out DIR`;
+                 --master-raw F... --digests F [--visual F] [--vector-before F --vector-after F] --meta F --out DIR
+
+  PILOTO:
+  doctor         [--config F]                            Comprobación de entorno y capacidades (no instala ni escribe)
+  safe-zone-template-request --file-key K --node-id N --out F   Lee (solo lectura) las plantillas de safe zone de Figma
+  safe-zone-resolve --raw F --width W --height H --provenance client|internal|platform_official
+                 [--template-hint TXT] [--layer-hint TXT] --out F
+                 Elige la plantilla SOLO por tamaño exacto; 'none' o 'ambiguous' ⇒ no se aplica y se pregunta`;
 
 const opts = {
   'file-key': { type: 'string' },
@@ -108,6 +117,11 @@ const opts = {
   checks: { type: 'string' },
   scope: { type: 'string' },
   notes: { type: 'string' },
+  width: { type: 'string' },
+  height: { type: 'string' },
+  provenance: { type: 'string' },
+  'template-hint': { type: 'string' },
+  'layer-hint': { type: 'string' },
 } as const;
 
 function need(v: string | undefined, name: string): string {
@@ -407,6 +421,47 @@ async function main(argv: string[]): Promise<number> {
         code: buildVectorProbeScript(need(a['frame-id'], 'frame-id'), ids),
       });
       return 0;
+    }
+    case 'doctor': {
+      const root = resolve(import.meta.dirname, '..');
+      const items = runDoctor(root);
+      const cfgPath = a.config ?? join(root, 'config', 'example.project.json');
+      try { await loadConfig(cfgPath); items.push({ id: 'config', level: 'ok', message: `Configuración válida: ${cfgPath}` }); }
+      catch (e) { items.push({ id: 'config', level: 'error', message: `Configuración no válida (${cfgPath}): ${(e as Error).message.split('\n')[0]}` }); }
+      const mark = { ok: '✓', warn: '!', error: '✗', info: 'i' } as const;
+      for (const it of items) console.log(`${mark[it.level]} ${it.id.padEnd(7)} ${it.message}`);
+      return items.some((i) => i.level === 'error') ? 1 : 0;
+    }
+    case 'safe-zone-template-request': {
+      const ids = a['node-id'] ?? [];
+      if (ids.length !== 1) throw new Error('Indica un único --node-id (sección o frame con las plantillas)');
+      await writeJson(need(a.out, 'out'), {
+        tool: 'use_figma', fileKey: need(a['file-key'], 'file-key'), readOnly: true,
+        description: `Solo lectura: plantillas de safe zone bajo ${ids[0]} (tamaños, capas y formas en coordenadas de cada plantilla).`,
+        code: buildSafeZoneTemplateScript(ids[0]!),
+      });
+      return 0;
+    }
+    case 'safe-zone-resolve': {
+      const raws = a.raw ?? [];
+      if (raws.length !== 1) throw new Error('Indica una única --raw (respuesta de safe-zone-template-request)');
+      const ext = extractEnvelope(await readFile(raws[0]!, 'utf8'), SAFE_ZONE_TEMPLATES_SCHEMA_ID);
+      if ('code' in ext) throw new Error(`${raws[0]}: ${ext.message}`);
+      const inv = ext.value as SafeZoneTemplates;
+      const prov = need(a.provenance, 'provenance');
+      if (!['client', 'internal', 'platform_official'].includes(prov)) throw new Error('--provenance debe ser client, internal o platform_official');
+      const dest = { width: Number(need(a.width, 'width')), height: Number(need(a.height, 'height')) };
+      const res = resolveSafeZoneTemplate(inv, dest, { template: a['template-hint'], layer: a['layer-hint'] });
+      const fileKey = a['file-key'] ?? null;
+      const safeArea = res.status === 'applicable' && res.chosen && res.allowed ? {
+        kind: 'safe_zone_rule', ruleId: `figma:${res.chosen.templateId}/${res.chosen.layerId}`, version: 'plantilla leída en esta ejecución',
+        provenance: prov, allowed: res.allowed, exclusions: res.exclusions,
+        note: `Plantilla «${res.chosen.templateName}», capa «${res.chosen.layerName}» de ${inv.sourceName} (${inv.sourceNodeId}).`,
+        source: fileKey ? { fileKey, nodeId: inv.sourceNodeId, templateNodeId: res.chosen.templateId, layerNodeId: res.chosen.layerId } : null,
+      } : null;
+      await writeJson(need(a.out, 'out'), { schema: 'pcb.safe-zone-resolution.v1', source: { nodeId: inv.sourceNodeId, name: inv.sourceName, type: inv.sourceType, page: inv.page }, provenance: prov, ...res, safeArea });
+      console.log(`${res.status}: ${res.reason}`);
+      return res.status === 'applicable' ? 0 : res.status === 'none' ? 4 : 5;
     }
     case 'digests-compare': {
       const payload = await assembledPayload(a['master-raw'] ?? []);

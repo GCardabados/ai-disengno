@@ -1,0 +1,39 @@
+{
+  "maestra": { "fileKey": "UZgEPO8UUe9IDwTWitBbgF", "nodeId": "28:140", "nombre": "960x1200_PAM_Meta_2 (sección 28:139 «Imagen 5»)" },
+  "destinos": [
+    { "id": "imagen5_1920x1004", "tamano": "1920x1004", "clonId": "2118:121", "seccionId": "2096:121", "estado": "created · DEMO pendiente de revisión humana",
+      "safeZone": "Sin plantilla dedicada en 67:75 (solo 1:1, 4:5, 3:4, Reel/Story/TikTok 9:16) → no se aplica (instrucción de la persona). Ver safe-zone-source.json." }
+  ],
+  "tiempo": { "inicio": "2026-10-01T11:36:02Z", "finParteA": "2026-10-01T11:58:00Z", "fin": "2026-10-01T12:03:00Z", "minutosActivos": 27, "nota": "Reloj de pared; incluye la parte B (piloto) a partir de ~11:50." },
+  "llamadasFigma": {
+    "lectura": 11, "escritura": 1, "capturas": 1, "errores": 0,
+    "detalle": {
+      "get_metadata de la sección de plantillas 67:75": 1,
+      "inventario de plantillas (use_figma, solo lectura)": 1,
+      "digests de la maestra antes (reutilizar inventario)": 1,
+      "crear clon": 1,
+      "relectura del clon (7 fragmentos)": 7,
+      "digests de la maestra después": 1,
+      "captura del clon": 1
+    },
+    "reutilizado": "Inventario y propuestas de roles de la prueba vertical (misma maestra, digests idénticos: sha256:83d631d3…)."
+  },
+  "intervencionesHumanas": [],
+  "cambiosDeCodigo": [
+    { "archivo": "src/figma/safe-zone-template.ts + CLI safe-zone-template-request / safe-zone-resolve", "motivo": "Leer plantillas de safe zone de Figma y elegir solo por tamaño exacto (none/ambiguous ⇒ no aplicar o preguntar). En esta prueba la lectura se hizo con un script equivalente previo; el comando se añadió después para el piloto.", "generalizable": true },
+    { "archivo": "src/contracts/demo.ts, src/demo/tools.ts, src/demo/check.ts", "motivo": "safe_zone_rule admite exclusiones (zonas de interfaz no rectangulares, p. ej. Reel) y su origen; precheck y demo-check las comprueban.", "generalizable": true },
+    { "archivo": "scripts/overlay-safe-zone.py", "motivo": "Captura con la safe zone superpuesta generada en local (la guía nunca entra en Figma).", "generalizable": true }
+  ],
+  "iteracionesPorDestino": { "imagen5_1920x1004": 1 },
+  "decisiones": {
+    "distribucion": "D2 (oferta a la izquierda a toda altura; logo, claim+CTA y legal en columna derecha) frente a D1 (logo encima de la oferta: 930/1004 px ocupados y mitad superior derecha vacía).",
+    "ordenDeLectura": "Comprobado titular → 4 → rentabilidad → claim → CTA → legal; sello y logo fuera de la secuencia (columnas)."
+  },
+  "hallazgoAparte": "La vertical 2096:122, medida después contra la guía Reel 9:16 de 67:75, tiene el CTA (14,7 px) y el legal (15,3 px) dentro de «Safe zone right 2». Registrado en runs/2026-10-01-copy-UZgE-imagen5-1080x1920/safe-zone-recheck-67-301-2026-10-01.json; la vertical no se ha modificado.",
+  "verificaciones": {
+    "verifySent": "7/7 relecturas, escritura y 2 digests: script idéntico al generado",
+    "maestraSinCambios": "digests antes y después = inventario",
+    "demoCheck": "10 pass + visual_agent_review needs_review"
+  },
+  "valoracion": { "puntuacion": null, "observaciones": [], "aceptada": false }
+}

@@ -1,0 +1,17 @@
+{
+ "schema": "pcb.adapt-job.v1",
+ "fileKey": "MOCKfileKey0000000000000",
+ "entryNodeId": "10:1",
+ "targetName": "Maestra 4:5",
+ "configPath": "../../config/example.project.json",
+ "destinations": [
+  {
+   "id": "ejemplo_1080x1080",
+   "width": 1080,
+   "height": 1080,
+   "compositionPath": "composition.json",
+   "cloneName": "EJEMPLO_1080x1080 · Maestra 4:5 · pendiente de revisión humana",
+   "status": "draft"
+  }
+ ]
+}

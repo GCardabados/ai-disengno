@@ -26,7 +26,8 @@ Se usa la skill `.claude/skills/adapt-master-creative/SKILL.md` (procedimiento: 
 - Sin OCR; la revisión visual del agente no sustituye a la humana.
 - Los activos recortados limitan el encuadre (p. ej. un recorte que termina en la cintura).
 - Las decoraciones que pasan por detrás de una persona exigen trazar máscaras sobre la silueta; se simulan antes.
-- Validado solo en Node 25.6.1 (T1: Node 24.21.0 pendiente). Márgenes de prueba de 54 px no son especificación.
+- Validado en Node 24.21.0 (versión fijada) y 25.6.1. Márgenes de prueba de 54 px no son especificación.
+- Para compañeros: empezar por `docs/03-guia-inicio.md` y `plantillas/encargo.md`.
 
 ## Qué registrar en la siguiente ejecución
 Rellenar `docs/02-registro-prueba.template.json` (copiarlo a la carpeta de la ejecución):

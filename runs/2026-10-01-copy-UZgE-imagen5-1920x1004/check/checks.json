@@ -1,0 +1,196 @@
+{
+  "results": [
+    {
+      "validatorId": "target_dimensions",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Ancho/alto exactos del frame destino y recorte activo."
+    },
+    {
+      "validatorId": "nodes_preserved",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Mismo conjunto de nodos, tipos, nombres, padres y orden de apilado (por correspondencia de la relectura)."
+    },
+    {
+      "validatorId": "content_preserved",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Igualdad exacta de caracteres, segmentos de estilo (fuente, cuerpo, interlineado, color), pinturas, efectos, visibilidad, opacidad, máscaras y geometría vectorial. No evalúa el render."
+    },
+    {
+      "validatorId": "allowed_operations",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Posición de cada caja respecto al plan (±0.01 px), tamaño exacto de todo lo que solo se traslada, factor único en ancho y alto de las imágenes escaladas y parte lineal exacta de cada transformación."
+    },
+    {
+      "validatorId": "logo_locked",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Ancho/alto exactos, transformaciones lineales exactas, recorte y posición de cada nodo respecto al bloque del logo. El render del logo lo confirma la captura."
+    },
+    {
+      "validatorId": "demo_safe_area",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cajas completas de los elementos importantes dentro del frame y de la zona segura: margen de prueba de 0 px por lado (regla interna de esta ejecución, no especificación) — SIN safe zone: la plantilla indicada (sección 67:75 «Foundation Grid / Safe Zone / Meta / Tiktok», página «Safe Zones») solo tiene guías 1:1, 4:5, 3:4, Reel 9:16, Story 9:16 y TikTok 9:16; ninguna de 1920×1004 ni horizontal. Por instrucción de la persona no se aplica ninguna ni se escala otra. Solo se exige que el contenido quede dentro del frame; los márgenes de 100 px son una decisión de composición, no una zona segura.. Las cajas de texto no prueban ausencia de truncamiento visual."
+    },
+    {
+      "validatorId": "background_coverage",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cobertura por cajas del ancho y del borde inferior; regiones protegidas (declaradas por el agente) completas y sin cajas de texto encima. No mide píxeles."
+    },
+    {
+      "validatorId": "layout_order_and_cta",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Por cajas de render (±1 px): cada elemento del orden de lectura queda debajo o a la derecha del anterior sin empezar por encima; el CTA centrado bajo su bloque de copy y separado de él sin compartir franja. No evalúa jerarquía visual."
+    },
+    {
+      "validatorId": "effective_visibility",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Contenido importante visible (sin ocultar, opacidad acumulada 1), con render dentro del frame y sin formas opacas pintadas encima (por cajas). El contraste y la legibilidad los juzga la captura."
+    },
+    {
+      "validatorId": "master_unchanged",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Hash exacto de cada registro de la maestra releída tras escribir frente al payload del inventario."
+    },
+    {
+      "validatorId": "visual_agent_review",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "visual",
+      "status": "needs_review",
+      "findings": [
+        {
+          "code": "HIERARCHY_PRESERVED",
+          "severity": "info",
+          "nodeIds": [
+            "28:158",
+            "28:174"
+          ],
+          "message": "Revisión visual del agente sobre evidence/demo-2118-121-v1.png: el bloque de oferta (forma, titular, 4,10 %, rentabilidad) y el sello se conservan intactos a la izquierda, a toda altura útil; sigue siendo lo dominante. La forma no se edita."
+        },
+        {
+          "code": "READING_ORDER_TWO_COLUMNS",
+          "severity": "info",
+          "nodeIds": [
+            "28:164",
+            "28:160",
+            "28:162",
+            "28:165",
+            "28:166",
+            "28:177"
+          ],
+          "message": "Lectura: titular → 4,10 % → rentabilidad → (columna derecha, a la altura de la rentabilidad) claim → «Saber más» → legal. El sello y el logo no entran en la secuencia comprobada: el sello cuelga de la oferta y el logo encabeza la columna derecha como firma."
+        },
+        {
+          "code": "RIGHT_COLUMN_SPARSE",
+          "severity": "warning",
+          "nodeIds": [
+            "28:141",
+            "28:165",
+            "28:166",
+            "28:177"
+          ],
+          "message": "La columna derecha queda aireada: ~330 px entre logo y claim y ~290 px entre claim y legal. Los textos conservan cuerpo; con autorización se podría aumentar el claim o el CTA para equilibrar."
+        },
+        {
+          "code": "LOGO_POSITION_CHANGED",
+          "severity": "warning",
+          "nodeIds": [
+            "28:141"
+          ],
+          "message": "El logo pasa de arriba a la izquierda (maestra) a arriba a la derecha, alineado con el borde superior de la forma. Solo traslación; tamaño intacto. Confirmar que la marca acepta esa posición."
+        },
+        {
+          "code": "NO_SAFE_ZONE_APPLIED",
+          "severity": "info",
+          "nodeIds": [
+            "28:140"
+          ],
+          "message": "La sección 67:75 no tiene plantilla para 1920×1004 (solo 1:1, 4:5, 3:4, Reel/Story/TikTok 9:16). No se aplica ni se escala ninguna; la superposición muestra solo el límite del frame y las guías de composición."
+        },
+        {
+          "code": "MISSING_FONT_ENVIRONMENT",
+          "severity": "info",
+          "nodeIds": [
+            "28:160",
+            "28:161",
+            "28:167",
+            "28:176",
+            "28:177"
+          ],
+          "message": "Mutualidad no se puede cargar en este entorno; los textos solo se trasladan y la captura muestra su render original."
+        }
+      ],
+      "coverage": "Inspección visual del agente sobre una captura del clon. No sustituye la revisión de la diseñadora."
+    }
+  ],
+  "aggregate": {
+    "status": "needs_review",
+    "byStatus": {
+      "pass": [
+        "deterministic:target_dimensions@1",
+        "deterministic:nodes_preserved@1",
+        "deterministic:content_preserved@1",
+        "deterministic:allowed_operations@1",
+        "deterministic:logo_locked@1",
+        "deterministic:demo_safe_area@1",
+        "deterministic:background_coverage@1",
+        "deterministic:layout_order_and_cta@1",
+        "deterministic:effective_visibility@1",
+        "deterministic:master_unchanged@1"
+      ],
+      "needs_review": [
+        "visual:visual_agent_review@1"
+      ],
+      "not_evaluable": [],
+      "fail": []
+    },
+    "autoApprovable": false,
+    "humanApprovable": true
+  },
+  "masterDigests": {
+    "equal": true,
+    "payloadEqual": true,
+    "changedNodeIds": [],
+    "missingNodeIds": [],
+    "addedNodeIds": []
+  }
+}

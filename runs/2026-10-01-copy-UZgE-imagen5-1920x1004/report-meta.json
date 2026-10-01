@@ -1,0 +1,11 @@
+{
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "screenshotPath": "runs/2026-10-01-copy-UZgE-imagen5-1920x1004/evidence/demo-2118-121-v1.png",
+  "designerDecisions": [
+    "Safe zone: la plantilla 67:75 no tiene guía para 1920×1004; por tu instrucción no se aplica ninguna. Si existe una guía horizontal (p. ej. 1,91:1 de Meta) en otro nodo, indícalo y se recomprueba.",
+    "Distribución D2 elegida (oferta a toda altura a la izquierda; logo, claim+CTA y legal en columna derecha) frente a D1 (logo encima de la oferta: sin aire vertical y mitad superior derecha vacía).",
+    "Logo arriba a la derecha (en la maestra va arriba a la izquierda).",
+    "Columna derecha aireada: posible aumento de cuerpo del claim/CTA si se autoriza.",
+    "El claim comparte línea superior con «de rentabilidad garantizada 1 año»; el legal, base con el sello."
+  ]
+}
