@@ -1,0 +1,11 @@
+{
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "screenshotPath": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/demo-2096-122-v1.png",
+  "designerDecisions": [
+    "Zona segura: se aplicó la de Reels (la más restrictiva: 14 % arriba, 35 % abajo, 6 % a los lados), que también cubre Stories. Si la pieza es solo para Stories (≈14 %/20 %), hay ~290 px más de alto útil y se podría devolver el aire de la maestra sin tocar la forma. ¿Para qué emplazamiento es?",
+    "Procedencia de los porcentajes de Meta: fuentes secundarias (no una especificación oficial consultada); declarada como provenance «internal».",
+    "Forma verde acortada de 661 a 594 px (solo vértices; textos intactos). Alternativa: conservar la forma y reducir el cuerpo del legal o del claim (cambio de cuerpo que requiere tu autorización).",
+    "Legal a ~1 px del límite inferior y separado 25 px del claim (59 px en la maestra).",
+    "Roles dudosos: el texto del sello se propuso como supplementary_info (no legal); el «*» va agrupado con el precio; el frame oculto «Zonasegura_Feed» se conserva oculto y sin cambios."
+  ]
+}

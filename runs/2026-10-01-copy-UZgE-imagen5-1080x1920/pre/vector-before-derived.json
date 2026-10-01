@@ -1,0 +1,148 @@
+{
+ "schema": "pcb.vector-probe.v1",
+ "frameId": "2096:122",
+ "derivedFrom": {
+  "probe": "pre/master-probe.json (28:140, solo lectura)",
+  "translation": [
+   60,
+   124
+  ],
+  "reason": "En modo create el clon parte de la maestra; la forma 28:159 se traslada con su grupo 28:158 (dx 60, dy 124) antes de la edici\u00f3n de v\u00e9rtices. Las guardas from de composition.json son exactamente estos valores."
+ },
+ "nodes": {
+  "2096:143": {
+   "vertices": [
+    [
+     765.7129516601562,
+     313
+    ],
+    [
+     153,
+     313
+    ],
+    [
+     153,
+     974
+    ],
+    [
+     927,
+     974
+    ],
+    [
+     927,
+     453.0484619140625
+    ],
+    [
+     927,
+     313
+    ],
+    [
+     540,
+     823.6783905029297
+    ],
+    [
+     459.3564758300781,
+     313
+    ]
+   ],
+   "segments": [
+    {
+     "start": 1,
+     "end": 2,
+     "tangentStart": [
+      0,
+      0
+     ],
+     "tangentEnd": [
+      0,
+      0
+     ]
+    },
+    {
+     "start": 3,
+     "end": 4,
+     "tangentStart": [
+      0,
+      0
+     ],
+     "tangentEnd": [
+      0,
+      0
+     ]
+    },
+    {
+     "start": 0,
+     "end": 5,
+     "tangentStart": [
+      0,
+      0
+     ],
+     "tangentEnd": [
+      0,
+      0
+     ]
+    },
+    {
+     "start": 5,
+     "end": 4,
+     "tangentStart": [
+      0,
+      0
+     ],
+     "tangentEnd": [
+      0,
+      0
+     ]
+    },
+    {
+     "start": 2,
+     "end": 6,
+     "tangentStart": [
+      0,
+      0
+     ],
+     "tangentEnd": [
+      0,
+      0
+     ]
+    },
+    {
+     "start": 6,
+     "end": 3,
+     "tangentStart": [
+      0,
+      0
+     ],
+     "tangentEnd": [
+      0,
+      0
+     ]
+    },
+    {
+     "start": 0,
+     "end": 7,
+     "tangentStart": [
+      0,
+      0
+     ],
+     "tangentEnd": [
+      0,
+      0
+     ]
+    },
+    {
+     "start": 7,
+     "end": 1,
+     "tangentStart": [
+      0,
+      0
+     ],
+     "tangentEnd": [
+      0,
+      0
+     ]
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "pcb.adapt-job.v1",
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "entryNodeId": "28:139",
+  "targetName": "960x1200_PAM_Meta_2",
+  "configPath": "../../config/example.project.json",
+  "destinations": [
+    {
+      "id": "imagen5_1080x1920_meta",
+      "width": 1080,
+      "height": 1920,
+      "compositionPath": "composition.json",
+      "cloneName": "DEMO_1080x1920_Meta · 960x1200_PAM_Meta_2 · pendiente de revisión humana",
+      "status": "created"
+    }
+  ]
+}

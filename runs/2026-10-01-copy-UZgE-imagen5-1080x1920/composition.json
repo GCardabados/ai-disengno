@@ -1,0 +1,226 @@
+{
+ "schema": "pcb.demo-composition.v1",
+ "label": "Prueba interna 1080×1920 (Reels/Stories) a partir de 28:140 «960x1200_PAM_Meta_2» (sección «Imagen 5»); composición específica de esta pieza y destino",
+ "masterNodeId": "28:140",
+ "masterSize": {
+  "width": 960,
+  "height": 1200
+ },
+ "target": {
+  "width": 1080,
+  "height": 1920,
+  "name": "test_1080x1920_meta"
+ },
+ "safeArea": {
+  "kind": "safe_zone_rule",
+  "ruleId": "meta_reels_stories_9x16",
+  "version": "guía pública 2026 (fuentes secundarias)",
+  "provenance": "internal",
+  "allowed": {
+   "x": 65,
+   "y": 269,
+   "width": 950,
+   "height": 979
+  },
+  "note": "Zona segura de Meta pedida por la persona para esta prueba interna. Se usa la más restrictiva para 9:16 (Reels; cubre también Stories): 14 % arriba (≈269 px), 35 % abajo (672 px) y 6 % a los lados (≈65 px). Cifras de guías públicas de terceros (adnova.ai, adsuploader.com, 1clickreport.com), no verificadas en la página oficial de Meta; por eso la procedencia es 'internal'."
+ },
+ "output": {
+  "sectionName": "PCB · Salida DEMO Imagen 5 (no producción)",
+  "gapFromContentPx": 400
+ },
+ "units": [
+  {
+   "unitId": "logo",
+   "nodeIds": [
+    "28:141"
+   ],
+   "anchorNodeId": "28:141",
+   "to": {
+    "x": 150,
+    "y": 272
+   },
+   "why": "Arriba a la izquierda dentro de la zona segura (bajo la franja de perfil de Reels), alineado con el borde izquierdo de la forma verde como en la maestra."
+  },
+  {
+   "unitId": "offer",
+   "nodeIds": [
+    "28:158"
+   ],
+   "anchorNodeId": "28:158",
+   "to": {
+    "x": 153,
+    "y": 313
+   },
+   "why": "Bloque de oferta centrado en el ancho; con la forma acortada su borde superior queda a 30 px del logo."
+  },
+  {
+   "unitId": "badge",
+   "nodeIds": [
+    "28:174"
+   ],
+   "anchorNodeId": "28:174",
+   "to": {
+    "x": 434,
+    "y": 866
+   },
+   "why": "Insignia encajada en la muesca de la forma, con la misma relación que en la maestra (la muesca sube 10 px)."
+  },
+  {
+   "unitId": "claim",
+   "nodeIds": [
+    "28:165"
+   ],
+   "anchorNodeId": "28:165",
+   "to": {
+    "x": 151,
+    "y": 1111
+   },
+   "why": "Claim de producto a la izquierda bajo la insignia."
+  },
+  {
+   "unitId": "cta",
+   "nodeIds": [
+    "28:166"
+   ],
+   "anchorNodeId": "28:166",
+   "to": {
+    "x": 660,
+    "y": 1122
+   },
+   "why": "CTA a la derecha del claim, misma relación que en la maestra."
+  },
+  {
+   "unitId": "legal",
+   "nodeIds": [
+    "28:177"
+   ],
+   "anchorNodeId": "28:177",
+   "to": {
+    "x": 145,
+    "y": 1219
+   },
+   "why": "Legal al pie de la zona segura (fuera de la franja inferior de Reels, donde lo taparían los textos y botones de la interfaz)."
+  }
+ ],
+ "effectResizes": [],
+ "vectorEdits": [
+  {
+   "nodeId": "28:159",
+   "purpose": "decoration",
+   "vertices": [
+    {
+     "index": 0,
+     "from": {
+      "x": 765.713,
+      "y": 313
+     },
+     "to": {
+      "x": 765.713,
+      "y": 350
+     }
+    },
+    {
+     "index": 1,
+     "from": {
+      "x": 153,
+      "y": 313
+     },
+     "to": {
+      "x": 153,
+      "y": 350
+     }
+    },
+    {
+     "index": 2,
+     "from": {
+      "x": 153,
+      "y": 974
+     },
+     "to": {
+      "x": 153,
+      "y": 944
+     }
+    },
+    {
+     "index": 3,
+     "from": {
+      "x": 927,
+      "y": 974
+     },
+     "to": {
+      "x": 927,
+      "y": 944
+     }
+    },
+    {
+     "index": 5,
+     "from": {
+      "x": 927,
+      "y": 313
+     },
+     "to": {
+      "x": 927,
+      "y": 350
+     }
+    },
+    {
+     "index": 6,
+     "from": {
+      "x": 540,
+      "y": 823.6784
+     },
+     "to": {
+      "x": 540,
+      "y": 813.6784
+     }
+    },
+    {
+     "index": 7,
+     "from": {
+      "x": 459.3565,
+      "y": 313
+     },
+     "to": {
+      "x": 459.3565,
+      "y": 350
+     }
+    }
+   ],
+   "tangents": [],
+   "why": "Forma verde de la oferta (decoración): se acorta su relleno vacío 37 px arriba y 30 px en las esquinas inferiores (la muesca de la insignia sube 10 px) para que todo el contenido quepa en los 979 px útiles de la zona segura sin tocar textos. Se conservan sus 8 vértices y el redondeo."
+  }
+ ],
+ "imageScales": [],
+ "layoutChecks": {
+  "readingOrder": [
+   "28:164",
+   "28:160",
+   "28:162",
+   "28:176",
+   "28:165",
+   "28:166",
+   "28:177"
+  ],
+  "cta": null,
+  "decorationMasks": []
+ },
+ "importantNodeIds": [
+  "28:141",
+  "28:164",
+  "28:160",
+  "28:161",
+  "28:163",
+  "28:162",
+  "28:176",
+  "28:165",
+  "28:166",
+  "28:167",
+  "28:177"
+ ],
+ "sizeLockedNodeIds": [
+  "28:141"
+ ],
+ "protectedRegions": [],
+ "mustCoverWidthNodeIds": [],
+ "mustCoverEdges": []
+}

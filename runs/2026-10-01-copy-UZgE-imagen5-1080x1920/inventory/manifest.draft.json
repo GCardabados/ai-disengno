@@ -1,0 +1,1166 @@
+{
+  "schema": "pcb.manifest.v1",
+  "manifestId": "man_8d9e956c83ce",
+  "createdAt": "2026-10-01T09:17:10.864Z",
+  "source": "FIGMA_MCP_USE_FIGMA",
+  "master": {
+    "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+    "rootNodeId": "28:140",
+    "pageId": "1:484",
+    "fingerprints": {
+      "version": "pcb.fingerprint.v2",
+      "master": "sha256:24088dff328d4c4e7e372c525ea20bcd4a6c63a34d924df395d1488663a244b7",
+      "structure": "sha256:4e0321675728fd3c454104b72adbb8b5e15349aab7991eb356ed4834611b0756",
+      "content": "sha256:c9c9d6ce4c9419e151216752d2ace07cd45237ceac081478ba41e49c5b98a1bc",
+      "layout": "sha256:e744bfe64dfddd5b68c67dd28ee95e71d5645c8fc403ab6009e617277ac11ba9",
+      "metadata": "sha256:d1d372bdb76e261d2268bc47c3eb404d6ce3aa41b3da4a8bef364945677fe048"
+    },
+    "snapshotHash": "sha256:0c8890518328c2609bd114cec6afbd3da1648f685b0774caabed3c786dccfa3d",
+    "entry": {
+      "entryNodeId": "28:139",
+      "entryType": "SECTION",
+      "masterNodeId": "28:140",
+      "targetName": "960x1200_PAM_Meta_2",
+      "method": "exact_name",
+      "dimensionsFromNameMatch": true,
+      "discoveryDigest": "sha256:49b15d79cf06ce2ac2c9701d2831d0a41005193183ae739f3635b57d6b5fb6a0",
+      "discoveryRawSha256": "sha256:a7d8c0fa8007693e9d26a383084d82c9808d7318539ab6ab0e891be9c5068743"
+    }
+  },
+  "taxonomy": {
+    "id": "paid-static-default",
+    "version": "0.1.0-propuesta"
+  },
+  "classifier": {
+    "id": "pcb.classifier.heuristic",
+    "version": "2"
+  },
+  "rules": {
+    "fingerprint": "sha256:21b2d0a8aaf7957cba2929d14ccc30923059cd7ad591f188251984caafc2c75a",
+    "covers": [
+      "config.projectId",
+      "config.taxonomy.id",
+      "config.taxonomy.version",
+      "config.taxonomy.roles[*] (id, label, multiplicity, protection, mustBeInSafeZone, defaultAllowOps, nameHints)",
+      "config.tolerances",
+      "config.approvers",
+      "config.ocr (enabled, engine, langs)",
+      "config.heuristics",
+      "code:GLOBAL_INVARIANTS",
+      "code:NUMERIC_TOLERANCE_MAX",
+      "code:CLASSIFIER (id, version)"
+    ]
+  },
+  "detectors": {
+    "ocr": "not_run"
+  },
+  "entities": [
+    {
+      "entityId": "ent_9568793a76ca",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:140"
+      ],
+      "contentNature": "shape",
+      "evidence": [
+        {
+          "kind": "paint_analysis",
+          "detail": "Contenedor FRAME con pintura propia visible (7 hijos)",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:140"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "MIXED_CONTAINER_PAINT"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_efb14493e6fe",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:144",
+        "28:145"
+      ],
+      "contentNature": "vector_undetermined",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:144"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:145"
+          ]
+        },
+        {
+          "kind": "vector_cluster",
+          "detail": "2 vectores hermanos bajo el contenedor 28:143",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "medium",
+          "nodeIds": [
+            "28:144",
+            "28:145",
+            "28:143"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "VECTOR_NATURE_UNDETERMINED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_571e64b235ac",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:147",
+        "28:148",
+        "28:149",
+        "28:150",
+        "28:151",
+        "28:152",
+        "28:153",
+        "28:154",
+        "28:155",
+        "28:156",
+        "28:157"
+      ],
+      "contentNature": "vector_undetermined",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:147"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:148"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:149"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:150"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:151"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:152"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:153"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:154"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:155"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:156"
+          ]
+        },
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:157"
+          ]
+        },
+        {
+          "kind": "vector_cluster",
+          "detail": "11 vectores hermanos bajo el contenedor 28:146",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "medium",
+          "nodeIds": [
+            "28:147",
+            "28:148",
+            "28:149",
+            "28:150",
+            "28:151",
+            "28:152",
+            "28:153",
+            "28:154",
+            "28:155",
+            "28:156",
+            "28:157",
+            "28:146"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "VECTOR_NATURE_UNDETERMINED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_f3310b8c6928",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:159"
+      ],
+      "contentNature": "vector_undetermined",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo VECTOR",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:159"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "VECTOR_NATURE_UNDETERMINED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_6f89fc682c83",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:160"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:160"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "1 caracteres, 1 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:160"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "FONT_MISSING"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_d45c11f85a97",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:161"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:161"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "4 caracteres, 2 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:161"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "FONT_MISSING"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_d3ebc6fad96f",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:162"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:162"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "33 caracteres, 5 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:162"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_0b30df6c6eb9",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:163"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:163"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "1 caracteres, 1 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:163"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_c362dc9850f4",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:164"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:164"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "26 caracteres, 1 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:164"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_12da2ced27ed",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:165"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:165"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "45 caracteres, 2 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:165"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_ffe0dec68db6",
+      "role": null,
+      "roleHints": [
+        {
+          "roleId": "cta",
+          "evidence": {
+            "kind": "layer_name_hint",
+            "detail": "El nombre del nodo 28:166 contiene la pista configurada \"botón\"",
+            "producedBy": "pcb.classifier.heuristic",
+            "version": "2",
+            "trust": "low",
+            "nodeIds": [
+              "28:166"
+            ]
+          }
+        }
+      ],
+      "nodeIds": [
+        "28:166"
+      ],
+      "contentNature": "shape",
+      "evidence": [
+        {
+          "kind": "paint_analysis",
+          "detail": "Contenedor FRAME con pintura propia visible (1 hijos)",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:166"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "MIXED_CONTAINER_PAINT"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_c1932852ebe4",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:167"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:167"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "9 caracteres, 1 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:167"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "FONT_MISSING"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_cb0fb95c2057",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:175"
+      ],
+      "contentNature": "shape",
+      "evidence": [
+        {
+          "kind": "paint_analysis",
+          "detail": "Nodo ELLIPSE con pintura visible sin imagen",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:175"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_9fdf3e1e5ff4",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:176"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:176"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "55 caracteres, 4 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:176"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "FONT_MISSING"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    },
+    {
+      "entityId": "ent_5087026aca6c",
+      "role": null,
+      "roleHints": [],
+      "nodeIds": [
+        "28:177"
+      ],
+      "contentNature": "editable_text",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Nodo TEXT",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:177"
+          ]
+        },
+        {
+          "kind": "text_node",
+          "detail": "258 caracteres, 1 segmento(s) de estilo",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:177"
+          ]
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "reasons": [
+          "ROLE_UNASSIGNED",
+          "FONT_MISSING"
+        ],
+        "reviewedBy": null,
+        "reviewedAt": null,
+        "notes": null
+      },
+      "constraints": {
+        "allowOps": [],
+        "allowReflow": false,
+        "atomicGroup": null,
+        "protectedRegions": [],
+        "mustBeInSafeZone": null
+      }
+    }
+  ],
+  "dispositions": [
+    {
+      "kind": "content",
+      "nodeId": "28:140",
+      "entityId": "ent_9568793a76ca"
+    },
+    {
+      "kind": "structural",
+      "nodeId": "28:141",
+      "justification": "container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor GROUP sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:141"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "pending",
+      "nodeId": "28:142",
+      "reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    {
+      "kind": "structural",
+      "nodeId": "28:143",
+      "justification": "container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor GROUP sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:143"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:144",
+      "entityId": "ent_efb14493e6fe"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:145",
+      "entityId": "ent_efb14493e6fe"
+    },
+    {
+      "kind": "structural",
+      "nodeId": "28:146",
+      "justification": "container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor GROUP sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:146"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:147",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:148",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:149",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:150",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:151",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:152",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:153",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:154",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:155",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:156",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:157",
+      "entityId": "ent_571e64b235ac"
+    },
+    {
+      "kind": "structural",
+      "nodeId": "28:158",
+      "justification": "container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor GROUP sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:158"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:159",
+      "entityId": "ent_f3310b8c6928"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:160",
+      "entityId": "ent_6f89fc682c83"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:161",
+      "entityId": "ent_d45c11f85a97"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:162",
+      "entityId": "ent_d3ebc6fad96f"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:163",
+      "entityId": "ent_0b30df6c6eb9"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:164",
+      "entityId": "ent_c362dc9850f4"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:165",
+      "entityId": "ent_12da2ced27ed"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:166",
+      "entityId": "ent_ffe0dec68db6"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:167",
+      "entityId": "ent_c1932852ebe4"
+    },
+    {
+      "kind": "pending",
+      "nodeId": "28:168",
+      "reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    {
+      "kind": "pending",
+      "nodeId": "28:169",
+      "reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    {
+      "kind": "pending",
+      "nodeId": "28:170",
+      "reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    {
+      "kind": "pending",
+      "nodeId": "28:171",
+      "reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    {
+      "kind": "pending",
+      "nodeId": "28:172",
+      "reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    {
+      "kind": "pending",
+      "nodeId": "28:173",
+      "reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    {
+      "kind": "structural",
+      "nodeId": "28:174",
+      "justification": "container",
+      "evidence": [
+        {
+          "kind": "node_type",
+          "detail": "Contenedor GROUP sin pintura propia visible",
+          "producedBy": "pcb.classifier.heuristic",
+          "version": "2",
+          "trust": "high",
+          "nodeIds": [
+            "28:174"
+          ]
+        }
+      ],
+      "decidedBy": "classifier",
+      "statement": null
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:175",
+      "entityId": "ent_cb0fb95c2057"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:176",
+      "entityId": "ent_9fdf3e1e5ff4"
+    },
+    {
+      "kind": "content",
+      "nodeId": "28:177",
+      "entityId": "ent_5087026aca6c"
+    }
+  ],
+  "compositions": [],
+  "relations": [],
+  "approval": {
+    "status": "draft",
+    "approvedBy": null,
+    "approvedAt": null
+  },
+  "manifestHash": "sha256:acbf151170be155cf8da061aaa551727c30f001b2236936a4dd1128586cece7c"
+}

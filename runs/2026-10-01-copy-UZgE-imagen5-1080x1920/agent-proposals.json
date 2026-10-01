@@ -1,0 +1,565 @@
+{
+ "schema": "pcb.agent-proposals.v1",
+ "status": "agent_proposal",
+ "proposedBy": "agente (Claude) — propuesta, no aprobación humana",
+ "createdAt": "2026-10-01T09:30:00.000Z",
+ "manifestId": "man_8d9e956c83ce",
+ "manifestHash": "sha256:acbf151170be155cf8da061aaa551727c30f001b2236936a4dd1128586cece7c",
+ "groups": [
+  {
+   "groupId": "grp_logo",
+   "kind": "logo_unit",
+   "label": "Logo Mutualidad (símbolo + logotipo)",
+   "entityIds": [
+    "ent_efb14493e6fe",
+    "ent_571e64b235ac"
+   ],
+   "attachedNodeIds": [
+    "28:141",
+    "28:143",
+    "28:146",
+    "28:142"
+   ],
+   "rigidAncestorNodeId": "28:141",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Símbolo y logotipo en el grupo 28:141 (incluye un rectángulo oculto 28:142 que se conserva oculto)",
+     "nodeIds": [
+      "28:141"
+     ],
+     "artifact": null
+    }
+   ]
+  },
+  {
+   "groupId": "grp_offer",
+   "kind": "message_block",
+   "label": "Bloque de oferta sobre la forma verde",
+   "entityIds": [
+    "ent_c362dc9850f4",
+    "ent_6f89fc682c83",
+    "ent_d45c11f85a97",
+    "ent_0b30df6c6eb9",
+    "ent_d3ebc6fad96f"
+   ],
+   "attachedNodeIds": [
+    "28:158",
+    "28:159"
+   ],
+   "rigidAncestorNodeId": "28:158",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Textos y forma comparten el grupo 28:158; se trasladan juntos",
+     "nodeIds": [
+      "28:158"
+     ],
+     "artifact": null
+    }
+   ]
+  },
+  {
+   "groupId": "grp_badge",
+   "kind": "message_block",
+   "label": "Insignia de disponibilidad",
+   "entityIds": [
+    "ent_cb0fb95c2057",
+    "ent_9fdf3e1e5ff4"
+   ],
+   "attachedNodeIds": [
+    "28:174"
+   ],
+   "rigidAncestorNodeId": "28:174",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Anillo y texto en el grupo 28:174",
+     "nodeIds": [
+      "28:174"
+     ],
+     "artifact": null
+    }
+   ]
+  },
+  {
+   "groupId": "grp_cta",
+   "kind": "cta_unit",
+   "label": "CTA «Saber más»",
+   "entityIds": [
+    "ent_ffe0dec68db6",
+    "ent_c1932852ebe4"
+   ],
+   "attachedNodeIds": [],
+   "rigidAncestorNodeId": "28:166",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Texto dentro del frame del botón",
+     "nodeIds": [
+      "28:166"
+     ],
+     "artifact": null
+    }
+   ]
+  }
+ ],
+ "roles": [
+  {
+   "entityId": "ent_9568793a76ca",
+   "nodeIds": [
+    "28:140"
+   ],
+   "roleId": "background",
+   "groupId": null,
+   "proposedNature": null,
+   "confidence": "high",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Frame raíz con relleno sólido rosa: fondo de la pieza",
+     "nodeIds": [
+      "28:140"
+     ],
+     "artifact": null
+    }
+   ]
+  },
+  {
+   "entityId": "ent_efb14493e6fe",
+   "nodeIds": [
+    "28:144",
+    "28:145"
+   ],
+   "roleId": "logo",
+   "groupId": "grp_logo",
+   "proposedNature": null,
+   "confidence": "high",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Símbolo del logo dentro del grupo «Logo Mutualidad» 28:141",
+     "nodeIds": [
+      "28:144",
+      "28:145"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "Símbolo «M» del logo arriba a la izquierda",
+     "nodeIds": [
+      "28:144",
+      "28:145"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_571e64b235ac",
+   "nodeIds": [
+    "28:147",
+    "28:148",
+    "28:149",
+    "28:150",
+    "28:151",
+    "28:152",
+    "28:153",
+    "28:154",
+    "28:155",
+    "28:156",
+    "28:157"
+   ],
+   "roleId": "logo",
+   "groupId": "grp_logo",
+   "proposedNature": null,
+   "confidence": "high",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Logotipo dentro del mismo grupo 28:141",
+     "nodeIds": [
+      "28:147"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "Logotipo «Mutualidad» junto al símbolo",
+     "nodeIds": [
+      "28:147"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_f3310b8c6928",
+   "nodeIds": [
+    "28:159"
+   ],
+   "roleId": "decorative",
+   "groupId": null,
+   "proposedNature": null,
+   "confidence": "medium",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "VECTOR sin texto ni imagen, fondo de la oferta dentro del grupo 28:158",
+     "nodeIds": [
+      "28:159"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "Forma verde oscura que enmarca titular y rentabilidad",
+     "nodeIds": [
+      "28:159"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_c362dc9850f4",
+   "nodeIds": [
+    "28:164"
+   ],
+   "roleId": "headline",
+   "groupId": "grp_offer",
+   "proposedNature": null,
+   "confidence": "high",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Texto superior de la forma verde, centrado",
+     "nodeIds": [
+      "28:164"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "«Aprovecha la nueva emisión» abre el mensaje",
+     "nodeIds": [
+      "28:164"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_6f89fc682c83",
+   "nodeIds": [
+    "28:160"
+   ],
+   "roleId": "price",
+   "groupId": "grp_offer",
+   "proposedNature": null,
+   "confidence": "high",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Cifra principal de la oferta (cuerpo 433)",
+     "nodeIds": [
+      "28:160"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "«4» de «4,10 %», elemento dominante",
+     "nodeIds": [
+      "28:160"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_d45c11f85a97",
+   "nodeIds": [
+    "28:161"
+   ],
+   "roleId": "price",
+   "groupId": "grp_offer",
+   "proposedNature": null,
+   "confidence": "high",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Continuación de la cifra",
+     "nodeIds": [
+      "28:161"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "«,10 %»",
+     "nodeIds": [
+      "28:161"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_0b30df6c6eb9",
+   "nodeIds": [
+    "28:163"
+   ],
+   "roleId": "price",
+   "groupId": "grp_offer",
+   "proposedNature": null,
+   "confidence": "medium",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Asterisco junto a la cifra; remite al legal 28:177",
+     "nodeIds": [
+      "28:163"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "Llamada a la nota legal",
+     "nodeIds": [
+      "28:163"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_d3ebc6fad96f",
+   "nodeIds": [
+    "28:162"
+   ],
+   "roleId": "body",
+   "groupId": "grp_offer",
+   "proposedNature": null,
+   "confidence": "high",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Texto descriptivo bajo la cifra",
+     "nodeIds": [
+      "28:162"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "«de rentabilidad garantizada 1 año»",
+     "nodeIds": [
+      "28:162"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_cb0fb95c2057",
+   "nodeIds": [
+    "28:175"
+   ],
+   "roleId": "decorative",
+   "groupId": "grp_badge",
+   "proposedNature": null,
+   "confidence": "medium",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "ELLIPSE solo con trazo; anillo de la insignia 28:174",
+     "nodeIds": [
+      "28:175"
+     ],
+     "artifact": null
+    }
+   ]
+  },
+  {
+   "entityId": "ent_9fdf3e1e5ff4",
+   "nodeIds": [
+    "28:176"
+   ],
+   "roleId": "supplementary_info",
+   "groupId": "grp_badge",
+   "proposedNature": null,
+   "confidence": "medium",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Texto dentro del anillo; condición temporal de la oferta",
+     "nodeIds": [
+      "28:176"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "«Disponible hasta agotar la emisión o hasta 31/10/2026»",
+     "nodeIds": [
+      "28:176"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_12da2ced27ed",
+   "nodeIds": [
+    "28:165"
+   ],
+   "roleId": "body",
+   "groupId": null,
+   "proposedNature": null,
+   "confidence": "medium",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Texto de producto sobre el fondo, abajo a la izquierda",
+     "nodeIds": [
+      "28:165"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "«Plan Ahorro Multiplica. Ahorro sin sorpresas.»",
+     "nodeIds": [
+      "28:165"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_ffe0dec68db6",
+   "nodeIds": [
+    "28:166"
+   ],
+   "roleId": "cta",
+   "groupId": "grp_cta",
+   "proposedNature": null,
+   "confidence": "high",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "FRAME con relleno y texto «Saber más»",
+     "nodeIds": [
+      "28:166"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "Botón verde abajo a la derecha",
+     "nodeIds": [
+      "28:166"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  },
+  {
+   "entityId": "ent_c1932852ebe4",
+   "nodeIds": [
+    "28:167"
+   ],
+   "roleId": "cta_label",
+   "groupId": "grp_cta",
+   "proposedNature": null,
+   "confidence": "high",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Texto del botón",
+     "nodeIds": [
+      "28:167"
+     ],
+     "artifact": null
+    }
+   ]
+  },
+  {
+   "entityId": "ent_5087026aca6c",
+   "nodeIds": [
+    "28:177"
+   ],
+   "roleId": "legal",
+   "groupId": null,
+   "proposedNature": null,
+   "confidence": "high",
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "Texto de cuerpo 12 que empieza por «*» y describe condiciones de la rentabilidad",
+     "nodeIds": [
+      "28:177"
+     ],
+     "artifact": null
+    },
+    {
+     "kind": "screenshot_visual_inspection",
+     "detail": "Nota legal al pie",
+     "nodeIds": [
+      "28:177"
+     ],
+     "artifact": "runs/2026-10-01-copy-UZgE-imagen5-1080x1920/evidence/master-28-140.png"
+    }
+   ]
+  }
+ ],
+ "uncertain": [
+  {
+   "nodeIds": [
+    "28:168",
+    "28:169",
+    "28:170",
+    "28:171",
+    "28:172",
+    "28:173"
+   ],
+   "decision": "preserve",
+   "observation": "Frame oculto «Zonasegura_Feed» con rectángulos guía de zona segura para Feed 960×1200.",
+   "hypotheses": [
+    "Guía de trabajo de la diseñadora, no contenido publicable"
+   ],
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "visible=false en el frame 28:168",
+     "nodeIds": [
+      "28:168"
+     ],
+     "artifact": null
+    }
+   ]
+  },
+  {
+   "nodeIds": [
+    "28:142"
+   ],
+   "decision": "preserve",
+   "observation": "Rectángulo oculto dentro del grupo del logo.",
+   "hypotheses": [
+    "Área de respeto del logo"
+   ],
+   "evidence": [
+    {
+     "kind": "structure",
+     "detail": "visible=false",
+     "nodeIds": [
+      "28:142"
+     ],
+     "artifact": null
+    }
+   ]
+  }
+ ]
+}

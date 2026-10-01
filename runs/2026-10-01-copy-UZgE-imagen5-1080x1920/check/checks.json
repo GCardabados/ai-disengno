@@ -1,0 +1,199 @@
+{
+  "results": [
+    {
+      "validatorId": "target_dimensions",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Ancho/alto exactos del frame destino y recorte activo."
+    },
+    {
+      "validatorId": "nodes_preserved",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Mismo conjunto de nodos, tipos, nombres, padres y orden de apilado (por correspondencia de la relectura)."
+    },
+    {
+      "validatorId": "content_preserved",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Igualdad exacta de caracteres, segmentos de estilo (fuente, cuerpo, interlineado, color), pinturas, efectos, visibilidad, opacidad, máscaras y geometría vectorial. No evalúa el render."
+    },
+    {
+      "validatorId": "allowed_operations",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Posición de cada caja respecto al plan (±0.01 px), tamaño exacto de todo lo que solo se traslada, factor único en ancho y alto de las imágenes escaladas y parte lineal exacta de cada transformación."
+    },
+    {
+      "validatorId": "logo_locked",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Ancho/alto exactos, transformaciones lineales exactas, recorte y posición de cada nodo respecto al bloque del logo. El render del logo lo confirma la captura."
+    },
+    {
+      "validatorId": "demo_safe_area",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cajas completas de los elementos importantes dentro del frame y de la zona segura: regla meta_reels_stories_9x16@guía pública 2026 (fuentes secundarias) (internal) — Zona segura de Meta pedida por la persona para esta prueba interna. Se usa la más restrictiva para 9:16 (Reels; cubre también Stories): 14 % arriba (≈269 px), 35 % abajo (672 px) y 6 % a los lados (≈65 px). Cifras de guías públicas de terceros (adnova.ai, adsuploader.com, 1clickreport.com), no verificadas en la página oficial de Meta; por eso la procedencia es 'internal'.. Las cajas de texto no prueban ausencia de truncamiento visual."
+    },
+    {
+      "validatorId": "background_coverage",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cobertura por cajas del ancho y del borde inferior; regiones protegidas (declaradas por el agente) completas y sin cajas de texto encima. No mide píxeles."
+    },
+    {
+      "validatorId": "vector_edits",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Vértices y tiradores editados en su destino (±0,5 px), todos los demás de ese vector sin cambios (±0,05 px), en coordenadas del frame; misma topología; grosor de trazo declarado."
+    },
+    {
+      "validatorId": "layout_order_and_cta",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Por cajas de render (±1 px): cada elemento del orden de lectura queda debajo o a la derecha del anterior sin empezar por encima; el CTA centrado bajo su bloque de copy y separado de él sin compartir franja. No evalúa jerarquía visual."
+    },
+    {
+      "validatorId": "effective_visibility",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Contenido importante visible (sin ocultar, opacidad acumulada 1), con render dentro del frame y sin formas opacas pintadas encima (por cajas). El contraste y la legibilidad los juzga la captura."
+    },
+    {
+      "validatorId": "master_unchanged",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Hash exacto de cada registro de la maestra releída tras escribir frente al payload del inventario."
+    },
+    {
+      "validatorId": "visual_agent_review",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "visual",
+      "status": "needs_review",
+      "findings": [
+        {
+          "code": "READING_ORDER_OK_VISUALLY",
+          "severity": "info",
+          "nodeIds": [
+            "28:141",
+            "28:164",
+            "28:160",
+            "28:162",
+            "28:176",
+            "28:165",
+            "28:166",
+            "28:177"
+          ],
+          "message": "Revisión visual del agente sobre evidence/demo-2096-122-v1.png: el recorrido es el de la maestra (logo → titular → 4,10 % → «de rentabilidad garantizada 1 año» → sello → claim + «Saber más» → legal). Todo el contenido queda dentro del rectángulo útil de Reels {65, 269, 950×979}."
+        },
+        {
+          "code": "TIGHT_VERTICAL_RHYTHM",
+          "severity": "warning",
+          "nodeIds": [
+            "28:141",
+            "28:159",
+            "28:165",
+            "28:177"
+          ],
+          "message": "Los textos conservan cuerpo y copy, y el bloque ocupa 944 de los 979 px útiles. Los huecos se comprimen respecto a la maestra (render): logo→forma 51→30 px, sello→claim ≈38→31 px, claim→legal 59→25 px. El legal termina en y≈1247, a ~1 px del límite inferior de la zona segura."
+        },
+        {
+          "code": "DECORATION_SHORTENED",
+          "severity": "warning",
+          "nodeIds": [
+            "28:159"
+          ],
+          "message": "La forma verde de fondo de la oferta (decoración) pasa de 661 a 594 px de alto editando solo las y de sus vértices (borde superior +37 px, esquinas inferiores −30 px, muesca −10 px). Mantiene la muesca bajo la que encaja el sello y el radio de esquina. Comprobar que la proporción sigue siendo la de la marca."
+        },
+        {
+          "code": "EMPTY_BANDS_BY_PLATFORM",
+          "severity": "info",
+          "nodeIds": [
+            "28:140"
+          ],
+          "message": "Las bandas vacías arriba (269 px) y, sobre todo, abajo (672 px) son las zonas que la interfaz de Reels cubre; el fondo rosa liso las ocupa sin contenido. Se ve desequilibrado fuera de la app, pero es lo esperado en ese emplazamiento."
+        },
+        {
+          "code": "MISSING_FONT_ENVIRONMENT",
+          "severity": "info",
+          "nodeIds": [
+            "28:160",
+            "28:161",
+            "28:167",
+            "28:176",
+            "28:177"
+          ],
+          "message": "La familia Mutualidad no se puede cargar en este entorno; los textos solo se trasladan (no requieren cargar la fuente) y la captura los muestra con su render original. Es una limitación del entorno, no de la pieza."
+        }
+      ],
+      "coverage": "Inspección visual del agente sobre una captura del clon. No sustituye la revisión de la diseñadora."
+    }
+  ],
+  "aggregate": {
+    "status": "needs_review",
+    "byStatus": {
+      "pass": [
+        "deterministic:target_dimensions@1",
+        "deterministic:nodes_preserved@1",
+        "deterministic:content_preserved@1",
+        "deterministic:allowed_operations@1",
+        "deterministic:logo_locked@1",
+        "deterministic:demo_safe_area@1",
+        "deterministic:background_coverage@1",
+        "deterministic:vector_edits@1",
+        "deterministic:layout_order_and_cta@1",
+        "deterministic:effective_visibility@1",
+        "deterministic:master_unchanged@1"
+      ],
+      "needs_review": [
+        "visual:visual_agent_review@1"
+      ],
+      "not_evaluable": [],
+      "fail": []
+    },
+    "autoApprovable": false,
+    "humanApprovable": true
+  },
+  "masterDigests": {
+    "equal": true,
+    "payloadEqual": true,
+    "changedNodeIds": [],
+    "missingNodeIds": [],
+    "addedNodeIds": []
+  }
+}

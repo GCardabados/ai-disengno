@@ -1,0 +1,184 @@
+{
+  "schema": "pcb.review.v1",
+  "manifestHash": "sha256:acbf151170be155cf8da061aaa551727c30f001b2236936a4dd1128586cece7c",
+  "reviewer": "",
+  "_instructions": "Rellene cada entidad con status (approved|rejected), role y, si cambia la naturaleza del contenido, statement. Resuelva cada nodo pendiente y cada composición. Elimine este campo _instructions antes de aplicar.",
+  "entities": {
+    "ent_9568793a76ca": {
+      "status": null,
+      "role": null,
+      "_currentNature": "shape",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "MIXED_CONTAINER_PAINT"
+      ]
+    },
+    "ent_efb14493e6fe": {
+      "status": null,
+      "role": null,
+      "_currentNature": "vector_undetermined",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "VECTOR_NATURE_UNDETERMINED"
+      ]
+    },
+    "ent_571e64b235ac": {
+      "status": null,
+      "role": null,
+      "_currentNature": "vector_undetermined",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "VECTOR_NATURE_UNDETERMINED"
+      ]
+    },
+    "ent_f3310b8c6928": {
+      "status": null,
+      "role": null,
+      "_currentNature": "vector_undetermined",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "VECTOR_NATURE_UNDETERMINED"
+      ]
+    },
+    "ent_6f89fc682c83": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "FONT_MISSING"
+      ]
+    },
+    "ent_d45c11f85a97": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "FONT_MISSING"
+      ]
+    },
+    "ent_d3ebc6fad96f": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED"
+      ]
+    },
+    "ent_0b30df6c6eb9": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED"
+      ]
+    },
+    "ent_c362dc9850f4": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED"
+      ]
+    },
+    "ent_12da2ced27ed": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED"
+      ]
+    },
+    "ent_ffe0dec68db6": {
+      "status": null,
+      "role": "cta",
+      "_currentNature": "shape",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "MIXED_CONTAINER_PAINT"
+      ]
+    },
+    "ent_c1932852ebe4": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "FONT_MISSING"
+      ]
+    },
+    "ent_cb0fb95c2057": {
+      "status": null,
+      "role": null,
+      "_currentNature": "shape",
+      "_reasons": [
+        "ROLE_UNASSIGNED"
+      ]
+    },
+    "ent_9fdf3e1e5ff4": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "FONT_MISSING"
+      ]
+    },
+    "ent_5087026aca6c": {
+      "status": null,
+      "role": null,
+      "_currentNature": "editable_text",
+      "_reasons": [
+        "ROLE_UNASSIGNED",
+        "FONT_MISSING"
+      ]
+    }
+  },
+  "pending": {
+    "28:142": {
+      "resolution": null,
+      "_reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    "28:168": {
+      "resolution": null,
+      "_reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    "28:169": {
+      "resolution": null,
+      "_reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    "28:170": {
+      "resolution": null,
+      "_reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    "28:171": {
+      "resolution": null,
+      "_reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    "28:172": {
+      "resolution": null,
+      "_reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    },
+    "28:173": {
+      "resolution": null,
+      "_reasons": [
+        "HIDDEN_OR_IN_HIDDEN_ANCESTOR"
+      ]
+    }
+  },
+  "compositions": {},
+  "relations": []
+}

@@ -1,0 +1,10 @@
+{
+  "status": "needs_review",
+  "findings": [
+    { "code": "READING_ORDER_OK_VISUALLY", "severity": "info", "nodeIds": ["28:141", "28:164", "28:160", "28:162", "28:176", "28:165", "28:166", "28:177"], "message": "Revisión visual del agente sobre evidence/demo-2096-122-v1.png: el recorrido es el de la maestra (logo → titular → 4,10 % → «de rentabilidad garantizada 1 año» → sello → claim + «Saber más» → legal). Todo el contenido queda dentro del rectángulo útil de Reels {65, 269, 950×979}." },
+    { "code": "TIGHT_VERTICAL_RHYTHM", "severity": "warning", "nodeIds": ["28:141", "28:159", "28:165", "28:177"], "message": "Los textos conservan cuerpo y copy, y el bloque ocupa 944 de los 979 px útiles. Los huecos se comprimen respecto a la maestra (render): logo→forma 51→30 px, sello→claim ≈38→31 px, claim→legal 59→25 px. El legal termina en y≈1247, a ~1 px del límite inferior de la zona segura." },
+    { "code": "DECORATION_SHORTENED", "severity": "warning", "nodeIds": ["28:159"], "message": "La forma verde de fondo de la oferta (decoración) pasa de 661 a 594 px de alto editando solo las y de sus vértices (borde superior +37 px, esquinas inferiores −30 px, muesca −10 px). Mantiene la muesca bajo la que encaja el sello y el radio de esquina. Comprobar que la proporción sigue siendo la de la marca." },
+    { "code": "EMPTY_BANDS_BY_PLATFORM", "severity": "info", "nodeIds": ["28:140"], "message": "Las bandas vacías arriba (269 px) y, sobre todo, abajo (672 px) son las zonas que la interfaz de Reels cubre; el fondo rosa liso las ocupa sin contenido. Se ve desequilibrado fuera de la app, pero es lo esperado en ese emplazamiento." },
+    { "code": "MISSING_FONT_ENVIRONMENT", "severity": "info", "nodeIds": ["28:160", "28:161", "28:167", "28:176", "28:177"], "message": "La familia Mutualidad no se puede cargar en este entorno; los textos solo se trasladan (no requieren cargar la fuente) y la captura los muestra con su render original. Es una limitación del entorno, no de la pieza." }
+  ]
+}

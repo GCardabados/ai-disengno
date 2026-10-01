@@ -1,0 +1,65 @@
+{
+  "maestra": {
+    "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+    "nodeId": "28:140",
+    "nombre": "960x1200_PAM_Meta_2 (enlace: sección 28:139 «Imagen 5»)"
+  },
+  "destinos": [
+    {
+      "id": "imagen5_1080x1920_meta",
+      "tamano": "1080x1920",
+      "zonaSegura": "Meta Reels (14 % arriba, 35 % abajo, 6 % lados) → {x 65, y 269, w 950, h 979}; procedencia internal (fuentes secundarias)",
+      "clonId": "2096:122",
+      "seccionId": "2096:121",
+      "estado": "created · DEMO pendiente de revisión humana"
+    }
+  ],
+  "tiempo": {
+    "inicio": "2026-10-01T09:05:58Z",
+    "fin": "2026-10-01T09:35:00Z",
+    "minutosActivos": 29,
+    "nota": "Reloj de pared de la sesión; incluye una compactación de contexto."
+  },
+  "llamadasFigma": {
+    "lectura": 19,
+    "escritura": 1,
+    "capturas": 2,
+    "errores": 0,
+    "detalle": {
+      "descubrimiento": 2,
+      "inventarioMaestra": 7,
+      "sondaVectorialMaestra": 1,
+      "crearClon": 1,
+      "sondaVectorialClon": 1,
+      "digestsMaestraTrasEscritura": 1,
+      "relecturaClon": 7,
+      "capturas": [
+        "28:140 (maestra)",
+        "2096:122 (clon v1)"
+      ]
+    },
+    "otras": {
+      "WebSearch": 1
+    },
+    "notas": [
+      "El primer descubrimiento usó el nombre «Imagen 5», que coincide con la SECTION 28:139 y no con el frame; se repitió con el nombre del frame. No fue un error de Figma.",
+      "El precheck local sale con código 3 solo por TEXT_BOXES_OVERLAP dentro del grupo rígido de la oferta (28:160+28:161, 28:160+28:164, 28:161+28:163), solapes que ya existen en la maestra; se aceptaron como heredados. No es una llamada a Figma."
+    ]
+  },
+  "intervencionesHumanas": [],
+  "cambiosDeCodigo": [],
+  "iteracionesPorDestino": {
+    "imagen5_1080x1920_meta": 1
+  },
+  "verificaciones": {
+    "verifySent": "7/7 lecturas de maestra, 7/7 relecturas del clon, escritura, sonda y digests: script idéntico al generado",
+    "maestraSinCambios": "node-digests tras la escritura = inventario (sha256:83d631d3…)",
+    "demoCheck": "11 pass + visual_agent_review needs_review → agregado needs_review (check/report.md)",
+    "vectorBefore": "pre/vector-before-derived.json: derivado de la sonda de la maestra + traslación del grupo (60, 124), no es una lectura del clon"
+  },
+  "valoracion": {
+    "puntuacion": null,
+    "observaciones": [],
+    "aceptada": false
+  }
+}

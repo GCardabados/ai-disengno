@@ -1,0 +1,54 @@
+{
+  "transcript": "4ead3c5c-3228-4830-b470-8763aad6ef39.jsonl",
+  "calls": [
+    {
+      "toolUseId": "toolu_01Ko2ja4kJSyw6MXPBJVfABm",
+      "scriptSha256": "eabe1456c4116039f39c37fa15475cbbca53a9f4cfb9f73c9167e81936b368a4",
+      "raw": "raw-response-chunk-PBJVfABm.txt",
+      "isError": false,
+      "rawBytes": 15474
+    },
+    {
+      "toolUseId": "toolu_01J2Ua5ZidkpwTYTKVPzum9w",
+      "scriptSha256": "5e7a48a1cc1ff76db62ac50dfdf87d1a39919d485a87ac85578e11b7a61eb177",
+      "raw": "raw-response-chunk-KVPzum9w.txt",
+      "isError": false,
+      "rawBytes": 15310
+    },
+    {
+      "toolUseId": "toolu_01SUPARSx142QvWBmPX9fkrT",
+      "scriptSha256": "0a4e222e730527a9c4206df45809e09c019a37d90e2998b6babd186598377f70",
+      "raw": "raw-response-chunk-mPX9fkrT.txt",
+      "isError": false,
+      "rawBytes": 15556
+    },
+    {
+      "toolUseId": "toolu_01ErBFixNVGLKVLJiUa5Rnr3",
+      "scriptSha256": "4eb4e3850857806d519271495611c4b4a1b39820841e606fc9ad28e85291fc00",
+      "raw": "raw-response-chunk-iUa5Rnr3.txt",
+      "isError": false,
+      "rawBytes": 15780
+    },
+    {
+      "toolUseId": "toolu_01H3Z5LWTvNkV1ztocCAD5ST",
+      "scriptSha256": "a8689193fa0df9714b610d9f76f201bf3af48c8ee23889a2b820624fdc9b7cc6",
+      "raw": "raw-response-chunk-ocCAD5ST.txt",
+      "isError": false,
+      "rawBytes": 15628
+    },
+    {
+      "toolUseId": "toolu_01LZZMmdRD26BQkkhSAwgh2f",
+      "scriptSha256": "b1460b92fc76d340d55276e3206cef50225a5a7d48955452ea124877be20ecec",
+      "raw": "raw-response-chunk-hSAwgh2f.txt",
+      "isError": false,
+      "rawBytes": 15566
+    },
+    {
+      "toolUseId": "toolu_0157oFh8y5fUq7pPKGdPWSEK",
+      "scriptSha256": "b264183336e3305dab72aefd22ebae789bffebb7c0795734526fdbd97236d955",
+      "raw": "raw-response-chunk-KGdPWSEK.txt",
+      "isError": false,
+      "rawBytes": 5184
+    }
+  ]
+}
