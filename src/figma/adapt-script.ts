@@ -16,9 +16,11 @@
 //  - v6: un GROUP se traslada midiendo sobre un descendiente de referencia no modificado (su caja es derivada:
 //    en v5, reaplicar tras redimensionar un hijo desplazaba todo el grupo).
 //  - Ediciones vectoriales de decoración con guarda 'from' (idempotentes; detectan cambios ajenos).
+//  - v7: modo 'copy' (duplica un clon existente TAL CUAL, con sus cambios manuales, y adapta solo la copia), escala
+//    PROPORCIONAL de imágenes (nunca logo ni texto) y grosor de trazo de decoraciones con guarda 'from'.
 import type { DemoPlan } from '../demo/plan.ts';
 
-export const ADAPT_SCRIPT_VERSION = 'pcb.adapt-script.v6';
+export const ADAPT_SCRIPT_VERSION = 'pcb.adapt-script.v7';
 
 /** Única eliminación permitida: el clon creado por este mismo script, si falla algo después de crearlo. */
 export const ALLOWED_DISCARD_LINE = '  clone.remove(); // PCB_DISCARD_OWN_CLONE';
@@ -42,9 +44,11 @@ export interface AdaptOptions {
    * 'create' (por defecto): clona y aplica todo el plan. 'patch': reaplica el plan COMPLETO sobre el clon EXISTENTE
    * (sin duplicar la salida). Todas las operaciones son absolutas respecto a la maestra, así que reaplicarlas es
    * idempotente. Usar 'patch' solo tras comprobar que el clon no cambió desde la última lectura.
+   * 'copy': duplica el clon `sourceCloneId` (sin tocarlo) dentro de la misma sección y aplica el plan a la copia.
    */
-  mode?: 'create' | 'patch';
+  mode?: 'create' | 'patch' | 'copy';
   existingCloneId?: string;
+  sourceCloneId?: string;
 }
 
 const BODY = String.raw`
@@ -65,12 +69,15 @@ for (var i = 0; i < page.children.length; i++) {
   if (c0.type === 'SECTION' && c0.name === OUT.sectionName) section = c0;
 }
 var existing = null;
+var source = null;
 if (section) {
   for (var j = 0; j < section.children.length; j++) {
     if (section.children[j].name === OUT.cloneName) existing = section.children[j];
+    if (section.children[j].id === OUT.sourceCloneId) source = section.children[j];
   }
 }
-if (MODE === 'create' && existing) throw new Error('PCB_DEMO_ALREADY_EXISTS ' + existing.id);
+if (MODE !== 'patch' && existing) throw new Error('PCB_DEMO_ALREADY_EXISTS ' + existing.id);
+if (MODE === 'copy' && (!source || source.type !== 'FRAME' || source.id === master.id)) throw new Error('PCB_COPY_SOURCE_NOT_FOUND ' + OUT.sourceCloneId);
 if (MODE === 'patch' && (!existing || existing.id !== OUT.existingCloneId)) throw new Error('PCB_PATCH_TARGET_NOT_FOUND ' + OUT.existingCloneId);
 
 // Fuentes: se intenta cargar las existentes; nunca se sustituye ninguna. Solo se exige la carga si el plan toca la
@@ -112,14 +119,15 @@ var masterIds = {};
 master.findAll(function () { return true; }).forEach(function (n) { masterIds[n.id] = true; });
 masterIds[master.id] = true;
 
-var clone = MODE === 'create' ? master.clone() : existing;
+// 'copy' duplica el clon de origen tal cual (conserva cualquier cambio manual suyo); el origen no se modifica.
+var clone = MODE === 'create' ? master.clone() : MODE === 'copy' ? source.clone() : existing;
 var idMap = [];
 var applied = [];
 
 function near(p, q, tol) { return Math.abs(p.x - q.x) <= tol && Math.abs(p.y - q.y) <= tol; }
 
 try {
-if (MODE === 'create') {
+if (MODE !== 'patch') {
   // Varios destinos comparten la sección de salida: el nuevo clon va a la derecha de los existentes.
   var nextX = 100;
   for (var sc = 0; sc < section.children.length; sc++) {
@@ -204,6 +212,19 @@ for (var ri = 0; ri < PLAN.effectResizes.length; ri++) {
   en.y = er.y;
   applied.push({ op: 'resize_effect', cloneNodeId: en.id, masterNodeId: er.nodeId, detail: { before: eb, after: { x: en.x, y: en.y, width: en.width, height: en.height } } });
 }
+// Escala PROPORCIONAL de imágenes: tamaño final = tamaño en la maestra × factor (absoluto, idempotente); las pinturas
+// no se tocan (el recorte de la imagen es relativo al nodo, así que la imagen escala sin deformarse).
+for (var si = 0; si < PLAN.imageScales.length; si++) {
+  var isc = PLAN.imageScales[si];
+  var mIs = await figma.getNodeByIdAsync(isc.nodeId);
+  var inode = onClone(isc.nodeId);
+  var ib = { x: inode.x, y: inode.y, width: inode.width, height: inode.height };
+  var tw = mIs.width * isc.scale, th = mIs.height * isc.scale;
+  if (Math.abs(inode.width - tw) > 1e-6 || Math.abs(inode.height - th) > 1e-6) inode.resize(tw, th);
+  inode.x = isc.x;
+  inode.y = isc.y;
+  applied.push({ op: 'scale_image', cloneNodeId: inode.id, masterNodeId: isc.nodeId, detail: { scale: isc.scale, before: ib, after: { x: inode.x, y: inode.y, width: inode.width, height: inode.height } } });
+}
 
 // Ediciones vectoriales de decoración (coordenadas del frame destino). Idempotentes: un vértice ya en su destino se
 // deja; uno que no está ni en 'from' ni en 'to' indica un cambio ajeno (p. ej. manual) y detiene sin escribir ese nodo.
@@ -220,6 +241,14 @@ for (var vi = 0; vi < PLAN.vectorEdits.length; vi++) {
   var vecLocal = function (v) { return { x: (d * v.x - b * v.y) / det, y: (-c * v.x + a * v.y) / det }; };
   var net = JSON.parse(JSON.stringify(vn.vectorNetwork));
   var changes = [];
+  if (ve.strokeWeight) {
+    var sw = vn.strokeWeight;
+    if (Math.abs(sw - ve.strokeWeight.to) > 1e-6) {
+      if (Math.abs(sw - ve.strokeWeight.from) > 1e-6) throw new Error('PCB_STROKE_UNEXPECTED ' + ve.nodeId + ' ' + sw);
+      vn.strokeWeight = ve.strokeWeight.to;
+      changes.push({ strokeWeight: { from: sw, to: ve.strokeWeight.to } });
+    }
+  }
   for (var vv = 0; vv < ve.vertices.length; vv++) {
     var ev = ve.vertices[vv];
     var vert = net.vertices[ev.index];
@@ -240,14 +269,14 @@ for (var vi = 0; vi < PLAN.vectorEdits.length; vi++) {
     sg[et.field] = vecLocal(et.to);
     changes.push({ segment: et.segment, field: et.field, from: curT, to: et.to });
   }
-  if (changes.length > 0) {
+  if (changes.some(function (ch) { return !ch.strokeWeight; })) {
     if (typeof vn.setVectorNetworkAsync === 'function') await vn.setVectorNetworkAsync(net);
     else vn.vectorNetwork = net;
   }
   applied.push({ op: 'vector_edit', cloneNodeId: vn.id, masterNodeId: ve.nodeId, detail: { purpose: ve.purpose, changes: changes } });
 }
 } catch (e) {
-  if (MODE === 'create') {
+  if (MODE !== 'patch') {
   clone.remove(); // PCB_DISCARD_OWN_CLONE
     throw new Error('PCB_ADAPT_FAILED_CLONE_DISCARDED ' + String(e && e.message ? e.message : e));
   }
@@ -258,6 +287,7 @@ if (clone.parent !== section || section.parent !== page) throw new Error('PCB_OU
 return {
   schema: 'pcb.adapt.result.v1', scriptVersion: SCRIPT_VERSION, mode: MODE, masterNodeId: master.id,
   sectionId: section.id, sectionCreated: sectionCreated, cloneId: clone.id, cloneName: clone.name,
+  sourceCloneId: MODE === 'copy' ? source.id : null,
   idMap: idMap, fonts: fonts, applied: applied,
   master: { width: master.width, height: master.height, childCount: master.children.length, name: master.name }
 };
@@ -272,12 +302,14 @@ export function buildAdaptScript(plan: DemoPlan, out: AdaptOptions): string {
     moves: plan.moves.map((m) => ({ unitId: m.unitId, nodeIds: m.nodeIds, dx: m.dx, dy: m.dy })),
     effectResizes: plan.effectResizes,
     vectorEdits: plan.vectorEdits ?? [],
+    imageScales: plan.imageScales ?? [],
   };
   const mode = out.mode ?? 'create';
   if (mode === 'patch' && !out.existingCloneId) throw new Error('patch requiere existingCloneId');
+  if (mode === 'copy' && !out.sourceCloneId) throw new Error('copy requiere sourceCloneId');
   const code = [
     `var PLAN = ${JSON.stringify(planData)};`,
-    `var OUT = ${JSON.stringify({ sectionName: out.sectionName, cloneName: out.cloneName, gapFromContentPx: out.gapFromContentPx, existingCloneId: out.existingCloneId ?? null })};`,
+    `var OUT = ${JSON.stringify({ sectionName: out.sectionName, cloneName: out.cloneName, gapFromContentPx: out.gapFromContentPx, existingCloneId: out.existingCloneId ?? null, sourceCloneId: out.sourceCloneId ?? null })};`,
     `var MODE = ${JSON.stringify(mode)};`,
     `var SCRIPT_VERSION = ${JSON.stringify(ADAPT_SCRIPT_VERSION)};`,
     // El plan solo traslada textos (el plan rechaza redimensionar texto): no hace falta cargar sus fuentes.

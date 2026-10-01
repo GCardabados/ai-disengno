@@ -1,0 +1,9 @@
+{
+  "tool_use_id": "toolu_01THbwPAxLeXcwLb1kE1Ftm5",
+  "input": {
+    "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+    "description": "Solo lectura: vértices y tiradores de 2075:131, 2075:132, 2075:133, 2075:134 en coordenadas del frame 2075:121.",
+    "skillNames": "resource:figma-use",
+    "code": "var FRAME_ID = \"2075:121\";\nvar NODE_IDS = [\"2075:131\",\"2075:132\",\"2075:133\",\"2075:134\"];\n\nvar frame = await figma.getNodeByIdAsync(FRAME_ID);\nif (!frame || frame.type !== 'FRAME') throw new Error('PCB_PROBE_FRAME');\nvar fx = frame.absoluteTransform[0][2], fy = frame.absoluteTransform[1][2];\nvar out = {};\nfor (var i = 0; i < NODE_IDS.length; i++) {\n  var n = await figma.getNodeByIdAsync(NODE_IDS[i]);\n  if (!n || n.type !== 'VECTOR') throw new Error('PCB_PROBE_NOT_VECTOR ' + NODE_IDS[i]);\n  var t = n.absoluteTransform;\n  var pt = function (x, y) { return [t[0][0] * x + t[0][1] * y + t[0][2] - fx, t[1][0] * x + t[1][1] * y + t[1][2] - fy]; };\n  var vec = function (v) { return [t[0][0] * v.x + t[0][1] * v.y, t[1][0] * v.x + t[1][1] * v.y]; };\n  var net = n.vectorNetwork;\n  out[n.id] = {\n    vertices: net.vertices.map(function (v) { return pt(v.x, v.y); }),\n    segments: net.segments.map(function (s) { return { start: s.start, end: s.end, tangentStart: vec(s.tangentStart), tangentEnd: vec(s.tangentEnd) }; })\n  };\n}\nreturn { schema: 'pcb.vector-probe.v1', frameId: frame.id, nodes: out };"
+  }
+}

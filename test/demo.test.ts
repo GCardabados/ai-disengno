@@ -37,6 +37,8 @@ function composition(over: Partial<DemoComposition> = {}): DemoComposition {
     ],
     effectResizes: [],
     vectorEdits: [],
+    imageScales: [],
+    layoutChecks: { readingOrder: [], cta: null, decorationMasks: [] },
     importantNodeIds: ['10:3', '10:6', '10:7', '10:8', '10:9', '10:10', '10:12'],
     sizeLockedNodeIds: ['10:3'],
     protectedRegions: [{ nodeId: '10:11', rect: { x: 0, y: 0, width: 460, height: 200 }, purpose: 'MOCK producto' }],
@@ -301,7 +303,7 @@ test('MOCK [script]: el modo patch actualiza el clon existente sin clonar ni bor
   const code = buildAdaptScript(plan, { sectionName: 'PCB · Salida DEMO', cloneName: 'DEMO clon', gapFromContentPx: 400, mode: 'patch', existingCloneId: '90:1' });
   assert.ok(code.includes('var MODE = "patch";'));
   assert.ok(code.includes('PCB_PATCH_TARGET_NOT_FOUND') && code.includes('PCB_VERTEX_UNEXPECTED'), 'no pisa cambios ajenos');
-  assert.ok(code.includes("if (MODE === 'create') {\n  clone.remove();"), 'solo en create se descarta el clon propio');
+  assert.ok(code.includes("if (MODE !== 'patch') {\n  clone.remove();"), 'solo se descarta el clon (o la copia) que crea el propio script');
   assert.deepEqual(staticAdaptViolations(code), []);
   assert.throws(() => buildAdaptScript(plan, { sectionName: 'x', cloneName: 'y', gapFromContentPx: 0, mode: 'patch' }), /existingCloneId/);
 });
@@ -322,4 +324,66 @@ test('[script v6]: la traslación de un GROUP se mide sobre un descendiente de r
   const code = buildAdaptScript(plan, { sectionName: 'S', cloneName: 'C', gapFromContentPx: 0 });
   assert.ok(code.includes("if (mNode.type === 'GROUP')") && code.includes('PCB_GROUP_WITHOUT_REFERENCE'));
   assert.ok(code.includes('if (!CHANGED[cands[ci].id]) ref = cands[ci];'), 'la referencia excluye nodos redimensionados o editados');
+});
+
+// ---------- v7: escala proporcional de imágenes, copia de un clon y maquetación ----------
+
+test('MOCK [plan]: escala proporcional de una imagen; nunca del logo ni de un texto', async () => {
+  const s = await snap(baseMasterSpec());
+  const ok = buildDemoPlan(s, composition({ mustCoverWidthNodeIds: [], imageScales: [{ nodeId: '10:2', scale: 0.5, to: { x: 540, y: 405 }, why: 'MOCK' }] }));
+  assert.ok(ok.ok, ok.ok ? '' : ok.issues.join('\n'));
+  if (!ok.ok) return;
+  assert.deepEqual(ok.plan.expected['10:2']!.rect, { x: 540, y: 405, width: 540, height: 675 });
+  assert.equal(ok.plan.expected['10:2']!.scale, 0.5);
+  const bad = (id: string) => { const r = buildDemoPlan(s, composition({ imageScales: [{ nodeId: id, scale: 0.5, to: { x: 0, y: 0 }, why: '' }] })); return r.ok ? '' : r.issues.join('\n'); };
+  assert.match(bad('10:4'), /bloque de tamaño bloqueado|no tiene una imagen/);
+  assert.match(bad('10:6'), /es texto|no tiene una imagen/);
+  assert.match(bad('10:11'), /trasladarse en un bloque y escalarse/);
+});
+
+test('MOCK [checks]: una imagen escalada con el mismo factor pasa; deformada o con otro factor falla', async () => {
+  const comp = composition({ mustCoverWidthNodeIds: [], imageScales: [{ nodeId: '10:2', scale: 0.5, to: { x: 540, y: 405 }, why: 'MOCK' }] });
+  const scaled = (w: number, h: number) => (c: MockNodeSpec) => { const n = find(c, '90:2')!; n.x = 540; n.y = 405; n.width = w; n.height = h; };
+  assert.equal(statusOf(run(await scenario(scaled(540, 675), comp)), 'allowed_operations'), 'pass');
+  assert.equal(statusOf(run(await scenario(scaled(540, 675), comp)), 'content_preserved'), 'pass', 'las pinturas no cambian');
+  const deformed = run(await scenario(scaled(540, 700), comp));
+  assert.ok(deformed.results.find((r) => r.validatorId === 'allowed_operations')!.findings.some((f) => f.code === 'IMAGE_DEFORMED'));
+});
+
+test('MOCK [checks]: orden de lectura y CTA centrado bajo su copy, separado de él', async () => {
+  const lc = (cta: { x: number; y: number }) => composition({
+    units: [...composition().units.filter((u) => u.unitId !== 'cta'), { unitId: 'cta', nodeIds: ['10:8'], anchorNodeId: '10:8', to: cta, why: '' }],
+    layoutChecks: { readingOrder: ['10:6', '10:7', '10:8'], cta: { nodeId: '10:8', copyNodeId: '10:7', minGapPx: 16, maxCenterOffsetPx: 2 }, decorationMasks: [] },
+  });
+  // 10:7 ocupa x 60..1020 (centro 540) e y 440..520.
+  const good = await scenario(undefined, lc({ x: 390, y: 560 }));
+  assert.equal(statusOf(run(good), 'layout_order_and_cta'), 'pass');
+  const codes = async (to: { x: number; y: number }) => run(await scenario(undefined, lc(to))).results.find((r) => r.validatorId === 'layout_order_and_cta')!.findings.map((f) => f.code);
+  assert.ok((await codes({ x: 60, y: 560 })).includes('CTA_NOT_CENTERED_ON_COPY'));
+  assert.ok((await codes({ x: 390, y: 500 })).includes('CTA_GAP'), 'comparte franja con su copy');
+  assert.ok((await codes({ x: 390, y: 200 })).includes('READING_ORDER'), 'el CTA no puede leerse antes que el mensaje');
+  // A la derecha y en la MISMA línea superior (diferencias de rasterización < 1 px) sigue siendo "después".
+  const sameLine = composition({ units: [...composition().units.filter((u) => u.unitId !== 'cta'), { unitId: 'cta', nodeIds: ['10:8'], anchorNodeId: '10:8', to: { x: 1030, y: 439.5 }, why: '' }],
+    layoutChecks: { readingOrder: ['10:7', '10:8'], cta: null, decorationMasks: [] } });
+  assert.equal(statusOf(run(await scenario(undefined, sameLine)), 'layout_order_and_cta'), 'pass');
+});
+
+test('MOCK [checks]: visibilidad efectiva — un texto importante tapado por una forma opaca o con opacidad 0 no pasa', async () => {
+  const base = await scenario();
+  assert.equal(statusOf(run(base), 'effective_visibility'), 'pass');
+  const hidden = await scenario((c) => { find(c, '90:7')!.opacity = 0; });
+  assert.ok(run(hidden).results.find((r) => r.validatorId === 'effective_visibility')!.findings.some((f) => f.code === 'NOT_FULLY_VISIBLE'));
+  const covered = await scenario((c) => { const b = find(c, '90:8')!; b.y = 440; });
+  assert.ok(run(covered).results.find((r) => r.validatorId === 'effective_visibility')!.findings.some((f) => f.code === 'COVERED_BY_OPAQUE_NODE'));
+});
+
+test('[script v7]: modo copy duplica el clon de origen sin tocarlo y escala imágenes de forma proporcional', async () => {
+  const comp = composition({ mustCoverWidthNodeIds: [], imageScales: [{ nodeId: '10:2', scale: 0.5, to: { x: 540, y: 405 }, why: 'MOCK' }] });
+  const { plan } = await scenario(undefined, comp);
+  const code = buildAdaptScript(plan, { sectionName: 'S', cloneName: 'C v2', gapFromContentPx: 0, mode: 'copy', sourceCloneId: '90:1' });
+  assert.ok(code.includes('var MODE = "copy";') && code.includes('"sourceCloneId":"90:1"'));
+  assert.ok(code.includes("MODE === 'copy' ? source.clone()") && code.includes('PCB_COPY_SOURCE_NOT_FOUND'));
+  assert.ok(code.includes('inode.resize(tw, th)') && code.includes('var tw = mIs.width * isc.scale, th = mIs.height * isc.scale;'), 'mismo factor en ancho y alto');
+  assert.deepEqual(staticAdaptViolations(code), []);
+  assert.throws(() => buildAdaptScript(plan, { sectionName: 'x', cloneName: 'y', gapFromContentPx: 0, mode: 'copy' }), /sourceCloneId/);
 });

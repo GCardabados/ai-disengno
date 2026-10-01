@@ -114,7 +114,8 @@ export function precheckPlan(plan: DemoPlan, c: DemoComposition, textNodeIds: st
   for (const pr of c.protectedRegions) {
     const b = rect(pr.nodeId);
     if (!b) continue;
-    const reg = { x: b.x + pr.rect.x, y: b.y + pr.rect.y, width: pr.rect.width, height: pr.rect.height };
+    const k = plan.expected[pr.nodeId]?.scale ?? 1;
+    const reg = { x: b.x + pr.rect.x * k, y: b.y + pr.rect.y * k, width: pr.rect.width * k, height: pr.rect.height * k };
     if (!inside(reg, { x: 0, y: 0, width: W, height: H })) out.push({ code: 'PROTECTED_REGION_CROPPED', nodeId: pr.nodeId, detail: pr.purpose });
     for (const t of textNodeIds) {
       const r = rect(t);

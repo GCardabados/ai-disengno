@@ -91,7 +91,9 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
   // 3. Contenido: textos, pinturas, efectos, visibilidad, máscaras y geometría vectorial idénticos.
   {
     const f: Finding[] = [];
-    const resized = new Set([mRoot.id, ...plan.effectResizes.map((e) => e.nodeId), ...plan.vectorEdits.map((v) => v.nodeId)]);
+    const resized = new Set([mRoot.id, ...plan.effectResizes.map((e) => e.nodeId), ...plan.vectorEdits.map((v) => v.nodeId), ...(plan.imageScales ?? []).map((e) => e.nodeId)]);
+    // El grosor de trazo declarado en una edición de decoración se verifica en vector_edits (aquí se neutraliza).
+    const strokeEdited = new Set(plan.vectorEdits.filter((v) => v.strokeWeight).map((v) => v.nodeId));
     for (const m of master.nodes) {
       const cn = pair(m.id);
       if (!cn) continue;
@@ -99,6 +101,7 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       const b = contentProjection(cn);
       // La geometría de un nodo redimensionado cambia por definición; se compara todo lo demás.
       if (resized.has(m.id)) { a.vectorGeometryDigest = null; b.vectorGeometryDigest = null; }
+      if (strokeEdited.has(m.id)) { a.strokeWeight = null; b.strokeWeight = null; }
       // Propiedades de contenedor que no están en contentProjection (recorte, maquetación automática).
       if (m.clipsContent !== cn.clipsContent || m.layout.mode !== cn.layout.mode) {
         f.push({ code: 'CONTAINER_PROPS_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Recorte o modo de maquetación distinto' });
@@ -133,8 +136,14 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       const d = Math.max(Math.abs(got.x - exp.rect.x), Math.abs(got.y - exp.rect.y), Math.abs(got.width - exp.rect.width), Math.abs(got.height - exp.rect.height));
       if (d > tol) f.push({ code: 'UNEXPECTED_GEOMETRY', severity: 'blocking', nodeIds: [m.id, cn.id], measured: got, expected: exp.rect, message: `Desviación ${d} px` });
       if (!exp.resized && (cn.width !== m.width || cn.height !== m.height)) f.push({ code: 'SIZE_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Tamaño cambiado en un nodo que solo podía trasladarse' });
+      // Escala de imagen: el MISMO factor en ancho y alto (sin deformar), exactamente el declarado.
+      if (exp.scale !== undefined && m.width && m.height && cn.width && cn.height) {
+        const sx = cn.width / m.width, sy = cn.height / m.height;
+        if (Math.abs(sx - sy) > 1e-4) f.push({ code: 'IMAGE_DEFORMED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: [sx, sy], message: 'Escala distinta en ancho y alto' });
+        if (Math.abs(sx - exp.scale) > 1e-4) f.push({ code: 'IMAGE_SCALE_MISMATCH', severity: 'blocking', nodeIds: [m.id, cn.id], measured: sx, expected: exp.scale, message: 'Factor de escala distinto del declarado' });
+      }
     }
-    results.push(r('allowed_operations', statusOf(f), `Posición de cada caja respecto al plan (±${tol} px), tamaño exacto de todo lo que solo se traslada y parte lineal exacta de cada transformación.`, f));
+    results.push(r('allowed_operations', statusOf(f), `Posición de cada caja respecto al plan (±${tol} px), tamaño exacto de todo lo que solo se traslada, factor único en ancho y alto de las imágenes escaladas y parte lineal exacta de cada transformación.`, f));
   }
 
   // 5. Logo: tamaño y disposición interna idénticos (exacto, sin tolerancia).
@@ -204,7 +213,9 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       const cn = pair(pr.nodeId);
       const got = cn && cRoot ? relRect(cn, cRoot) : null;
       if (!got) { f.push({ code: 'NO_BOUNDS', severity: 'blocking', nodeIds: [pr.nodeId], message: 'Sin caja' }); continue; }
-      const region: Rect = { x: got.x + pr.rect.x, y: got.y + pr.rect.y, width: pr.rect.width, height: pr.rect.height };
+      // La región se declara en coordenadas locales de la MAESTRA; si la imagen se escaló, escala con ella.
+      const k = mById.get(pr.nodeId)?.width ? got.width / mById.get(pr.nodeId)!.width! : 1;
+      const region: Rect = { x: got.x + pr.rect.x * k, y: got.y + pr.rect.y * k, width: pr.rect.width * k, height: pr.rect.height * k };
       if (!within(region, { x: 0, y: 0, width: c.target.width, height: c.target.height }, tol)) f.push({ code: 'PROTECTED_REGION_CROPPED', severity: 'blocking', nodeIds: [pr.nodeId], measured: region, message: `${pr.purpose}: recortada` });
       for (const t of textRects) {
         if (!t.rect) continue;
@@ -235,6 +246,10 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
           f.push({ code: 'VECTOR_TOPOLOGY_CHANGED', severity: 'blocking', nodeIds: [e.nodeId], message: 'Cambió el número de vértices o segmentos' });
           continue;
         }
+        if (e.strokeWeight) {
+          const sw = cid ? cById.get(cid)?.strokeWeight : undefined;
+          if (sw !== e.strokeWeight.to) f.push({ code: 'STROKE_NOT_AT_TARGET', severity: 'blocking', nodeIds: [e.nodeId], measured: sw ?? null, expected: e.strokeWeight.to, message: 'Grosor de trazo' });
+        }
         const edited = new Map(e.vertices.map((v) => [v.index, v]));
         before.vertices.forEach((bv, i) => {
           const ed = edited.get(i);
@@ -255,8 +270,90 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
           }
         });
       }
-      results.push(r('vector_edits', statusOf(f), 'Vértices y tiradores editados en su destino (±0,5 px) y todos los demás de ese vector sin cambios (±0,05 px), en coordenadas del frame; misma topología.', f));
+      results.push(r('vector_edits', statusOf(f), 'Vértices y tiradores editados en su destino (±0,5 px), todos los demás de ese vector sin cambios (±0,05 px), en coordenadas del frame; misma topología; grosor de trazo declarado.', f));
     }
+  }
+
+  // 7c. Maquetación (GEOMÉTRICA, por cajas de render): orden de lectura, CTA respecto a su copy, aporte de máscaras y
+  // visibilidad efectiva del contenido importante. No juzga la calidad visual: eso queda para la captura.
+  const rb = (id: string): Rect | null => {
+    const cn = pair(id);
+    const b = cn?.absoluteRenderBounds, o = cRoot?.absoluteBoundingBox;
+    return b && o ? { x: b.x - o.x, y: b.y - o.y, width: b.width, height: b.height } : null;
+  };
+  const lc = c.layoutChecks;
+  if (lc.readingOrder.length > 1 || lc.cta) {
+    const f: Finding[] = [];
+    // Las cajas de render de glifos dependen de la rasterización (diferencias de centésimas de px entre textos
+    // alineados a la misma línea): estas comparaciones usan ±1 px, no la tolerancia de posición del plan.
+    const rtol = Math.max(tol, 1);
+    for (let i = 1; i < lc.readingOrder.length; i++) {
+      const A = rb(lc.readingOrder[i - 1]!), B = rb(lc.readingOrder[i]!);
+      if (!A || !B) { f.push({ code: 'NO_RENDER_BOUNDS', severity: 'blocking', nodeIds: [lc.readingOrder[i - 1]!, lc.readingOrder[i]!], message: 'Sin caja de render' }); continue; }
+      // B va después de A si empieza debajo de A, o a su derecha sin empezar por encima de A.
+      const below = B.y >= A.y + A.height - rtol;
+      const right = B.x >= A.x + A.width - rtol && B.y >= A.y - rtol;
+      if (!below && !right) f.push({ code: 'READING_ORDER', severity: 'blocking', nodeIds: [lc.readingOrder[i - 1]!, lc.readingOrder[i]!], measured: { a: A, b: B }, message: 'El segundo no queda ni debajo ni a la derecha del primero' });
+    }
+    if (lc.cta) {
+      const C = rb(lc.cta.nodeId), P = rb(lc.cta.copyNodeId);
+      if (!C || !P) f.push({ code: 'NO_RENDER_BOUNDS', severity: 'blocking', nodeIds: [lc.cta.nodeId, lc.cta.copyNodeId], message: 'Sin caja de render' });
+      else {
+        const off = Math.abs((C.x + C.width / 2) - (P.x + P.width / 2));
+        const gap = C.y - (P.y + P.height);
+        if (off > lc.cta.maxCenterOffsetPx) f.push({ code: 'CTA_NOT_CENTERED_ON_COPY', severity: 'blocking', nodeIds: [lc.cta.nodeId, lc.cta.copyNodeId], measured: off, expected: lc.cta.maxCenterOffsetPx, message: `Centro del CTA a ${off.toFixed(1)} px del centro de su copy` });
+        if (gap < lc.cta.minGapPx) f.push({ code: 'CTA_GAP', severity: 'blocking', nodeIds: [lc.cta.nodeId, lc.cta.copyNodeId], measured: gap, expected: lc.cta.minGapPx, message: `Separación vertical ${gap.toFixed(1)} px (comparte franja si es ≤ 0)` });
+      }
+    }
+    results.push(r('layout_order_and_cta', statusOf(f), 'Por cajas de render (±1 px): cada elemento del orden de lectura queda debajo o a la derecha del anterior sin empezar por encima; el CTA centrado bajo su bloque de copy y separado de él sin compartir franja. No evalúa jerarquía visual.', f));
+  }
+  if (lc.decorationMasks.length > 0) {
+    const f: Finding[] = [];
+    const frameR: Rect = { x: 0, y: 0, width: c.target.width, height: c.target.height };
+    const inter = (p: Rect, q: Rect) => Math.max(0, Math.min(p.x + p.width, q.x + q.width) - Math.max(p.x, q.x)) * Math.max(0, Math.min(p.y + p.height, q.y + q.height) - Math.max(p.y, q.y));
+    for (const dm of lc.decorationMasks) {
+      const deco = rb(dm.decoratedNodeId);
+      const shapes = (mById.get(dm.maskGroupId)?.childIds ?? []);
+      if (!deco) { f.push({ code: 'NO_RENDER_BOUNDS', severity: 'blocking', nodeIds: [dm.decoratedNodeId], message: 'La decoración no se renderiza' }); continue; }
+      for (const sid of shapes) {
+        const cn = pair(sid);
+        const box = cn && cRoot ? relRect(cn, cRoot) : null;
+        const visArea = box ? inter(box, frameR) : 0;
+        const onDeco = box ? inter(box, deco) : 0;
+        if (visArea < dm.minShapeAreaPx || onDeco < dm.minShapeAreaPx) {
+          f.push({ code: 'MASK_SHAPE_WITHOUT_CONTRIBUTION', severity: 'blocking', nodeIds: [sid], measured: { visArea, onDeco }, expected: dm.minShapeAreaPx, message: 'Forma de máscara degenerada, fuera del frame o lejos de la decoración' });
+        }
+      }
+    }
+    results.push(r('decoration_masks', statusOf(f), 'Cada forma de la máscara de decoración tiene superficie dentro del frame y solapa la caja de render de la decoración (por cajas, no por píxeles: la continuidad visual de la cinta la juzga la captura).', f));
+  }
+  {
+    const f: Finding[] = [];
+    const frameR: Rect = { x: 0, y: 0, width: c.target.width, height: c.target.height };
+    const chain = (id: string): NodeSnapshot[] => { const out: NodeSnapshot[] = []; let p = pair(id); while (p) { out.push(p); p = p.parentId ? cById.get(p.parentId) : undefined; } return out; };
+    const opaque = (n: NodeSnapshot) => n.visible && n.opacity === 1 && n.fills !== 'MIXED' && n.fills.some((p) => p.visible && p.type === 'SOLID' && p.opacity === 1 && (p.blendMode === null || p.blendMode === 'NORMAL'));
+    for (const id of c.importantNodeIds) {
+      const ch = chain(id);
+      const cn = ch[0];
+      if (!cn) continue;
+      const alpha = ch.reduce((acc, n) => acc * (n.visible ? n.opacity : 0), 1);
+      if (alpha < 0.99) f.push({ code: 'NOT_FULLY_VISIBLE', severity: 'blocking', nodeIds: [id], measured: alpha, message: 'Oculto o con opacidad acumulada < 1' });
+      const own = rb(id);
+      if (!own) { f.push({ code: 'NO_RENDER_BOUNDS', severity: 'blocking', nodeIds: [id], message: 'No se renderiza' }); continue; }
+      if (!within(own, frameR, tol)) f.push({ code: 'RENDER_CLIPPED', severity: 'blocking', nodeIds: [id], measured: own, message: 'Su render sale del frame' });
+      const ancIds = new Set(ch.map((n) => n.id));
+      for (const o of clone.nodes) {
+        if (o.paintOrder <= cn.paintOrder || ancIds.has(o.id) || !opaque(o)) continue;
+        let up: NodeSnapshot | undefined = o; let inside = false;
+        while (up) { if (up.id === cn.id) { inside = true; break; } up = up.parentId ? cById.get(up.parentId) : undefined; }
+        if (inside) continue;
+        const ob = o.absoluteRenderBounds && cRoot?.absoluteBoundingBox ? { x: o.absoluteRenderBounds.x - cRoot.absoluteBoundingBox.x, y: o.absoluteRenderBounds.y - cRoot.absoluteBoundingBox.y, width: o.absoluteRenderBounds.width, height: o.absoluteRenderBounds.height } : null;
+        if (ob && Math.min(own.x + own.width, ob.x + ob.width) - Math.max(own.x, ob.x) > tol && Math.min(own.y + own.height, ob.y + ob.height) - Math.max(own.y, ob.y) > tol) {
+          f.push({ code: 'COVERED_BY_OPAQUE_NODE', severity: 'blocking', nodeIds: [id, o.id], message: 'Una forma opaca pintada encima solapa su render' });
+        }
+      }
+    }
+    results.push(r('effective_visibility', statusOf(f), 'Contenido importante visible (sin ocultar, opacidad acumulada 1), con render dentro del frame y sin formas opacas pintadas encima (por cajas). El contraste y la legibilidad los juzga la captura.', f));
   }
 
   // 8. Maestra intacta (hash por nodo de la relectura frente a la instantánea del inventario).

@@ -18,8 +18,10 @@ export interface DemoPlan {
   effectResizes: Array<{ nodeId: string; x: number; y: number; width: number; height: number }>;
   /** Ediciones de vértices/tiradores de decoraciones o sus máscaras, en coordenadas del frame destino. */
   vectorEdits: VectorEdit[];
+  /** Escalas proporcionales de imágenes: tamaño final (maestra × factor) y posición en coordenadas del frame raíz. */
+  imageScales: Array<{ nodeId: string; scale: number; x: number; y: number; width: number; height: number }>;
   /** Caja esperada de cada nodo en coordenadas del frame destino (para validar el clon). */
-  expected: Record<string, { rect: Rect | null; dx: number; dy: number; resized: boolean; derived?: boolean; edited?: boolean }>;
+  expected: Record<string, { rect: Rect | null; dx: number; dy: number; resized: boolean; derived?: boolean; edited?: boolean; scale?: number }>;
 }
 
 export type PlanResult = { ok: true; plan: DemoPlan } | { ok: false; issues: string[] };
@@ -94,6 +96,21 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
     if (!coordsRelativeToRoot(e.nodeId)) issues.push(`${e.nodeId}: dentro de un frame intermedio`);
     effectResizes.push({ nodeId: e.nodeId, ...e.to });
   }
+  const imageScales: DemoPlan['imageScales'] = [];
+  for (const e of c.imageScales) {
+    const n = byId.get(e.nodeId);
+    if (!n) { issues.push(`escala de imagen de nodo desconocido ${e.nodeId}`); continue; }
+    if (n.childIds.length > 0 || !['RECTANGLE', 'ELLIPSE'].includes(n.type)) issues.push(`${e.nodeId}: solo se escalan imágenes en formas simples`);
+    if (n.fills === 'MIXED' || !n.fills.some((f) => f.type === 'IMAGE' && f.visible)) issues.push(`${e.nodeId}: no tiene una imagen visible`);
+    if (n.text) issues.push(`${e.nodeId}: es texto`);
+    if (n.rotation !== 0) issues.push(`${e.nodeId}: rotado`);
+    if (locked.has(e.nodeId) || [...ancestors(e.nodeId)].some((a) => locked.has(a))) issues.push(`${e.nodeId}: dentro de un bloque de tamaño bloqueado (logo); no se escala`);
+    if (moved.has(e.nodeId)) issues.push(`${e.nodeId}: no puede trasladarse en un bloque y escalarse a la vez`);
+    if (effectResizes.some((r) => r.nodeId === e.nodeId)) issues.push(`${e.nodeId}: no puede ser efecto y escalarse`);
+    if (!coordsRelativeToRoot(e.nodeId)) issues.push(`${e.nodeId}: dentro de un frame intermedio`);
+    if (n.width === null || n.height === null) { issues.push(`${e.nodeId}: sin tamaño`); continue; }
+    imageScales.push({ nodeId: e.nodeId, scale: e.scale, x: e.to.x, y: e.to.y, width: n.width * e.scale, height: n.height * e.scale });
+  }
   const underLocked = (id: string) => [id, ...ancestors(id)].some((a) => locked.has(a));
   for (const v of c.vectorEdits) {
     const n = byId.get(v.nodeId);
@@ -104,7 +121,8 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
     const inMask = ancestors(v.nodeId).some((a) => byId.get(a)?.isMask === true);
     if (v.purpose === 'decoration_mask' && !inMask) issues.push(`${v.nodeId}: declarado como máscara pero no está dentro de un grupo máscara`);
     if (v.purpose === 'decoration' && inMask) issues.push(`${v.nodeId}: está dentro de una máscara; declararlo como decoration_mask`);
-    if (v.vertices.length === 0 && v.tangents.length === 0) issues.push(`${v.nodeId}: edición vacía`);
+    if (v.vertices.length === 0 && v.tangents.length === 0 && !v.strokeWeight) issues.push(`${v.nodeId}: edición vacía`);
+    if (v.strokeWeight && n.strokeWeight !== v.strokeWeight.from) issues.push(`${v.nodeId}: el trazo de la maestra es ${n.strokeWeight}, no ${v.strokeWeight.from}`);
   }
   for (const id of [...locked, ...important, ...c.mustCoverWidthNodeIds, ...c.mustCoverEdges.map((e) => e.nodeId), ...c.protectedRegions.map((p) => p.nodeId)]) {
     if (!byId.has(id)) issues.push(`nodo desconocido en la composición: ${id}`);
@@ -129,6 +147,11 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
   for (const n of s.nodes) {
     if (n.id === root.id) {
       expected[n.id] = { rect: { x: 0, y: 0, width: c.target.width, height: c.target.height }, dx: 0, dy: 0, resized: true };
+      continue;
+    }
+    const sc = imageScales.find((e) => e.nodeId === n.id);
+    if (sc) {
+      expected[n.id] = { rect: { x: sc.x, y: sc.y, width: sc.width, height: sc.height }, dx: 0, dy: 0, resized: true, scale: sc.scale };
       continue;
     }
     const r = effectResizes.find((e) => e.nodeId === n.id);
@@ -163,6 +186,7 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
       moves,
       effectResizes,
       vectorEdits: c.vectorEdits,
+      imageScales,
       expected,
     },
   };

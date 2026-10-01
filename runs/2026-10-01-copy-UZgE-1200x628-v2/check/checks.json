@@ -1,0 +1,247 @@
+{
+  "results": [
+    {
+      "validatorId": "target_dimensions",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Ancho/alto exactos del frame destino y recorte activo."
+    },
+    {
+      "validatorId": "nodes_preserved",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Mismo conjunto de nodos, tipos, nombres, padres y orden de apilado (por correspondencia de la relectura)."
+    },
+    {
+      "validatorId": "content_preserved",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Igualdad exacta de caracteres, segmentos de estilo (fuente, cuerpo, interlineado, color), pinturas, efectos, visibilidad, opacidad, máscaras y geometría vectorial. No evalúa el render."
+    },
+    {
+      "validatorId": "allowed_operations",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Posición de cada caja respecto al plan (±0.01 px), tamaño exacto de todo lo que solo se traslada, factor único en ancho y alto de las imágenes escaladas y parte lineal exacta de cada transformación."
+    },
+    {
+      "validatorId": "logo_locked",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Ancho/alto exactos, transformaciones lineales exactas, recorte y posición de cada nodo respecto al bloque del logo. El render del logo lo confirma la captura."
+    },
+    {
+      "validatorId": "demo_safe_area",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cajas completas de los elementos importantes dentro del frame y de la zona segura: margen de prueba de 54 px por lado (regla interna de esta ejecución, no especificación) — Margen de 54 px declarado SOLO para esta prueba interna 1200×628; no es especificación oficial ni valor general.. Las cajas de texto no prueban ausencia de truncamiento visual."
+    },
+    {
+      "validatorId": "background_coverage",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cobertura por cajas del ancho y del borde inferior; regiones protegidas (declaradas por el agente) completas y sin cajas de texto encima. No mide píxeles."
+    },
+    {
+      "validatorId": "vector_edits",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Vértices y tiradores editados en su destino (±0,5 px), todos los demás de ese vector sin cambios (±0,05 px), en coordenadas del frame; misma topología; grosor de trazo declarado."
+    },
+    {
+      "validatorId": "layout_order_and_cta",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Por cajas de render (±1 px): cada elemento del orden de lectura queda debajo o a la derecha del anterior sin empezar por encima; el CTA centrado bajo su bloque de copy y separado de él sin compartir franja. No evalúa jerarquía visual."
+    },
+    {
+      "validatorId": "decoration_masks",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Cada forma de la máscara de decoración tiene superficie dentro del frame y solapa la caja de render de la decoración (por cajas, no por píxeles: la continuidad visual de la cinta la juzga la captura)."
+    },
+    {
+      "validatorId": "effective_visibility",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Contenido importante visible (sin ocultar, opacidad acumulada 1), con render dentro del frame y sin formas opacas pintadas encima (por cajas). El contraste y la legibilidad los juzga la captura."
+    },
+    {
+      "validatorId": "master_unchanged",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "deterministic",
+      "status": "pass",
+      "findings": [],
+      "coverage": "Hash exacto de cada registro de la maestra releída tras escribir frente al payload del inventario."
+    },
+    {
+      "validatorId": "visual_agent_review",
+      "validatorVersion": "1",
+      "destinationId": "demo_1080x1080",
+      "kind": "visual",
+      "status": "needs_review",
+      "findings": [
+        {
+          "code": "READING_ORDER_OK_VISUALLY",
+          "severity": "info",
+          "nodeIds": [
+            "1:571",
+            "1:572",
+            "1:549",
+            "1:550"
+          ],
+          "message": "Revisión visual del agente sobre evidence/demo-2075-121-v2.png: el recorrido se lee titular → «desde 60 €» → oferta → «Saber más». El CTA queda bajo la oferta, centrado con ella y en su propia franja."
+        },
+        {
+          "code": "PRICE_LEFT_ALIGNED",
+          "severity": "warning",
+          "nodeIds": [
+            "1:572",
+            "1:571"
+          ],
+          "message": "«desde 60 €» está alineado a la izquierda bajo el titular (en la maestra va centrado). Centrado chocaría con la oferta: el bloque oferta+CTA solo cabe en la franja derecha. Su línea superior coincide con la de la oferta; decide si esa alineación compartida te convence."
+        },
+        {
+          "code": "RIBBON_CONTINUOUS",
+          "severity": "info",
+          "nodeIds": [
+            "1:548",
+            "1:543"
+          ],
+          "message": "Cinta rediseñada: entra por el borde derecho alto, rodea por encima la cabeza, baja por delante del brazo izquierdo, pasa por detrás del pelo y de la cabeza, asoma por el hueco bajo el brazo derecho, pasa por detrás de la manga y sale por el borde derecho por encima de la oferta. No se ven extremos, cortes rectos ni fragmentos sueltos. Las cuatro formas de máscara aportan superficie visible."
+        },
+        {
+          "code": "RIBBON_THINNER",
+          "severity": "warning",
+          "nodeIds": [
+            "1:548"
+          ],
+          "message": "El trazo pasa de 40 a 24 px porque escala con la foto (×0,6) para que los cruces con la silueta sigan siendo los de la maestra. Respecto al lienzo, la cinta pesa menos que en la maestra."
+        },
+        {
+          "code": "PHOTO_SMALLER",
+          "severity": "warning",
+          "nodeIds": [
+            "1:539"
+          ],
+          "message": "La foto escala de forma proporcional (×0,6) y apoya en el borde inferior; hay aire sobre la cabeza (~218 px), que ocupa el bucle de la cinta. La persona tiene menos peso que en la v1."
+        },
+        {
+          "code": "CLEARANCE_LIMITED_BY_ASSET",
+          "severity": "warning",
+          "nodeIds": [
+            "1:571",
+            "1:539"
+          ],
+          "message": "Separación titular–brazo de ~35 px y codo derecho a ~33 px del borde. Es el máximo compatible con no dejar a la vista el corte del recorte (termina en la cintura y debe quedar bajo el borde inferior), sin cambiar el cuerpo de los textos ni tapar la cara con la oferta."
+        },
+        {
+          "code": "FACE_CLOSE_TO_OFFER",
+          "severity": "warning",
+          "nodeIds": [
+            "1:539",
+            "1:549"
+          ],
+          "message": "La barbilla queda ~20 px por encima de la primera línea de la oferta (región protegida a 9 px de su caja de render). No se tocan, pero el bloque queda apretado."
+        },
+        {
+          "code": "WHITE_OFFER_OVER_SHIRT",
+          "severity": "warning",
+          "nodeIds": [
+            "1:549"
+          ],
+          "message": "El final de las líneas de la oferta cae sobre la camisa clara, oscurecida por el degradado y la sombra difusa (como en la maestra). Se lee, pero con menos contraste que sobre el fondo."
+        },
+        {
+          "code": "LEFT_EDGE_INTEGRATED",
+          "severity": "info",
+          "nodeIds": [
+            "1:539",
+            "1:541",
+            "1:540"
+          ],
+          "message": "No queda costura: el recorte no tiene fondo propio, así que su borde izquierdo es la silueta (brazo y silla). La silla queda oscurecida por el degradado, que empieza bajo la cara, y por la sombra difusa detrás de la oferta."
+        },
+        {
+          "code": "FONT_NOT_LOADABLE_IN_ENV",
+          "severity": "warning",
+          "nodeIds": [
+            "2075:137",
+            "2075:138",
+            "2075:157",
+            "2075:158"
+          ],
+          "message": "«Mutualidad» no es cargable por el plugin en esta copia; el render muestra la tipografía correcta y no se sustituyó ninguna fuente."
+        }
+      ],
+      "coverage": "Inspección visual del agente sobre una captura del clon. No sustituye la revisión de la diseñadora."
+    }
+  ],
+  "aggregate": {
+    "status": "needs_review",
+    "byStatus": {
+      "pass": [
+        "deterministic:target_dimensions@1",
+        "deterministic:nodes_preserved@1",
+        "deterministic:content_preserved@1",
+        "deterministic:allowed_operations@1",
+        "deterministic:logo_locked@1",
+        "deterministic:demo_safe_area@1",
+        "deterministic:background_coverage@1",
+        "deterministic:vector_edits@1",
+        "deterministic:layout_order_and_cta@1",
+        "deterministic:decoration_masks@1",
+        "deterministic:effective_visibility@1",
+        "deterministic:master_unchanged@1"
+      ],
+      "needs_review": [
+        "visual:visual_agent_review@1"
+      ],
+      "not_evaluable": [],
+      "fail": []
+    },
+    "autoApprovable": false,
+    "humanApprovable": true
+  },
+  "masterDigests": {
+    "equal": true,
+    "payloadEqual": true,
+    "changedNodeIds": [],
+    "missingNodeIds": [],
+    "addedNodeIds": []
+  }
+}

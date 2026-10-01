@@ -55,8 +55,9 @@ const USAGE = `pcb <comando> [opciones]
   record-acceptance --clone-snapshot F --composition F --plan F --checks F --by NOMBRE --scope TEXTO --file-key K --out F
   proposals-check --manifest F --proposals F --config F    Valida las propuestas del agente contra el borrador
   demo-plan      --snapshot F --composition F --out F      Plan exacto (traslaciones/efectos) y comprobación previa
-  adapt-request  --plan F --composition F --file-key K --clone-name N [--mode patch --existing-clone-id ID] --out F
-                 Script de ESCRITURA sobre un clon ('patch' actualiza el clon existente sin duplicar la salida)
+  adapt-request  --plan F --composition F --file-key K --clone-name N [--mode patch --existing-clone-id ID | --mode copy --source-clone-id ID] --out F
+                 Script de ESCRITURA sobre un clon ('patch' actualiza el clon existente sin duplicar la salida;
+                 'copy' duplica un clon existente tal cual y adapta solo la copia)
   vector-probe-request --file-key K --frame-id ID --node-id N [--node-id N2 ...] --out F   Sonda vectorial (solo lectura)
   digests-compare --master-raw F [--master-raw F2 ...] --digests F   ¿La maestra releída es idéntica al inventario?
   demo-check     --snapshot F --clone-snapshot F --adapt-result F --plan F --composition F --config F
@@ -95,6 +96,7 @@ const opts = {
   'master-raw': { type: 'string', multiple: true },
   'clone-name': { type: 'string' },
   'existing-clone-id': { type: 'string' },
+  'source-clone-id': { type: 'string' },
   'frame-id': { type: 'string' },
   'vector-before': { type: 'string' },
   'vector-after': { type: 'string' },
@@ -304,16 +306,19 @@ async function main(argv: string[]): Promise<number> {
     case 'adapt-request': {
       const plan = (await readJson(need(a.plan, 'plan'))) as DemoPlan;
       const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
-      const mode = a.mode === 'patch' ? 'patch' : 'create';
+      const mode = a.mode === 'patch' ? 'patch' : a.mode === 'copy' ? 'copy' : 'create';
       const codeText = buildAdaptScript(plan, {
         sectionName: comp.output.sectionName, cloneName: need(a['clone-name'], 'clone-name'), gapFromContentPx: comp.output.gapFromContentPx,
         mode, existingCloneId: mode === 'patch' ? need(a['existing-clone-id'], 'existing-clone-id') : undefined,
+        sourceCloneId: mode === 'copy' ? need(a['source-clone-id'], 'source-clone-id') : undefined,
       });
       await writeJson(need(a.out, 'out'), {
         tool: 'use_figma', fileKey: need(a['file-key'], 'file-key'), scriptVersion: ADAPT_SCRIPT_VERSION, writesOnlyClone: true,
         mode,
         description: mode === 'patch'
           ? `DEMO (actualización): aplica las ediciones de decoración del plan SOLO sobre el clon existente ${a['existing-clone-id']}. La maestra no se modifica.`
+          : mode === 'copy'
+          ? `DEMO (copia): duplica el clon ${a['source-clone-id']} tal cual (sin modificarlo) y adapta SOLO la copia a ${plan.target.width}×${plan.target.height}. La maestra no se modifica.`
           : `DEMO: clona ${plan.masterNodeId} en una sección de salida y adapta SOLO el clon a ${plan.target.width}×${plan.target.height}. La maestra no se modifica.`,
         code: codeText,
       });

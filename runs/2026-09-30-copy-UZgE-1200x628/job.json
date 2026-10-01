@@ -20,6 +20,14 @@
       "compositionPath": "composition.json",
       "cloneName": "DEMO_1200x628 · 960x1200_Taxdown_SVA2 · pendiente de revisión humana",
       "status": "created"
+    },
+    {
+      "id": "test_1200x628_v2",
+      "width": 1200,
+      "height": 628,
+      "compositionPath": "../2026-10-01-copy-UZgE-1200x628-v2/composition.json",
+      "cloneName": "DEMO_1200x628_v2 · 960x1200_Taxdown_SVA2 · pendiente de revisión humana",
+      "status": "created"
     }
   ]
 }

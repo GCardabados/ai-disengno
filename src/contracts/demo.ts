@@ -93,6 +93,19 @@ export const EffectResizeSchema = z.strictObject({
 const Pt = z.strictObject({ x: z.number(), y: z.number() });
 
 /**
+ * Escala PROPORCIONAL de una imagen (nunca del logo ni de texto): mismo factor en ancho y alto, sin tocar sus pinturas
+ * (el recorte de la imagen es relativo al nodo, así que no se deforma). `to` = esquina superior izquierda final en
+ * coordenadas del frame destino.
+ */
+export const ImageScaleSchema = z.strictObject({
+  nodeId: z.string(),
+  scale: z.number().positive().max(4),
+  to: Pt,
+  why: z.string(),
+});
+export type ImageScale = z.infer<typeof ImageScaleSchema>;
+
+/**
  * Edición mínima de la geometría de una DECORACIÓN o de su MÁSCARA (nunca de contenido importante ni del logo).
  * Coordenadas en el frame DESTINO. `from` es la posición esperada antes de editar (guarda contra editar otro vértice).
  */
@@ -104,6 +117,8 @@ export const VectorEditSchema = z.strictObject({
     segment: z.number().int().min(0), start: z.number().int().min(0), end: z.number().int().min(0),
     field: z.enum(['tangentStart', 'tangentEnd']), to: Pt,
   })),
+  /** Grosor del trazo de la decoración (p. ej. al acompañar la escala de la foto cuyas siluetas sigue su máscara). */
+  strokeWeight: z.strictObject({ from: z.number().positive(), to: z.number().positive() }).optional(),
   why: z.string(),
 });
 export type VectorEdit = z.infer<typeof VectorEditSchema>;
@@ -130,11 +145,22 @@ export const DemoCompositionSchema = z.strictObject({
   units: z.array(MoveUnitSchema),
   effectResizes: z.array(EffectResizeSchema),
   vectorEdits: z.array(VectorEditSchema).default([]),
+  imageScales: z.array(ImageScaleSchema).default([]),
+  /**
+   * Comprobaciones GEOMÉTRICAS de maquetación declaradas para esta pieza (no sustituyen a la revisión visual):
+   * orden de lectura por cajas de render, CTA centrado respecto a su bloque de copy y separado de él, y máscaras de
+   * decoración que aportan superficie visible.
+   */
+  layoutChecks: z.strictObject({
+    readingOrder: z.array(z.string()).default([]),
+    cta: z.strictObject({ nodeId: z.string(), copyNodeId: z.string(), minGapPx: z.number().min(0), maxCenterOffsetPx: z.number().min(0) }).nullable().default(null),
+    decorationMasks: z.array(z.strictObject({ maskGroupId: z.string(), decoratedNodeId: z.string(), minShapeAreaPx: z.number().min(0) })).default([]),
+  }).default({ readingOrder: [], cta: null, decorationMasks: [] }),
   /** Nodos cuya caja debe quedar completa dentro de la zona interna de prueba. */
   importantNodeIds: z.array(z.string()),
   /** Nodos cuyo tamaño y disposición interna deben ser idénticos a la maestra (el logo). */
   sizeLockedNodeIds: z.array(z.string()),
-  /** Regiones protegidas de imágenes, en coordenadas locales del nodo. */
+  /** Regiones protegidas de imágenes, en coordenadas locales del nodo EN LA MAESTRA (se escalan con imageScales). */
   protectedRegions: z.array(z.strictObject({ nodeId: z.string(), rect: RectSchema, purpose: z.string() })),
   /** Nodos que deben cubrir el ancho completo del destino (fotografía y degradado de fondo). */
   mustCoverWidthNodeIds: z.array(z.string()),
@@ -216,8 +242,10 @@ export const AdaptResultSchema = z.strictObject({
   /** Pares [id en la maestra, id en el clon] obtenidos por recorrido paralelo del árbol. */
   idMap: z.array(z.tuple([z.string(), z.string()])),
   fonts: z.array(z.strictObject({ family: z.string(), style: z.string(), loaded: z.boolean(), requiredForOps: z.boolean(), error: z.string().nullable() })),
-  mode: z.enum(['create', 'patch']).default('create'),
-  applied: z.array(z.strictObject({ op: z.enum(['resize_root', 'translate', 'resize_effect', 'vector_edit']), cloneNodeId: z.string(), masterNodeId: z.string(), detail: z.unknown() })),
+  mode: z.enum(['create', 'patch', 'copy']).default('create'),
+  /** Solo en 'copy': clon del que se partió (se copia tal cual, con cualquier cambio manual, y se adapta la copia). */
+  sourceCloneId: z.string().nullable().default(null),
+  applied: z.array(z.strictObject({ op: z.enum(['resize_root', 'translate', 'resize_effect', 'vector_edit', 'scale_image']), cloneNodeId: z.string(), masterNodeId: z.string(), detail: z.unknown() })),
   master: z.strictObject({ width: z.number(), height: z.number(), childCount: z.number(), name: z.string() }),
 });
 export type AdaptResult = z.infer<typeof AdaptResultSchema>;

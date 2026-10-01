@@ -108,3 +108,23 @@ Datos en `runs/2026-09-30-copy-UZgE-1200x628/` (`job.json` lista ambos destinos;
   redimensionados de efecto (degradado 1:541 y forma de máscara 1:544), región protegida de la cara, bordes a cubrir y
   margen de 54 px declarado solo para esta prueba. No se reutilizaron desplazamientos ni ediciones vectoriales del 1080.
 - Pendiente: la cinta deja dos fragmentos sueltos en horizontal (decisión de diseño).
+
+## 8. Corrección del horizontal tras revisión humana (v2, 2026-10-01)
+
+Datos en `runs/2026-10-01-copy-UZgE-1200x628-v2/`. La v1 (`2048:121`), el 1080 aceptado y la maestra no se tocan.
+
+1. Antes de copiar: `read-request --node-id 2048:121 --mode node-digests` + `digests-compare` contra su última
+   relectura (sin cambios manuales). Si los hubiera, la copia los conserva igualmente: `--mode copy` duplica el clon tal
+   cual con `clone()` y solo después aplica el plan.
+2. Composición conjunta medida con datos, no a ojo: canal alfa del recorte (`get_screenshot` de la foto de la maestra)
+   frente a los glifos del titular; simulación local de la cinta y sus máscaras sobre la silueta para detectar tramos
+   ocultos sobre fondo (cortes) antes de escribir.
+3. `adapt-request --mode copy --source-clone-id 2048:121` (crea `2075:121`) y, para iterar, `--mode patch
+   --existing-clone-id 2075:121`. `composition.json` describe el cambio neto desde el clon de origen (repetible con una
+   sola copia); `composition-iter1.json` es la primera iteración aplicada.
+4. Operaciones nuevas, declaradas en la composición: `imageScales` (escala proporcional de imágenes; nunca logo ni
+   texto), `strokeWeight` en una edición de decoración y `layoutChecks` (orden de lectura, CTA respecto a su copy,
+   aporte de las máscaras).
+5. Validación: `demo-check` (incluye `layout_order_and_cta`, `decoration_masks`, `effective_visibility`) y mediciones
+   geométricas con `python3 scripts/measure-layout.py …` (separación titular–persona, márgenes de los codos, distancia
+   cinta–texto, cara–oferta). La revisión visual va aparte en `visual-review.json`.

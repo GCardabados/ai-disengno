@@ -1,0 +1,16 @@
+{
+ "headline_to_person_min_px": 12.2,
+ "person_top_margin_px": 27.0,
+ "upper_silhouette_right_margin_px": 0.0,
+ "photo_scale": 1.0,
+ "photo_bottom_px": 710.0,
+ "ribbon_visible_px": 2860,
+ "ribbon_to_text_render_box_min_px": {
+  "1:549": 207.2,
+  "1:551": 537.6,
+  "1:552": 666.9,
+  "1:571": 116.5,
+  "1:572": 389.8
+ },
+ "face_region_to_offer_render_px": 212.5
+}

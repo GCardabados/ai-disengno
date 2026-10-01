@@ -1,0 +1,12 @@
+{
+  "transcript": "4ead3c5c-3228-4830-b470-8763aad6ef39.jsonl",
+  "calls": [
+    {
+      "toolUseId": "toolu_0163Et39bNPHrwWKVBrBu22r",
+      "scriptSha256": "1a1ac5ad27ab1eeeeeed43aeb0371778ba73b39b9b206119574a9dfe768b1473",
+      "raw": "raw-response-v1-probe-VBrBu22r.txt",
+      "isError": false,
+      "rawBytes": 5072
+    }
+  ]
+}

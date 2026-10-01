@@ -30,7 +30,8 @@ Procedimiento detallado con ejemplos: `docs/01-demo-1080-procedimiento.md`.
 | Maestra y destinos | `runs/…/job.json` (`pcb.adapt-job.v1`): `fileKey`, `entryNodeId`, `targetName`, `destinations[]` | `job-check --job` lo valida |
 | Taxonomía de roles y restricciones por elemento | `config/*.project.json` + propuestas del agente (`agent-proposals.json`) | `proposals-check` |
 | Zona segura y su procedencia | `composition.json → safeArea`: `internal_demo_rule {marginPx, note}` o `safe_zone_rule {ruleId, version, provenance, allowed}` | Sin especificación oficial ⇒ `internal_demo_rule` declarada como tal |
-| Composición del destino | `composition.json`: `units` (bloques rígidos con ancla y destino), `effectResizes`, `vectorEdits` (solo decoración/máscara de decoración, con guardas `from`) | Una composición por destino |
+| Composición del destino | `composition.json`: `units` (bloques rígidos con ancla y destino), `effectResizes`, `vectorEdits` (solo decoración/máscara de decoración, con guardas `from` y `strokeWeight` opcional), `imageScales` (escala proporcional de imágenes; nunca logo ni texto) | Una composición por destino |
+| Comprobaciones de maquetación | `composition.json → layoutChecks`: `readingOrder`, `cta {nodeId, copyNodeId, minGapPx, maxCenterOffsetPx}`, `decorationMasks` | Geométricas; no sustituyen la revisión visual |
 | Regiones protegidas y cobertura | `composition.json`: `protectedRegions`, `importantNodeIds`, `sizeLockedNodeIds`, `mustCoverWidthNodeIds`, `mustCoverEdges` | |
 
 **Nada de una pieza anterior es regla universal**: IDs, coordenadas, desplazamientos, ediciones de la cinta o un margen
@@ -57,12 +58,17 @@ y se comprueba con `verify-sent --request … --calls DIR/calls-L.json`.
    hallazgos (zona segura, recorte, cobertura, región protegida, solapes de texto). No escribir en Figma antes.
 5. **Crear o actualizar el clon**: `adapt-request` (crea sección de salida si falta y un clon a la derecha de los
    existentes) o, para iterar, `adapt-request --mode patch --existing-clone-id C` (idempotente: movimientos absolutos
-   desde la maestra). Antes de un patch, `node-digests` del clon + `digests-compare` contra su última relectura: si hay
+   desde la maestra). Para corregir una versión revisada sin tocarla: `--mode copy --source-clone-id C` (duplica el clon
+   tal cual, con sus cambios manuales, y adapta solo la copia). Antes de un patch, `node-digests` del clon + `digests-compare` contra su última relectura: si hay
    cambios manuales, **no** parchear, conservarlos y avisar.
 6. **Validar**: `get_screenshot` del clon (descargar con curl a `R/evidence/`), relectura completa del clon
    (`read-request --node-id C` × N → `ingest`), `node-digests` de la maestra, `visual-review.json` (revisión del agente;
    solo puede empeorar el estado) y `report-meta.json`; después
    `demo-check … --out R/check` (añadir `--vector-before/--vector-after` con `vector-probe-request` si hay `vectorEdits`).
+   Mediciones geométricas adicionales (separación titular–persona, codos, cinta–texto, cara–oferta):
+   `python3 scripts/measure-layout.py …` con el canal alfa de la foto (`get_screenshot` del nodo de la maestra).
+   Antes de escribir decoraciones que pasan por detrás de una persona, simular máscaras y trazo sobre la silueta: ningún
+   tramo puede quedar oculto sobre fondo (sería un corte).
 7. **Entregar**: enlace `https://www.figma.com/design/K/?node-id=C` (con `-`), captura, `R/check/report.md`, decisiones
    pendientes y qué se reutilizó frente a qué se decidió para el formato. Actualizar `status` en `job.json`
    (`draft` → `created`; `human_accepted` solo tras `record-acceptance` pedido por la persona).

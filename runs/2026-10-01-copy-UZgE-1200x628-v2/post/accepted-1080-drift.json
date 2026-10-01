@@ -1,0 +1,112 @@
+{
+ "note": "Comparación de los registros actuales de 2009:122 con la instantánea ligada a la aceptación (fix-ribbon/clone-ingest). Solo cambian valores numéricos de transformaciones y cajas por ruido de coma flotante; geometría vectorial, pinturas, textos y estructura idénticos. No se escribió en 2009:122 en esta iteración.",
+ "nodes": {
+  "2009:125": {
+   "fields": [
+    ".absoluteBoundingBox.height",
+    ".absoluteBoundingBox.width",
+    ".absoluteBoundingBox.x",
+    ".absoluteBoundingBox.y",
+    ".absoluteTransform[0][2]",
+    ".absoluteTransform[1][2]",
+    ".height",
+    ".relativeTransform[0][2]",
+    ".relativeTransform[1][2]",
+    ".width"
+   ],
+   "maxNumericDeltaPx": 0.00390625,
+   "nonNumeric": []
+  },
+  "2009:129": {
+   "fields": [
+    ".absoluteBoundingBox.height",
+    ".absoluteBoundingBox.width",
+    ".absoluteBoundingBox.x",
+    ".absoluteBoundingBox.y",
+    ".absoluteTransform[0][2]",
+    ".absoluteTransform[1][2]",
+    ".height",
+    ".relativeTransform[0][2]",
+    ".relativeTransform[1][2]",
+    ".width"
+   ],
+   "maxNumericDeltaPx": 0.00390625,
+   "nonNumeric": []
+  },
+  "2009:130": {
+   "fields": [
+    ".absoluteBoundingBox.height",
+    ".absoluteBoundingBox.width",
+    ".absoluteBoundingBox.x",
+    ".absoluteBoundingBox.y",
+    ".absoluteTransform[0][2]",
+    ".height",
+    ".relativeTransform[0][2]",
+    ".relativeTransform[1][2]",
+    ".width"
+   ],
+   "maxNumericDeltaPx": 0.0038848027325002477,
+   "nonNumeric": []
+  },
+  "2009:135": {
+   "fields": [
+    ".relativeTransform[0][2]",
+    ".relativeTransform[1][2]"
+   ],
+   "maxNumericDeltaPx": 7.62939453125e-05,
+   "nonNumeric": []
+  },
+  "2009:131": {
+   "fields": [
+    ".absoluteBoundingBox.x",
+    ".absoluteRenderBounds.width",
+    ".absoluteTransform[0][2]",
+    ".relativeTransform[0][2]",
+    ".relativeTransform[1][2]"
+   ],
+   "maxNumericDeltaPx": 0.0009765625,
+   "nonNumeric": []
+  },
+  "2009:132": {
+   "fields": [
+    ".absoluteBoundingBox.x",
+    ".absoluteBoundingBox.y",
+    ".absoluteRenderBounds.x",
+    ".absoluteRenderBounds.y",
+    ".absoluteTransform[0][2]",
+    ".absoluteTransform[1][2]",
+    ".relativeTransform[0][2]",
+    ".relativeTransform[1][2]"
+   ],
+   "maxNumericDeltaPx": 0.00390625,
+   "nonNumeric": []
+  },
+  "2009:133": {
+   "fields": [
+    ".absoluteBoundingBox.x",
+    ".absoluteRenderBounds.x",
+    ".absoluteTransform[0][2]",
+    ".relativeTransform[0][2]",
+    ".relativeTransform[1][2]"
+   ],
+   "maxNumericDeltaPx": 0.0009765625,
+   "nonNumeric": []
+  },
+  "2009:134": {
+   "fields": [
+    ".absoluteBoundingBox.x",
+    ".absoluteBoundingBox.y",
+    ".absoluteRenderBounds.height",
+    ".absoluteRenderBounds.width",
+    ".absoluteRenderBounds.x",
+    ".absoluteRenderBounds.y",
+    ".absoluteTransform[0][2]",
+    ".absoluteTransform[1][2]",
+    ".relativeTransform[0][2]",
+    ".relativeTransform[1][2]"
+   ],
+   "maxNumericDeltaPx": 0.00390625,
+   "nonNumeric": []
+  }
+ }
+}

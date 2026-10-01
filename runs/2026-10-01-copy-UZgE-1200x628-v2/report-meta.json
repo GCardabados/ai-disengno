@@ -1,0 +1,11 @@
+{
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "screenshotPath": "runs/2026-10-01-copy-UZgE-1200x628-v2/evidence/demo-2075-121-v2.png",
+  "designerDecisions": [
+    "«desde 60 €» alineado a la izquierda bajo el titular, compartiendo línea superior con la oferta: ¿aceptable o prefieres otra solución (p. ej. reducir algún texto, que hoy no está permitido)?",
+    "Escala de la foto ×0,6 apoyada abajo: separación titular–brazo ~35 px y codo derecho a ~33 px del borde, limitadas por el corte del recorte en la cintura. Más aire exigiría dejar ese corte a la vista o mover/escalar textos.",
+    "Grosor de la cinta 24 px (escala con la foto) y nuevo bucle por encima de la cabeza: ¿mantiene la intención de la maestra?",
+    "Barbilla a ~20 px de la oferta y final de la oferta sobre la camisa clara.",
+    "Margen de 54 px como regla interna SOLO de esta prueba; no es una especificación oficial de 1200×628."
+  ]
+}

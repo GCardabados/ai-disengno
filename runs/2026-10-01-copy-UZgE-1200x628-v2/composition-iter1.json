@@ -1,0 +1,1414 @@
+{
+ "schema": "pcb.demo-composition.v1",
+ "label": "Prueba interna 1200×628 v2 (rediseño tras revisión humana de la v1) a partir de 1:537; composición específica de esta pieza y destino",
+ "masterNodeId": "1:537",
+ "masterSize": {
+  "width": 960,
+  "height": 1200
+ },
+ "target": {
+  "width": 1200,
+  "height": 628,
+  "name": "test_1200x628_v2"
+ },
+ "safeArea": {
+  "kind": "internal_demo_rule",
+  "marginPx": 54,
+  "note": "Margen de 54 px declarado SOLO para esta prueba interna 1200×628; no es especificación oficial ni valor general."
+ },
+ "output": {
+  "sectionName": "PCB · Salida DEMO (no producción)",
+  "gapFromContentPx": 400
+ },
+ "units": [
+  {
+   "unitId": "logo",
+   "nodeIds": [
+    "1:553"
+   ],
+   "anchorNodeId": "1:553",
+   "to": {
+    "x": 54,
+    "y": 54
+   },
+   "why": "Arriba a la izquierda, sin cambios de tamaño ni disposición interna."
+  },
+  {
+   "unitId": "headline",
+   "nodeIds": [
+    "1:571"
+   ],
+   "anchorNodeId": "1:571",
+   "to": {
+    "x": 54,
+    "y": 118
+   },
+   "why": "Elemento dominante en la columna izquierda, 6 px más arriba que en la v1 para dejar sitio al bloque oferta+CTA."
+  },
+  {
+   "unitId": "price",
+   "nodeIds": [
+    "1:572"
+   ],
+   "anchorNodeId": "1:572",
+   "to": {
+    "x": 55.3,
+    "y": 325.7
+   },
+   "why": "Cierra el mensaje bajo el titular, alineado a su borde izquierdo (no centrado: centrado chocaría con la oferta, que necesita la franja derecha). Su línea superior coincide con la de la oferta."
+  },
+  {
+   "unitId": "offer",
+   "nodeIds": [
+    "1:549",
+    "1:540"
+   ],
+   "anchorNodeId": "1:549",
+   "to": {
+    "x": 525,
+    "y": 334.5
+   },
+   "why": "Oferta a la derecha, después del mensaje; con su sombra de legibilidad en la misma relación que en la maestra. Empieza justo bajo la región protegida de la cara."
+  },
+  {
+   "unitId": "cta",
+   "nodeIds": [
+    "1:550"
+   ],
+   "anchorNodeId": "1:550",
+   "to": {
+    "x": 701.6,
+    "y": 501
+   },
+   "why": "«Saber más» después de la oferta, centrado bajo ella (centro de su render) y separado ~21 px; su borde inferior en la zona de prueba."
+  },
+  {
+   "unitId": "info",
+   "nodeIds": [
+    "1:552"
+   ],
+   "anchorNodeId": "1:552",
+   "to": {
+    "x": 54,
+    "y": 552
+   },
+   "why": "Pie informativo abajo a la izquierda."
+  }
+ ],
+ "effectResizes": [
+  {
+   "nodeId": "1:541",
+   "to": {
+    "x": -15,
+    "y": 280,
+    "width": 1230,
+    "height": 348
+   },
+   "why": "Degradado oscuro a todo el ancho; empieza bajo la cara para oscurecer la oferta y el CTA en la misma proporción que en la maestra."
+  },
+  {
+   "nodeId": "1:544",
+   "to": {
+    "x": 790.0,
+    "y": 150.0,
+    "width": 124.8,
+    "height": 160.0
+   },
+   "why": "Forma rectangular de la máscara: zona por delante del brazo izquierdo por donde baja la cinta. Su borde derecho es el de la maestra escalado con la foto (x=914,8, en el pelo)."
+  }
+ ],
+ "vectorEdits": [
+  {
+   "nodeId": "1:545",
+   "purpose": "decoration_mask",
+   "vertices": [
+    {
+     "index": 0,
+     "from": {
+      "x": 1187.9923,
+      "y": 193.9995
+     },
+     "to": {
+      "x": 1088.8002,
+      "y": 318.3997
+     }
+    },
+    {
+     "index": 1,
+     "from": {
+      "x": 1161.4923,
+      "y": 227.9999
+     },
+     "to": {
+      "x": 1072.9002,
+      "y": 338.8
+     }
+    },
+    {
+     "index": 2,
+     "from": {
+      "x": 1119.9922,
+      "y": 190.5001
+     },
+     "to": {
+      "x": 1048.0001,
+      "y": 316.3001
+     }
+    },
+    {
+     "index": 3,
+     "from": {
+      "x": 1153.4924,
+      "y": 164.4999
+     },
+     "to": {
+      "x": 1068.1002,
+      "y": 300.7
+     }
+    },
+    {
+     "index": 4,
+     "from": {
+      "x": 1166.4923,
+      "y": 226.9999
+     },
+     "to": {
+      "x": 1075.9002,
+      "y": 338.2
+     }
+    },
+    {
+     "index": 5,
+     "from": {
+      "x": 1185.9923,
+      "y": 215.4999
+     },
+     "to": {
+      "x": 1087.6002,
+      "y": 331.3
+     }
+    },
+    {
+     "index": 6,
+     "from": {
+      "x": 1172.9923,
+      "y": 220.9995
+     },
+     "to": {
+      "x": 1079.8002,
+      "y": 334.5997
+     }
+    },
+    {
+     "index": 7,
+     "from": {
+      "x": 1185.9923,
+      "y": 202.4999
+     },
+     "to": {
+      "x": 1087.6002,
+      "y": 323.5
+     }
+    },
+    {
+     "index": 8,
+     "from": {
+      "x": 1187.4923,
+      "y": 199.9999
+     },
+     "to": {
+      "x": 1088.5002,
+      "y": 322.0
+     }
+    },
+    {
+     "index": 9,
+     "from": {
+      "x": 1141.4924,
+      "y": 168.9999
+     },
+     "to": {
+      "x": 1060.9002,
+      "y": 303.4
+     }
+    },
+    {
+     "index": 10,
+     "from": {
+      "x": 1181.4923,
+      "y": 218.9999
+     },
+     "to": {
+      "x": 1084.9002,
+      "y": 333.4
+     }
+    },
+    {
+     "index": 11,
+     "from": {
+      "x": 1118.4922,
+      "y": 177.5001
+     },
+     "to": {
+      "x": 1047.1001,
+      "y": 308.5001
+     }
+    }
+   ],
+   "tangents": [
+    {
+     "segment": 0,
+     "start": 3,
+     "end": 0,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 0,
+     "start": 3,
+     "end": 0,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 1,
+     "start": 4,
+     "end": 1,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 1,
+     "start": 4,
+     "end": 1,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 2,
+     "start": 6,
+     "end": 4,
+     "field": "tangentStart",
+     "to": {
+      "x": -1.5,
+      "y": 0.3003
+     }
+    },
+    {
+     "segment": 2,
+     "start": 6,
+     "end": 4,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 3,
+     "start": 7,
+     "end": 5,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 3,
+     "start": 7,
+     "end": 5,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.3008,
+      "y": -0.9003
+     }
+    },
+    {
+     "segment": 4,
+     "start": 0,
+     "end": 8,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 4,
+     "start": 0,
+     "end": 8,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.6,
+      "y": -0.9
+     }
+    },
+    {
+     "segment": 5,
+     "start": 8,
+     "end": 7,
+     "field": "tangentStart",
+     "to": {
+      "x": -0.6,
+      "y": 0.9
+     }
+    },
+    {
+     "segment": 5,
+     "start": 8,
+     "end": 7,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 6,
+     "start": 1,
+     "end": 2,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 6,
+     "start": 1,
+     "end": 2,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 7,
+     "start": 9,
+     "end": 3,
+     "field": "tangentStart",
+     "to": {
+      "x": 2.4,
+      "y": -0.9
+     }
+    },
+    {
+     "segment": 7,
+     "start": 9,
+     "end": 3,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 8,
+     "start": 5,
+     "end": 10,
+     "field": "tangentStart",
+     "to": {
+      "x": -0.1372,
+      "y": 0.4106
+     }
+    },
+    {
+     "segment": 8,
+     "start": 5,
+     "end": 10,
+     "field": "tangentEnd",
+     "to": {
+      "x": 1.5404,
+      "y": -0.625
+     }
+    },
+    {
+     "segment": 9,
+     "start": 10,
+     "end": 6,
+     "field": "tangentStart",
+     "to": {
+      "x": -1.8371,
+      "y": 0.7453
+     }
+    },
+    {
+     "segment": 9,
+     "start": 10,
+     "end": 6,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.8159,
+      "y": -0.1633
+     }
+    },
+    {
+     "segment": 10,
+     "start": 2,
+     "end": 11,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 10,
+     "start": 2,
+     "end": 11,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 11,
+     "start": 11,
+     "end": 9,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 11,
+     "start": 11,
+     "end": 9,
+     "field": "tangentEnd",
+     "to": {
+      "x": -1.6056,
+      "y": 0.6021
+     }
+    }
+   ],
+   "why": "Forma de máscara del hueco entre cabeza y brazo derecho: misma forma que en la maestra, escalada y trasladada con la foto (×0,6) para seguir la silueta; aquí asoma la cinta."
+  },
+  {
+   "nodeId": "1:546",
+   "purpose": "decoration_mask",
+   "vertices": [
+    {
+     "index": 0,
+     "from": {
+      "x": 901.4922,
+      "y": 118.0002
+     },
+     "to": {
+      "x": 916.9002,
+      "y": 272.8001
+     }
+    },
+    {
+     "index": 1,
+     "from": {
+      "x": 899.9922,
+      "y": 138.5002
+     },
+     "to": {
+      "x": 916.0002,
+      "y": 285.1001
+     }
+    },
+    {
+     "index": 2,
+     "from": {
+      "x": 893.4922,
+      "y": 141.0003
+     },
+     "to": {
+      "x": 912.1002,
+      "y": 286.6002
+     }
+    },
+    {
+     "index": 3,
+     "from": {
+      "x": 888.4922,
+      "y": 93.0002
+     },
+     "to": {
+      "x": 909.1002,
+      "y": 257.8001
+     }
+    },
+    {
+     "index": 4,
+     "from": {
+      "x": 909.4922,
+      "y": 89.0002
+     },
+     "to": {
+      "x": 921.7002,
+      "y": 255.4001
+     }
+    },
+    {
+     "index": 5,
+     "from": {
+      "x": 904.4922,
+      "y": 104.5002
+     },
+     "to": {
+      "x": 918.7002,
+      "y": 264.7001
+     }
+    }
+   ],
+   "tangents": [
+    {
+     "segment": 0,
+     "start": 0,
+     "end": 1,
+     "field": "tangentStart",
+     "to": {
+      "x": -1.35,
+      "y": 3.3
+     }
+    },
+    {
+     "segment": 0,
+     "start": 0,
+     "end": 1,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 1,
+     "start": 1,
+     "end": 2,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 1,
+     "start": 1,
+     "end": 2,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 2,
+     "start": 2,
+     "end": 3,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 2,
+     "start": 2,
+     "end": 3,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 3,
+     "start": 3,
+     "end": 4,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 3,
+     "start": 3,
+     "end": 4,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 4,
+     "start": 4,
+     "end": 5,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 4,
+     "start": 4,
+     "end": 5,
+     "field": "tangentEnd",
+     "to": {
+      "x": 2.4,
+      "y": -3.6
+     }
+    },
+    {
+     "segment": 5,
+     "start": 5,
+     "end": 0,
+     "field": "tangentStart",
+     "to": {
+      "x": -2.4,
+      "y": 3.6
+     }
+    },
+    {
+     "segment": 5,
+     "start": 5,
+     "end": 0,
+     "field": "tangentEnd",
+     "to": {
+      "x": 1.1322,
+      "y": -2.7676
+     }
+    },
+    {
+     "segment": 6,
+     "start": 0,
+     "end": 5,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 6,
+     "start": 0,
+     "end": 5,
+     "field": "tangentEnd",
+     "to": {
+      "x": -1.8224,
+      "y": 5.7
+     }
+    }
+   ],
+   "why": "Borde del pelo donde la cinta pasa por detrás de la cabeza: misma forma de la maestra, escalada con la foto (×0,6)."
+  },
+  {
+   "nodeId": "1:547",
+   "purpose": "decoration_mask",
+   "vertices": [
+    {
+     "index": 0,
+     "from": {
+      "x": 1266.9922,
+      "y": 288.0001
+     },
+     "to": {
+      "x": 1136.2002,
+      "y": 374.8001
+     }
+    },
+    {
+     "index": 1,
+     "from": {
+      "x": 1263.9922,
+      "y": 302.5001
+     },
+     "to": {
+      "x": 1134.4002,
+      "y": 383.5001
+     }
+    },
+    {
+     "index": 2,
+     "from": {
+      "x": 1260.4922,
+      "y": 321.0001
+     },
+     "to": {
+      "x": 1132.3002,
+      "y": 394.6001
+     }
+    },
+    {
+     "index": 3,
+     "from": {
+      "x": 1257.9922,
+      "y": 333.0001
+     },
+     "to": {
+      "x": 1130.8002,
+      "y": 401.8001
+     }
+    },
+    {
+     "index": 4,
+     "from": {
+      "x": 1232.9922,
+      "y": 335.0001
+     },
+     "to": {
+      "x": 1115.8002,
+      "y": 403.0001
+     }
+    },
+    {
+     "index": 5,
+     "from": {
+      "x": 1459.9924,
+      "y": 558.0952
+     },
+     "to": {
+      "x": 1252.0003,
+      "y": 536.8571
+     }
+    },
+    {
+     "index": 6,
+     "from": {
+      "x": 1564.4924,
+      "y": 558.0952
+     },
+     "to": {
+      "x": 1314.7003,
+      "y": 536.8571
+     }
+    },
+    {
+     "index": 7,
+     "from": {
+      "x": 1587.4924,
+      "y": 175.5952
+     },
+     "to": {
+      "x": 1328.5003,
+      "y": 307.3571
+     }
+    },
+    {
+     "index": 8,
+     "from": {
+      "x": 1587.4924,
+      "y": 72.5952
+     },
+     "to": {
+      "x": 1330.0,
+      "y": -60.0
+     }
+    },
+    {
+     "index": 9,
+     "from": {
+      "x": 1528.9923,
+      "y": 20.0952
+     },
+     "to": {
+      "x": 760.0,
+      "y": -60.0
+     }
+    },
+    {
+     "index": 10,
+     "from": {
+      "x": 1396.4923,
+      "y": 157.5952
+     },
+     "to": {
+      "x": 760.0,
+      "y": 175.0
+     }
+    },
+    {
+     "index": 11,
+     "from": {
+      "x": 1326.4923,
+      "y": 178.5952
+     },
+     "to": {
+      "x": 1171.9002,
+      "y": 309.1571
+     }
+    },
+    {
+     "index": 12,
+     "from": {
+      "x": 1304.9924,
+      "y": 558.0952
+     },
+     "to": {
+      "x": 1159.0003,
+      "y": 536.8571
+     }
+    }
+   ],
+   "tangents": [
+    {
+     "segment": 0,
+     "start": 0,
+     "end": 1,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 0,
+     "start": 0,
+     "end": 1,
+     "field": "tangentEnd",
+     "to": {
+      "x": 1.4143,
+      "y": -3.3
+     }
+    },
+    {
+     "segment": 1,
+     "start": 1,
+     "end": 2,
+     "field": "tangentStart",
+     "to": {
+      "x": -1.4143,
+      "y": 3.3
+     }
+    },
+    {
+     "segment": 1,
+     "start": 1,
+     "end": 2,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 2,
+     "start": 2,
+     "end": 3,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 2,
+     "start": 2,
+     "end": 3,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 3,
+     "start": 3,
+     "end": 4,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 3,
+     "start": 3,
+     "end": 4,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 4,
+     "start": 5,
+     "end": 6,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.8,
+      "y": -3.2
+     }
+    },
+    {
+     "segment": 4,
+     "start": 5,
+     "end": 6,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 5,
+     "start": 6,
+     "end": 7,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 5,
+     "start": 6,
+     "end": 7,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 6,
+     "start": 7,
+     "end": 8,
+     "field": "tangentStart",
+     "to": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    {
+     "segment": 6,
+     "start": 7,
+     "end": 8,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    {
+     "segment": 7,
+     "start": 8,
+     "end": 9,
+     "field": "tangentStart",
+     "to": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    {
+     "segment": 7,
+     "start": 8,
+     "end": 9,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    {
+     "segment": 8,
+     "start": 9,
+     "end": 10,
+     "field": "tangentStart",
+     "to": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    {
+     "segment": 8,
+     "start": 9,
+     "end": 10,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    {
+     "segment": 9,
+     "start": 10,
+     "end": 11,
+     "field": "tangentStart",
+     "to": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    {
+     "segment": 9,
+     "start": 10,
+     "end": 11,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    {
+     "segment": 10,
+     "start": 11,
+     "end": 0,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 10,
+     "start": 11,
+     "end": 0,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 11,
+     "start": 4,
+     "end": 12,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 11,
+     "start": 4,
+     "end": 12,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 12,
+     "start": 12,
+     "end": 5,
+     "field": "tangentStart",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 12,
+     "start": 12,
+     "end": 5,
+     "field": "tangentEnd",
+     "to": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    }
+   ],
+   "why": "Región a la derecha del brazo derecho (contorno de la maestra escalado ×0,6 con la foto) y, cambiando solo sus tres vértices exteriores, también la zona libre sobre la persona donde ahora discurre el bucle superior de la cinta."
+  },
+  {
+   "nodeId": "1:548",
+   "purpose": "decoration",
+   "vertices": [
+    {
+     "index": 0,
+     "from": {
+      "x": 1452.4905,
+      "y": 445.5002
+     },
+     "to": {
+      "x": 1247.5,
+      "y": 469.3
+     }
+    },
+    {
+     "index": 1,
+     "from": {
+      "x": 1097.8843,
+      "y": 151.0084
+     },
+     "to": {
+      "x": 1034.7363,
+      "y": 292.6049
+     }
+    },
+    {
+     "index": 2,
+     "from": {
+      "x": 631.5293,
+      "y": 241.6585
+     },
+     "to": {
+      "x": 895.9079,
+      "y": 273.313
+     }
+    },
+    {
+     "index": 3,
+     "from": {
+      "x": 246.2937,
+      "y": 239.4514
+     },
+     "to": {
+      "x": 900.0,
+      "y": 92.0
+     }
+    },
+    {
+     "index": 4,
+     "from": {
+      "x": 280.841,
+      "y": 362.4182
+     },
+     "to": {
+      "x": 1260.0,
+      "y": 160.0
+     }
+    },
+    {
+     "index": 5,
+     "from": {
+      "x": 1508.4905,
+      "y": 97.5083
+     },
+     "to": {
+      "x": 1281.1,
+      "y": 260.5048
+     }
+    },
+    {
+     "index": 6,
+     "from": {
+      "x": 1605.9904,
+      "y": 164.5083
+     },
+     "to": {
+      "x": 1339.6,
+      "y": 300.7049
+     }
+    }
+   ],
+   "tangents": [
+    {
+     "segment": 0,
+     "start": 2,
+     "end": 3,
+     "field": "tangentStart",
+     "to": {
+      "x": -77.5803,
+      "y": 19.5268
+     }
+    },
+    {
+     "segment": 0,
+     "start": 2,
+     "end": 3,
+     "field": "tangentEnd",
+     "to": {
+      "x": -110.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 1,
+     "start": 3,
+     "end": 4,
+     "field": "tangentStart",
+     "to": {
+      "x": 110.0,
+      "y": 0.0
+     }
+    },
+    {
+     "segment": 1,
+     "start": 3,
+     "end": 4,
+     "field": "tangentEnd",
+     "to": {
+      "x": -100.0,
+      "y": -30.0
+     }
+    },
+    {
+     "segment": 2,
+     "start": 1,
+     "end": 0,
+     "field": "tangentStart",
+     "to": {
+      "x": 87.0,
+      "y": 42.9
+     }
+    },
+    {
+     "segment": 2,
+     "start": 1,
+     "end": 0,
+     "field": "tangentEnd",
+     "to": {
+      "x": -83.1,
+      "y": 4.8
+     }
+    },
+    {
+     "segment": 3,
+     "start": 1,
+     "end": 2,
+     "field": "tangentStart",
+     "to": {
+      "x": -47.85,
+      "y": -23.595
+     }
+    },
+    {
+     "segment": 3,
+     "start": 1,
+     "end": 2,
+     "field": "tangentEnd",
+     "to": {
+      "x": 48.9444,
+      "y": -12.3192
+     }
+    },
+    {
+     "segment": 4,
+     "start": 0,
+     "end": 5,
+     "field": "tangentStart",
+     "to": {
+      "x": 83.1,
+      "y": -4.8
+     }
+    },
+    {
+     "segment": 4,
+     "start": 0,
+     "end": 5,
+     "field": "tangentEnd",
+     "to": {
+      "x": -43.6401,
+      "y": 53.2268
+     }
+    },
+    {
+     "segment": 5,
+     "start": 5,
+     "end": 6,
+     "field": "tangentStart",
+     "to": {
+      "x": 17.4637,
+      "y": -21.3
+     }
+    },
+    {
+     "segment": 5,
+     "start": 5,
+     "end": 6,
+     "field": "tangentEnd",
+     "to": {
+      "x": -8.7,
+      "y": -55.2
+     }
+    }
+   ],
+   "why": "Cinta rediseñada para el formato horizontal: entra por el borde derecho alto, rodea por encima la cabeza, baja por delante del brazo izquierdo, pasa por detrás de la cabeza, asoma bajo el brazo derecho y sale por el borde derecho. El tramo junto a la persona es el de la maestra escalado con la foto (×0,6, también su grosor) para conservar los cruces con la silueta.",
+   "strokeWeight": {
+    "from": 40,
+    "to": 24
+   }
+  }
+ ],
+ "imageScales": [
+  {
+   "nodeId": "1:539",
+   "scale": 0.6,
+   "to": {
+    "x": 736,
+    "y": 214
+   },
+   "why": "Foto escalada de forma proporcional (×0,6) y apoyada en el borde inferior: el recorte del activo termina en la cintura y no puede quedar a la vista. Da aire a los codos (arriba ~229 px, derecha ~34 px) y separa el brazo del final de «personalizado» (~35 px). Más separación exigiría que el borde del recorte quedara dentro del frame."
+  }
+ ],
+ "layoutChecks": {
+  "readingOrder": [
+   "1:571",
+   "1:572",
+   "1:549",
+   "1:550"
+  ],
+  "cta": {
+   "nodeId": "1:550",
+   "copyNodeId": "1:549",
+   "minGapPx": 16,
+   "maxCenterOffsetPx": 2
+  },
+  "decorationMasks": [
+   {
+    "maskGroupId": "1:543",
+    "decoratedNodeId": "1:548",
+    "minShapeAreaPx": 100
+   }
+  ]
+ },
+ "importantNodeIds": [
+  "1:553",
+  "1:571",
+  "1:572",
+  "1:549",
+  "1:550",
+  "1:551",
+  "1:552"
+ ],
+ "sizeLockedNodeIds": [
+  "1:553"
+ ],
+ "protectedRegions": [
+  {
+   "nodeId": "1:539",
+   "rect": {
+    "x": 370,
+    "y": 0,
+    "width": 200,
+    "height": 200
+   },
+   "purpose": "Cabeza y cara de la persona (región declarada por el agente a partir de la captura; coordenadas de la maestra, escala con la foto)"
+  }
+ ],
+ "mustCoverWidthNodeIds": [],
+ "mustCoverEdges": [
+  {
+   "nodeId": "1:539",
+   "edges": [
+    "right",
+    "bottom"
+   ]
+  },
+  {
+   "nodeId": "1:541",
+   "edges": [
+    "left",
+    "right",
+    "bottom"
+   ]
+  }
+ ]
+}

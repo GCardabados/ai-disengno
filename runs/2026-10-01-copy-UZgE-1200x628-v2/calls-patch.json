@@ -1,0 +1,12 @@
+{
+  "transcript": "4ead3c5c-3228-4830-b470-8763aad6ef39.jsonl",
+  "calls": [
+    {
+      "toolUseId": "toolu_01VBVdM9BjZuZcRYrHAmqtMn",
+      "scriptSha256": "6b1334f3b2b0f9b902b3625a63aeeb1e3993886cf7bc7a1f08ccff4592986517",
+      "raw": "raw-response-patch-rHAmqtMn.txt",
+      "isError": false,
+      "rawBytes": 10177
+    }
+  ]
+}

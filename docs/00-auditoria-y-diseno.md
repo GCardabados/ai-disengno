@@ -425,6 +425,13 @@ Necesarias antes de H2 y siguientes:
 - **Plan:** se permite redimensionar un efecto dentro de un bloque movido (sus coordenadas son finales), pero no mover el propio nodo del efecto.
 - **Resultado 1200×628:** clon `2048:121` en la misma sección de salida. Deterministas 8/8 superadas, maestra intacta por hashes por nodo; revisión visual `needs_review`: quedan dos fragmentos de la cinta en el recorte horizontal (decisión de diseño), junto con la costura izquierda de la foto y el recorte del antebrazo. Margen de 54 px declarado solo para esta prueba.
 
+#### 5.6.4 Corrección del 1200×628 tras revisión humana (2026-10-01)
+
+- **Feedback humano:** orden de lectura y CTA, rediseño de la cinta (sin fragmentos ni desaparición), aire alrededor de la persona y costura izquierda. La v1 queda intacta; se trabaja sobre una copia exacta (`2075:121`).
+- **Ajustes técnicos mínimos (script v7):** modo `copy`, `imageScales` (mismo factor en ancho y alto; las pinturas no cambian), grosor de trazo en ediciones de decoración y comprobaciones `layout_order_and_cta`, `decoration_masks` y `effective_visibility`. Las comparaciones sobre cajas de render usan ±1 px: la primera ejecución falló por 0,014 px entre dos textos alineados a la misma línea (rasterización), no por el orden.
+- **Limitación del activo:** el recorte de la foto termina en la cintura; para no dejar ese corte a la vista la foto debe apoyar en el borde inferior, lo que, con los cuerpos de texto fijos, limita la separación titular–brazo a ~35 px y el margen derecho del codo a ~33 px.
+- **Estabilidad del 1080 aceptado:** sus hashes por nodo difieren de los ligados a la aceptación solo por ruido de coma flotante (≤0,004 px) en cajas derivadas y transformaciones; geometría vectorial, pinturas, textos y estructura idénticos (`post/accepted-1080-drift.json`). No se escribió en él.
+
 ## 6. Limitaciones declaradas de H1
 
 - Sin OCR: ninguna imagen puede ser `image_no_text_detected` ni `image_embedded_text` salvo por **declaración humana**, que queda registrada como evidencia `human_statement`.
