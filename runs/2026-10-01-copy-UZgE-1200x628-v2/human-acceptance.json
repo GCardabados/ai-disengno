@@ -1,0 +1,19 @@
+{
+  "schema": "pcb.demo-acceptance.v1",
+  "acceptedBy": "Gabriel Cardaba (gabriel.cardaba@es.wpp.com)",
+  "acceptedAt": "2026-10-01T08:50:01.234Z",
+  "scope": "Demo 1200×628 v2 aceptada con observaciones (85/100) tras evaluación visual: solo el frame 2075:121 en este estado. No autoriza publicación ni aprueba otras adaptaciones o versiones (la v1 2048:121 sigue sin aprobar).",
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "cloneId": "2075:121",
+  "target": {
+    "width": 1200,
+    "height": 628
+  },
+  "cloneSnapshotSha256": "sha256:a1846148474190a241c896fed8e45f4ddbc7508cee5b39183f09ce62333dd672",
+  "cloneFingerprint": "sha256:7b1d968d4dd52f889f64baca7193050501b1e20e4713267921cc82cc0bb723aa",
+  "compositionSha256": "sha256:1c9fa32c9bec734d0c9510e646d19a2a40c9817426203a5e7969021c88eabeaf",
+  "planSha256": "sha256:89412c735c7546eb31433b103ec33d649642bfbd87124bf751e556b17fb0717e",
+  "checksSha256": "sha256:e63160c4031f1af7750f7a63a618a73dbb2f9f7ad50bcb68e5cc289ddb7586fb",
+  "checksAggregate": "needs_review",
+  "notes": "Valoración 85/100. Observaciones no bloqueantes: (1) contraste variable del texto blanco sobre la fotografía; (2) competencia visual entre oferta y persona; (3) presencia de la cinta en la zona superior. Instrucción: no seguir modificando esta versión por ahora. Artefactos revisados (sha256): evidence/demo-2075-121-v2.png 4ec9d8d9c8890e15f9e3e85cc0cb8f64aff6f65700edc6d94b99b10c61e5efad; visual-review.json f38b4f9669d75ed571a7be92d5e3ac2bbf29a3f793a77373df8872a78d425b7b; check/report.md 5bdcb939367eb4324f6381eccd246d6879d7a91df51695c3c8a667b2f25ac8ef; post/layout-measure.json 21da5f3584953218c61891f0daf8592eaafce730cc0fe0b5a9f94e9d55cbad21; clone-ingest/snapshot.json 45b43512abfc113938e220b7e1e8db268af396fd2393547765bdfef4f3aca7e6 (lectura set_6616abcc65c6c98d_b12000)."
+}

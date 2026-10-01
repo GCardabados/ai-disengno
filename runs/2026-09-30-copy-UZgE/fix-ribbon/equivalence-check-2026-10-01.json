@@ -1,0 +1,20 @@
+{
+ "schema": "pcb.equivalence-check.v1-note",
+ "checkedAt": "2026-10-01",
+ "subject": "2009:122 (DEMO 1080×1080 aceptado)",
+ "acceptance": "runs/2026-09-30-copy-UZgE/fix-ribbon/human-acceptance.json (se conserva sin cambios)",
+ "exactFingerprint": {
+  "matchesAcceptance": false,
+  "acceptedPayload": "sha256:5bc149591d6ab294645b40e7e7c74e1ef87e5dfe3fc7bb6cdaa94e81e584d4c3",
+  "currentPayload": "sha256:04f23e7ab53972f723bed18a52dd02563b5d737de97c24c64f381bd4a398113e"
+ },
+ "geometricEquivalence": {
+  "equivalent": true,
+  "tolerancePx": 0.01,
+  "maxNumericDeltaPx": 0.00390625,
+  "changedNodes": 8,
+  "nonNumericDifferences": 0,
+  "evidence": "runs/2026-10-01-copy-UZgE-1200x628-v2/post/accepted-1080-drift.json"
+ },
+ "conclusion": "La huella exacta ya no coincide; geométricamente equivalente dentro de 0,01 px (solo ruido de coma flotante en cajas derivadas y transformaciones; geometría vectorial, pinturas, textos y estructura idénticos). No se escribió en 2009:122. La aceptación histórica no se reinterpreta: una persona decide si la mantiene."
+}

@@ -1,0 +1,10 @@
+{
+  "maestra": { "fileKey": "", "nodeId": "", "nombre": "" },
+  "destinos": [],
+  "tiempo": { "inicio": "", "fin": "", "minutosActivos": null },
+  "llamadasFigma": { "lectura": 0, "escritura": 0, "capturas": 0, "errores": 0 },
+  "intervencionesHumanas": [{ "momento": "", "motivo": "", "decision": "" }],
+  "cambiosDeCodigo": [{ "archivo": "", "motivo": "", "generalizable": true }],
+  "iteracionesPorDestino": {},
+  "valoracion": { "puntuacion": null, "observaciones": [], "aceptada": false }
+}
