@@ -71,7 +71,10 @@ Ninguna de estas cosas requiere editar código.
 | Maestra (archivo, nodo, nombre) y destinos | `runs/<prueba>/job.json` (`pcb.adapt-job.v1`; se valida con `node src/cli.ts job-check --job …`) | El agente, a partir del encargo |
 | Safe zone de un destino | `composition.json` → `safeArea`. Hay tres tipos (ver la lista bajo la tabla) | El agente, con tu decisión del encargo |
 | Composición del destino | `runs/<prueba>/<destino>/composition.json`: bloques que se mueven, imágenes que se escalan, decoración que se edita, orden de lectura | El agente; tú la revisas |
-| Reglas de texto y roles del proyecto | `config/<proyecto>.project.json` → `taxonomy.roles[].defaultAllowOps` (`translate`, `resize_text_box`). Parte de `config/example.project.json` | Una persona del proyecto |
+| Límites de texto del proyecto | `config/<proyecto>.project.json` → `textPolicy`: qué es editable (`editable`), rango de cuerpo (`fontScale`) y cuerpo mínimo (`minFontSizePx`). Sin límites configurados no se inventan mínimos. Parte de `config/example.project.json` | Una persona del proyecto |
+| Ediciones de texto de un destino | `composition.json` → `textEdits` (caja, alineación, saltos, cuerpo, interlineado) y `legalNodeIds` | El agente, dentro de los límites |
+| Modo del logo en el encargo | `composition.json` → `logoPolicy`: `standard` (por defecto) o `experimental` con `scale` y `authorization` | Tú, en el encargo |
+| Mensaje, persona y recorrido | `composition.json` → `messagePlan` (principal, secundarios, oferta, CTA, persona/producto y su señal, recorrido previsto) | El agente; tú lo revisas |
 | Persona que acepta | `record-acceptance --by "Nombre"`, solo cuando tú lo pides | El agente, a petición tuya |
 
 Tipos de `safeArea`:
@@ -80,11 +83,12 @@ Tipos de `safeArea`:
 - **Sin safe zone:** `internal_demo_rule` con `marginPx: 0`.
 - **Margen interno declarado:** `internal_demo_rule` con `marginPx`.
 
-Las reglas permanentes están en el código y ningún encargo puede relajarlas:
+Las invariantes están en el código y ningún encargo puede relajarlas:
 - La maestra no se toca.
-- No se añade, quita ni reescribe contenido.
-- El logo solo se traslada.
-- No se sustituyen fuentes.
+- No se añade, quita ni reescribe contenido. Cambiar saltos de línea no es reescribir.
+- El logo nunca se deforma, rota, recorta, sustituye ni se cambia por dentro. Su tamaño es fijo salvo que el encargo
+  active el modo experimental.
+- No se sustituyen fuentes, y la tipografía no cambia sin autorización específica.
 
 ## 5. Después de la prueba
 
@@ -98,11 +102,16 @@ Las reglas permanentes están en el código y ningún encargo puede relajarlas:
 [Plantilla de encargo](../plantillas/encargo.md) · [Skill](../.claude/skills/adapt-master-creative/SKILL.md) ·
 [Procedimiento detallado](01-demo-1080-procedimiento.md)
 
-- **Texto:** solo se **trasladan** cajas. El reflujo y los cambios de cuerpo se proponen; no se ejecutan.
+- **Texto:** se ejecutan caja, alineación, saltos de línea, cuerpo e interlineado, pero no en textos dentro de
+  contenedores con maquetación automática (p. ej. el texto de un botón), porque cambiaría el contenedor. Requiere que
+  la fuente cargue en el entorno; si no carga, se informa y solo se traslada.
+- **Logo experimental:** la forma interna de cada vector se valida por su caja, no por sus vértices. El render lo
+  confirma la captura.
+- **Atención:** la superposición de atención es una estimación heurística del agente, no atención medida.
 - **Orden de lectura:** la comprobación automática sigue filas y pilas. En composiciones a dos columnas se declara
   la secuencia comprobable, y el resto lo juzga la revisión visual.
-- **Fuentes:** si la fuente de la marca no se puede cargar en el entorno, los textos se trasladan igualmente, pero
-  no se puede reescribir nada que exija cargar la fuente.
+- **Fuentes:** si la fuente de la marca no se puede cargar en el entorno (`text-capabilities-check`), los textos se
+  trasladan igualmente, pero no se puede editar su cuerpo, caja ni saltos. Es una limitación del entorno, no de la marca.
 - **Plantillas de safe zone:** la forma permitida se reconoce por nombre (*square*, *permitido*, *allowed*), y las
   demás formas de la capa se tratan como exclusiones. Hay que confirmarlo en la captura superpuesta.
 - **Llamadas a Figma:** el MCP limita el tamaño de respuesta, así que una maestra se lee en varios fragmentos

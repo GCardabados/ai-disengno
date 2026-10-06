@@ -5,12 +5,13 @@
 //  - Nunca modifica la maestra: todas las mutaciones pasan por `onClone(masterId)`, que resuelve el nodo del clon por
 //    recorrido paralelo del árbol y rechaza cualquier id que pertenezca a la maestra o que no descienda del clon.
 //  - No sustituye fuentes: nunca asigna fontName. Intenta cargar las fuentes existentes y registra el resultado.
-//    Solo exige que carguen si el plan toca la maquetación de algún texto (FONT_REQUIRED); trasladar un texto o su
-//    contenedor no necesita la fuente cargada (v2: observado en real que una copia del archivo no tiene "Mutualidad"
-//    disponible para el plugin, aunque el render del servidor la muestra).
+//    Solo exige que carguen las de los textos que el plan edita o escala (FONT_REQUIRED_NODE_IDS); trasladar un texto
+//    o su contenedor no necesita la fuente cargada (observado en real: una copia del archivo no tenía "Mutualidad"
+//    disponible para el plugin, aunque el render del servidor la mostraba).
 //  - Todo o nada: si algo falla después de clonar, descarta SU PROPIO clon (única llamada a remove permitida) y relanza.
-//  - Operaciones: resizeWithoutConstraints del frame raíz (sin escalar hijos), traslación de bloques y
-//    redimensionado de efectos listados en el plan. Ninguna otra.
+//  - Operaciones: resizeWithoutConstraints del frame raíz (sin escalar hijos), traslación de bloques, redimensionado
+//    de efectos, escala de imágenes, ediciones de decoración, ediciones de texto y escala del logo experimental
+//    declaradas en el plan. Ninguna otra.
 //  - No duplica: en 'create', si ya existe un clon con ese nombre se detiene; 'patch' actualiza ese clon.
 //  - v5: traslaciones ABSOLUTAS (posición de la maestra + desplazamiento), idempotentes; varios clones por sección.
 //  - v6: un GROUP se traslada midiendo sobre un descendiente de referencia no modificado (su caja es derivada:
@@ -18,9 +19,13 @@
 //  - Ediciones vectoriales de decoración con guarda 'from' (idempotentes; detectan cambios ajenos).
 //  - v7: modo 'copy' (duplica un clon existente TAL CUAL, con sus cambios manuales, y adapta solo la copia), escala
 //    PROPORCIONAL de imágenes (nunca logo ni texto) y grosor de trazo de decoraciones con guarda 'from'.
+//  - v8: ediciones de TEXTO declaradas (caja, alineación, saltos de línea sin reescribir el copy, cuerpo e interlineado)
+//    y logo EXPERIMENTAL (escala proporcional del bloque completo). Ambas solo entran en el script si el plan las
+//    declara, en líneas exactas permitidas. Las fuentes de los textos que se editan (o que escalan con el logo) se
+//    cargan ANTES de clonar: si alguna no está disponible se detiene sin escribir y lo informa; nunca se sustituye.
 import type { DemoPlan } from '../demo/plan.ts';
 
-export const ADAPT_SCRIPT_VERSION = 'pcb.adapt-script.v7';
+export const ADAPT_SCRIPT_VERSION = 'pcb.adapt-script.v8';
 
 /** Única eliminación permitida: el clon creado por este mismo script, si falla algo después de crearlo. */
 export const ALLOWED_DISCARD_LINE = '  clone.remove(); // PCB_DISCARD_OWN_CLONE';
@@ -31,8 +36,16 @@ export const FORBIDDEN_IN_ADAPT_SCRIPT = [
   'fontName =', 'rescale(', 'figma.currentPage =',
 ];
 
+/** Únicas líneas con escala del logo o inserción/borrado de caracteres (solo se emiten si el plan las declara). */
+export const ALLOWED_LOGO_RESCALE_LINE = '    lnode.rescale(PLAN.logo.scale); // PCB_LOGO_EXPERIMENTAL';
+export const ALLOWED_LINEBREAK_LINES = [
+  "      tn.insertCharacters(cj + 1, want.charAt(cj), 'BEFORE'); // PCB_TEXT_LINEBREAK (hereda el estilo del espacio sustituido)",
+  '      tn.deleteCharacters(cj, cj + 1); // PCB_TEXT_LINEBREAK',
+];
+
 export function staticAdaptViolations(code: string): string[] {
-  const scanned = code.split('\n').filter((l) => l !== ALLOWED_DISCARD_LINE).join('\n');
+  const allowed = new Set([ALLOWED_DISCARD_LINE, ALLOWED_LOGO_RESCALE_LINE, ...ALLOWED_LINEBREAK_LINES]);
+  const scanned = code.split('\n').filter((l) => !allowed.has(l)).join('\n');
   return FORBIDDEN_IN_ADAPT_SCRIPT.filter((f) => scanned.includes(f));
 }
 
@@ -80,8 +93,8 @@ if (MODE !== 'patch' && existing) throw new Error('PCB_DEMO_ALREADY_EXISTS ' + e
 if (MODE === 'copy' && (!source || source.type !== 'FRAME' || source.id === master.id)) throw new Error('PCB_COPY_SOURCE_NOT_FOUND ' + OUT.sourceCloneId);
 if (MODE === 'patch' && (!existing || existing.id !== OUT.existingCloneId)) throw new Error('PCB_PATCH_TARGET_NOT_FOUND ' + OUT.existingCloneId);
 
-// Fuentes: se intenta cargar las existentes; nunca se sustituye ninguna. Solo se exige la carga si el plan toca la
-// maquetación de un texto (FONT_REQUIRED); si hace falta y falla, se detiene ANTES de escribir.
+// Fuentes: se intenta cargar las existentes; nunca se sustituye ninguna. Solo se EXIGE la carga de las fuentes de los
+// textos que el plan edita o escala (FONT_REQUIRED_NODE_IDS); si alguna falta, se detiene ANTES de escribir.
 var fontKeys = {};
 var texts = master.findAllWithCriteria({ types: ['TEXT'] });
 for (var t = 0; t < texts.length; t++) {
@@ -93,10 +106,25 @@ var fontFailed = false;
 var keys = Object.keys(fontKeys).sort();
 for (var k = 0; k < keys.length; k++) {
   var fn = fontKeys[keys[k]];
-  try { await figma.loadFontAsync(fn); fonts.push({ family: fn.family, style: fn.style, loaded: true, requiredForOps: FONT_REQUIRED, error: null }); }
-  catch (e) { fontFailed = true; fonts.push({ family: fn.family, style: fn.style, loaded: false, requiredForOps: FONT_REQUIRED, error: String(e && e.message ? e.message : e).split('\n')[0] }); }
+  try { await figma.loadFontAsync(fn); fonts.push({ family: fn.family, style: fn.style, loaded: true, requiredForOps: false, error: null }); }
+  catch (e) { fontFailed = true; fonts.push({ family: fn.family, style: fn.style, loaded: false, requiredForOps: false, error: String(e && e.message ? e.message : e).split('\n')[0] }); }
 }
-if (fontFailed && FONT_REQUIRED) throw new Error('PCB_FONT_LOAD_FAILED ' + JSON.stringify(fonts));
+var missingRequired = [];
+for (var fr = 0; fr < FONT_REQUIRED_NODE_IDS.length; fr++) {
+  var frNode = await figma.getNodeByIdAsync(FONT_REQUIRED_NODE_IDS[fr]);
+  if (!frNode || frNode.type !== 'TEXT') continue;
+  var frSegs = frNode.getStyledTextSegments(['fontName']);
+  for (var fs = 0; fs < frSegs.length; fs++) {
+    for (var fi = 0; fi < fonts.length; fi++) {
+      var fo = fonts[fi];
+      if (fo.family !== frSegs[fs].fontName.family || fo.style !== frSegs[fs].fontName.style) continue;
+      fo.requiredForOps = true;
+      if (!fo.loaded) missingRequired.push({ nodeId: frNode.id, family: fo.family, style: fo.style, error: fo.error });
+    }
+  }
+}
+// Bloqueo TÉCNICO del entorno (no una regla de marca): sin la fuente no se puede editar ese texto sin sustituirla.
+if (missingRequired.length > 0) throw new Error('PCB_FONT_UNAVAILABLE ' + JSON.stringify(missingRequired));
 
 var sectionCreated = false;
 if (!section) {
@@ -175,6 +203,7 @@ if (root.width !== PLAN.target.width || root.height !== PLAN.target.height) {
 var CHANGED = {};
 PLAN.effectResizes.forEach(function (e) { CHANGED[e.nodeId] = true; });
 PLAN.vectorEdits.forEach(function (e) { CHANGED[e.nodeId] = true; });
+PLAN.textEdits.forEach(function (e) { CHANGED[e.nodeId] = true; });
 for (var mi = 0; mi < PLAN.moves.length; mi++) {
   var mv = PLAN.moves[mi];
   for (var ni = 0; ni < mv.nodeIds.length; ni++) {
@@ -226,6 +255,8 @@ for (var si = 0; si < PLAN.imageScales.length; si++) {
   applied.push({ op: 'scale_image', cloneNodeId: inode.id, masterNodeId: isc.nodeId, detail: { scale: isc.scale, before: ib, after: { x: inode.x, y: inode.y, width: inode.width, height: inode.height } } });
 }
 
+/*PCB_TEXT_BLOCK*/
+/*PCB_LOGO_BLOCK*/
 // Ediciones vectoriales de decoración (coordenadas del frame destino). Idempotentes: un vértice ya en su destino se
 // deja; uno que no está ni en 'from' ni en 'to' indica un cambio ajeno (p. ej. manual) y detiene sin escribir ese nodo.
 var FX = root.absoluteTransform[0][2], FY = root.absoluteTransform[1][2];
@@ -293,6 +324,75 @@ return {
 };
 `;
 
+// Ediciones de texto declaradas. Idempotentes (valores absolutos desde la maestra). El copy no cambia: solo se
+// sustituyen espacios por saltos de línea (o al revés) en las mismas posiciones, heredando el estilo del carácter
+// sustituido; la familia y el estilo de fuente nunca se tocan.
+const TEXT_BLOCK = String.raw`
+var BREAKABLE = [' ', '\n', '\u2028', '\u00a0'];
+for (var ti = 0; ti < PLAN.textEdits.length; ti++) {
+  var te = PLAN.textEdits[ti];
+  var mT = await figma.getNodeByIdAsync(te.nodeId);
+  var tn = onClone(te.nodeId);
+  if (!mT || mT.type !== 'TEXT' || tn.type !== 'TEXT') throw new Error('PCB_TEXT_EDIT_TYPE ' + te.nodeId);
+  var tBefore = { width: tn.width, height: tn.height, autoResize: tn.textAutoResize, align: tn.textAlignHorizontal };
+  var breaks = [];
+  if (te.lineBreaks) {
+    var want = te.lineBreaks.characters, base = mT.characters, have = tn.characters;
+    if (want.length !== base.length || have.length !== base.length) throw new Error('PCB_TEXT_NOT_LINEBREAK_ONLY ' + te.nodeId);
+    for (var cj = 0; cj < want.length; cj++) {
+      var b0 = base.charAt(cj), w0 = want.charAt(cj), h0 = have.charAt(cj);
+      if (w0 !== b0 && !(BREAKABLE.indexOf(w0) >= 0 && BREAKABLE.indexOf(b0) >= 0)) throw new Error('PCB_TEXT_NOT_LINEBREAK_ONLY ' + te.nodeId + ' @' + cj);
+      if (h0 === w0) continue;
+      if (BREAKABLE.indexOf(h0) < 0) throw new Error('PCB_TEXT_UNEXPECTED ' + te.nodeId + ' @' + cj);
+      tn.insertCharacters(cj + 1, want.charAt(cj), 'BEFORE'); // PCB_TEXT_LINEBREAK (hereda el estilo del espacio sustituido)
+      tn.deleteCharacters(cj, cj + 1); // PCB_TEXT_LINEBREAK
+      breaks.push(cj);
+    }
+  }
+  if (te.fontScale !== null) {
+    var ms = mT.getStyledTextSegments(['fontSize', 'lineHeight', 'letterSpacing']);
+    for (var sg2 = 0; sg2 < ms.length; sg2++) {
+      var g2 = ms[sg2];
+      tn.setRangeFontSize(g2.start, g2.end, g2.fontSize * te.fontScale);
+      if (!te.lineHeight && g2.lineHeight.unit === 'PIXELS') tn.setRangeLineHeight(g2.start, g2.end, { unit: 'PIXELS', value: g2.lineHeight.value * te.fontScale });
+      if (g2.letterSpacing.unit === 'PIXELS') tn.setRangeLetterSpacing(g2.start, g2.end, { unit: 'PIXELS', value: g2.letterSpacing.value * te.fontScale });
+    }
+  }
+  if (te.lineHeight) tn.setRangeLineHeight(0, tn.characters.length, te.lineHeight);
+  if (te.align) tn.textAlignHorizontal = te.align;
+  if (te.box) {
+    tn.resize(te.box.width, te.box.height === null ? tn.height : te.box.height);
+    tn.textAutoResize = te.box.height === null ? 'HEIGHT' : 'NONE';
+  }
+  applied.push({ op: 'edit_text', cloneNodeId: tn.id, masterNodeId: te.nodeId, detail: { before: tBefore, after: { width: tn.width, height: tn.height, autoResize: tn.textAutoResize, align: tn.textAlignHorizontal }, lineBreakPositions: breaks, fontScale: te.fontScale, lineHeight: te.lineHeight } });
+}
+`;
+
+// Logo EXPERIMENTAL: escala proporcional de TODO el bloque (rescale escala geometría, trazos y efectos de todos sus
+// nodos por igual) y lo coloca en su destino. Idempotente; si el tamaño no es ni el de la maestra ni el destino, para.
+const LOGO_BLOCK = String.raw`
+if (PLAN.logo.mode === 'experimental') {
+  var lnode = onClone(PLAN.logo.nodeId);
+  var mL = await figma.getNodeByIdAsync(PLAN.logo.nodeId);
+  var lBefore = { x: lnode.x, y: lnode.y, width: lnode.width, height: lnode.height };
+  var lTarget = mL.width * PLAN.logo.scale;
+  if (Math.abs(lnode.width - lTarget) > 1e-6) {
+    if (Math.abs(lnode.width - mL.width) > 1e-6) throw new Error('PCB_LOGO_UNEXPECTED_SIZE ' + lnode.width);
+    lnode.rescale(PLAN.logo.scale); // PCB_LOGO_EXPERIMENTAL
+  }
+  lnode.x = PLAN.logo.x;
+  lnode.y = PLAN.logo.y;
+  applied.push({ op: 'scale_logo', cloneNodeId: lnode.id, masterNodeId: PLAN.logo.nodeId, detail: { mode: 'experimental', scale: PLAN.logo.scale, authorization: PLAN.logo.authorization, before: lBefore, after: { x: lnode.x, y: lnode.y, width: lnode.width, height: lnode.height } } });
+}
+`;
+
+/** Textos cuyas fuentes deben cargarse para ejecutar el plan: los editados y los que escalan con el logo. */
+export function fontRequiredNodeIds(plan: DemoPlan): string[] {
+  const ids = new Set((plan.textEdits ?? []).map((e) => e.nodeId));
+  if (plan.logo?.mode === 'experimental') for (const [id, e] of Object.entries(plan.expected)) if (e.logoScale !== undefined) ids.add(id);
+  return [...ids].sort();
+}
+
 export function buildAdaptScript(plan: DemoPlan, out: AdaptOptions): string {
   const planData = {
     masterNodeId: plan.masterNodeId,
@@ -303,6 +403,8 @@ export function buildAdaptScript(plan: DemoPlan, out: AdaptOptions): string {
     effectResizes: plan.effectResizes,
     vectorEdits: plan.vectorEdits ?? [],
     imageScales: plan.imageScales ?? [],
+    textEdits: plan.textEdits ?? [],
+    logo: plan.logo ?? { mode: 'standard' },
   };
   const mode = out.mode ?? 'create';
   if (mode === 'patch' && !out.existingCloneId) throw new Error('patch requiere existingCloneId');
@@ -312,9 +414,11 @@ export function buildAdaptScript(plan: DemoPlan, out: AdaptOptions): string {
     `var OUT = ${JSON.stringify({ sectionName: out.sectionName, cloneName: out.cloneName, gapFromContentPx: out.gapFromContentPx, existingCloneId: out.existingCloneId ?? null, sourceCloneId: out.sourceCloneId ?? null })};`,
     `var MODE = ${JSON.stringify(mode)};`,
     `var SCRIPT_VERSION = ${JSON.stringify(ADAPT_SCRIPT_VERSION)};`,
-    // El plan solo traslada textos (el plan rechaza redimensionar texto): no hace falta cargar sus fuentes.
-    `var FONT_REQUIRED = false;`,
-    BODY,
+    // Solo se exige cargar las fuentes de los textos que se editan o escalan; trasladar un texto no las necesita.
+    `var FONT_REQUIRED_NODE_IDS = ${JSON.stringify(fontRequiredNodeIds(plan))};`,
+    BODY
+      .replace('/*PCB_TEXT_BLOCK*/', (plan.textEdits ?? []).length > 0 ? TEXT_BLOCK : '')
+      .replace('/*PCB_LOGO_BLOCK*/', plan.logo?.mode === 'experimental' ? LOGO_BLOCK : ''),
   ].join('\n');
   const v = staticAdaptViolations(code);
   if (v.length > 0) throw new Error(`El script de adaptación contiene operaciones prohibidas: ${v.join(', ')}`);

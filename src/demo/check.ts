@@ -6,7 +6,50 @@ import type { Rect } from '../contracts/geometry.ts';
 import { aggregate, type Aggregate, type CheckStatus, type Finding, type ValidationResult } from '../contracts/validation.ts';
 import { canonicalize } from '../hash/canonical.ts';
 import { contentProjection } from '../hash/fingerprint.ts';
+import { maxNumericDelta } from '../geometry/tolerance.ts';
+import type { TextEdit } from '../contracts/demo.ts';
+import type { TextSegment } from '../contracts/snapshot.ts';
 import { relRect, type DemoPlan } from './plan.ts';
+
+/** Estilo canónico por carácter (sin rangos ni caracteres): permite comparar aunque los segmentos se fusionen. */
+function charStyles(segs: TextSegment[]): Array<Record<string, unknown>> {
+  const out: Array<Record<string, unknown>> = [];
+  for (const g of segs) {
+    const { start: _s, end: _e, characters: _c, ...style } = g as TextSegment & Record<string, unknown>;
+    for (let i = g.start; i < g.end; i++) out[i] = style;
+  }
+  return out;
+}
+
+/** Segmentos que debería tener el texto del clon tras aplicar la edición declarada a los de la maestra. */
+export function expectedTextSegments(segs: TextSegment[], e: TextEdit | undefined): TextSegment[] {
+  if (!e) return segs;
+  const k = e.fontScale ?? 1;
+  return segs.map((g) => {
+    const lh = g.lineHeight as { unit?: string; value?: number } | null;
+    const ls = g.letterSpacing as { unit?: string; value?: number } | null;
+    return {
+      ...g,
+      characters: e.lineBreaks ? e.lineBreaks.characters.slice(g.start, g.end) : g.characters,
+      fontSize: typeof g.fontSize === 'number' ? g.fontSize * k : g.fontSize,
+      lineHeight: e.lineHeight ?? (lh && lh.unit === 'PIXELS' && typeof lh.value === 'number' ? { ...lh, value: lh.value * k } : g.lineHeight),
+      letterSpacing: ls && ls.unit === 'PIXELS' && typeof ls.value === 'number' ? { ...ls, value: ls.value * k } : g.letterSpacing,
+    };
+  });
+}
+
+/** ¿Mismo texto y mismo estilo carácter a carácter (números con tolerancia)? Devuelve el primer índice distinto. */
+export function textStyleMismatch(expected: TextSegment[], got: TextSegment[], eps = 1e-3): number | null {
+  const chars = (ss: TextSegment[]) => ss.map((g) => g.characters).join('');
+  if (chars(expected) !== chars(got)) return -1;
+  const a = charStyles(expected), b = charStyles(got);
+  if (a.length !== b.length) return Math.min(a.length, b.length);
+  for (let i = 0; i < a.length; i++) {
+    const d = maxNumericDelta(a[i], b[i]);
+    if (d === null || d > eps) return i;
+  }
+  return null;
+}
 
 export const DEMO_CHECK_VERSION = '1';
 
@@ -38,6 +81,10 @@ const r = (validatorId: string, status: CheckStatus, coverage: string, findings:
   validatorId, validatorVersion: DEMO_CHECK_VERSION, destinationId: 'demo_1080x1080', kind, status, findings, coverage,
 });
 const statusOf = (f: Finding[]): CheckStatus => (f.some((x) => x.severity === 'blocking') ? 'fail' : f.length > 0 ? 'needs_review' : 'pass');
+
+function hitRect(p: Rect, q: Rect): boolean {
+  return Math.min(p.x + p.width, q.x + q.width) - Math.max(p.x, q.x) > 0 && Math.min(p.y + p.height, q.y + q.height) - Math.max(p.y, q.y) > 0;
+}
 
 function within(inner: Rect, outer: Rect, tol: number): boolean {
   return inner.x >= outer.x - tol && inner.y >= outer.y - tol &&
@@ -94,6 +141,7 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
     const resized = new Set([mRoot.id, ...plan.effectResizes.map((e) => e.nodeId), ...plan.vectorEdits.map((v) => v.nodeId), ...(plan.imageScales ?? []).map((e) => e.nodeId)]);
     // El grosor de trazo declarado en una edición de decoración se verifica en vector_edits (aquí se neutraliza).
     const strokeEdited = new Set(plan.vectorEdits.filter((v) => v.strokeWeight).map((v) => v.nodeId));
+    const textEdits = new Map((plan.textEdits ?? []).map((e) => [e.nodeId, e]));
     for (const m of master.nodes) {
       const cn = pair(m.id);
       if (!cn) continue;
@@ -102,18 +150,28 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       // La geometría de un nodo redimensionado cambia por definición; se compara todo lo demás.
       if (resized.has(m.id)) { a.vectorGeometryDigest = null; b.vectorGeometryDigest = null; }
       if (strokeEdited.has(m.id)) { a.strokeWeight = null; b.strokeWeight = null; }
+      // Logo experimental: geometría, trazo y efectos escalan con el factor; los valida logo_locked.
+      if (plan.expected[m.id]?.logoScale !== undefined && plan.expected[m.id]!.logoScale !== 1) {
+        for (const k of ['vectorGeometryDigest', 'strokeWeight', 'effects'] as const) { a[k] = null; b[k] = null; }
+      }
+      // Texto: copy y estilo se comparan carácter a carácter contra la edición declarada (saltos y cuerpo incluidos).
+      if (m.text && cn.text) {
+        const exp = expectedTextSegments(m.text.segments, textEdits.get(m.id));
+        const bad = textStyleMismatch(exp, cn.text.segments, textEdits.has(m.id) ? 1e-3 : 0);
+        if (bad === -1) f.push({ code: 'TEXT_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: textEdits.get(m.id)?.lineBreaks ? 'El texto no coincide con el declarado (solo se permiten saltos de línea)' : 'El texto no es idéntico' });
+        else if (bad !== null) f.push({ code: 'TEXT_STYLE_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: bad, message: `Estilo distinto del esperado a partir del carácter ${bad} (familia, cuerpo, interlineado, color…)` });
+        a.text = null; b.text = null;
+      }
       // Propiedades de contenedor que no están en contentProjection (recorte, maquetación automática).
       if (m.clipsContent !== cn.clipsContent || m.layout.mode !== cn.layout.mode) {
         f.push({ code: 'CONTAINER_PROPS_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Recorte o modo de maquetación distinto' });
       }
-      if (m.text && cn.text && m.text.characters !== cn.text.characters) {
-        f.push({ code: 'TEXT_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'El texto no es idéntico' });
-      } else if (canonicalize(a) !== canonicalize(b)) {
+      if (canonicalize(a) !== canonicalize(b)) {
         const keys = Object.keys(a).filter((k) => canonicalize(a[k]) !== canonicalize(b[k]));
         f.push({ code: 'CONTENT_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: keys, message: `Cambian: ${keys.join(', ')}` });
       }
     }
-    results.push(r('content_preserved', statusOf(f), 'Igualdad exacta de caracteres, segmentos de estilo (fuente, cuerpo, interlineado, color), pinturas, efectos, visibilidad, opacidad, máscaras y geometría vectorial. No evalúa el render.', f));
+    results.push(r('content_preserved', statusOf(f), 'Copy idéntico (salvo saltos de línea declarados), estilo carácter a carácter (familia y estilo de fuente siempre iguales; cuerpo e interlineado según la edición declarada), pinturas, efectos, visibilidad, opacidad, máscaras y geometría vectorial (salvo lo que escala con el logo experimental). No evalúa el render.', f));
   }
 
   // 4. Operaciones: cada nodo está donde dice el plan, sin escalado ni rotación; solo los efectos listados cambian de tamaño.
@@ -133,8 +191,11 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       if (exp.derived || exp.edited) continue;
       const got = relRect(cn, cRoot);
       if (!got || !exp.rect) { f.push({ code: 'NO_BOUNDS', severity: 'warning', nodeIds: [m.id], message: 'Sin caja para comparar' }); continue; }
-      const d = Math.max(Math.abs(got.x - exp.rect.x), Math.abs(got.y - exp.rect.y), Math.abs(got.width - exp.rect.width), Math.abs(got.height - exp.rect.height));
-      if (d > tol) f.push({ code: 'UNEXPECTED_GEOMETRY', severity: 'blocking', nodeIds: [m.id, cn.id], measured: got, expected: exp.rect, message: `Desviación ${d} px` });
+      // Medidas escaladas: el ruido de coma flotante crece con el valor.
+      const t = exp.logoScale !== undefined ? tol + 1e-4 * Math.max(exp.rect.width, exp.rect.height) : tol;
+      const d = Math.max(Math.abs(got.x - exp.rect.x), Math.abs(got.y - exp.rect.y),
+        exp.free?.width ? 0 : Math.abs(got.width - exp.rect.width), exp.free?.height ? 0 : Math.abs(got.height - exp.rect.height));
+      if (d > t) f.push({ code: 'UNEXPECTED_GEOMETRY', severity: 'blocking', nodeIds: [m.id, cn.id], measured: got, expected: exp.rect, message: `Desviación ${d} px` });
       if (!exp.resized && (cn.width !== m.width || cn.height !== m.height)) f.push({ code: 'SIZE_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Tamaño cambiado en un nodo que solo podía trasladarse' });
       // Escala de imagen: el MISMO factor en ancho y alto (sin deformar), exactamente el declarado.
       if (exp.scale !== undefined && m.width && m.height && cn.width && cn.height) {
@@ -143,7 +204,7 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
         if (Math.abs(sx - exp.scale) > 1e-4) f.push({ code: 'IMAGE_SCALE_MISMATCH', severity: 'blocking', nodeIds: [m.id, cn.id], measured: sx, expected: exp.scale, message: 'Factor de escala distinto del declarado' });
       }
     }
-    results.push(r('allowed_operations', statusOf(f), `Posición de cada caja respecto al plan (±${tol} px), tamaño exacto de todo lo que solo se traslada, factor único en ancho y alto de las imágenes escaladas y parte lineal exacta de cada transformación.`, f));
+    results.push(r('allowed_operations', statusOf(f), `Posición de cada caja respecto al plan (±${tol} px), tamaño exacto de todo lo que solo se traslada, caja declarada de los textos editados (las dimensiones automáticas se validan en text_fit), factor único en ancho y alto de las imágenes escaladas y parte lineal exacta de cada transformación.`, f));
   }
 
   // 5. Logo: tamaño y disposición interna idénticos (exacto, sin tolerancia).
@@ -155,22 +216,42 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       while (p) { if (p === rootId) return true; p = mById.get(p)?.parentId ?? null; }
       return false;
     };
+    const exp = plan.logo?.mode === 'experimental' ? plan.logo : null;
     for (const lr of lockedRoots) {
       const mA = mById.get(lr), cA = pair(lr);
       if (!mA || !cA) { f.push({ code: 'LOCKED_MISSING', severity: 'blocking', nodeIds: [lr], message: 'Bloque bloqueado ausente' }); continue; }
+      // Estándar: factor 1 y comparación EXACTA. Experimental: el factor declarado, igual en todo el bloque.
+      const k = exp && exp.nodeId === lr ? exp.scale : 1;
+      const near = (got: number | null, want: number | null) => got !== null && want !== null && (k === 1 ? got === want : Math.abs(got - want) <= tol + 1e-4 * Math.abs(want));
+      if (k !== 1) f.push({ code: 'LOGO_EXPERIMENTAL_SCALE', severity: 'warning', nodeIds: [lr, cA.id], measured: cA.width && mA.width ? cA.width / mA.width : null, expected: k, message: `Logo en modo EXPERIMENTAL: escala proporcional ×${k} (autorización: ${exp!.authorization}). Requiere revisión humana.` });
       for (const m of master.nodes.filter((n) => inLocked(n.id, lr))) {
         const cn = pair(m.id);
         if (!cn || !m.absoluteTransform || !cn.absoluteTransform || !mA.absoluteTransform || !cA.absoluteTransform) continue;
-        const offM = [m.absoluteTransform[0][2] - mA.absoluteTransform[0][2], m.absoluteTransform[1][2] - mA.absoluteTransform[1][2]];
+        const offM = [(m.absoluteTransform[0][2] - mA.absoluteTransform[0][2]) * k, (m.absoluteTransform[1][2] - mA.absoluteTransform[1][2]) * k];
         const offC = [cn.absoluteTransform[0][2] - cA.absoluteTransform[0][2], cn.absoluteTransform[1][2] - cA.absoluteTransform[1][2]];
-        if (cn.width !== m.width || cn.height !== m.height) f.push({ code: 'LOGO_SIZE_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Tamaño distinto' });
-        if (canonicalize(m.relativeTransform?.map((row) => row.slice(0, 2))) !== canonicalize(cn.relativeTransform?.map((row) => row.slice(0, 2)))) f.push({ code: 'LOGO_TRANSFORM_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Rotación/escala distinta' });
+        const wM = m.width === null ? null : m.width * k, hM = m.height === null ? null : m.height * k;
+        if (!near(cn.width, wM) || !near(cn.height, hM)) {
+          const sx = m.width && cn.width ? cn.width / m.width : null, sy = m.height && cn.height ? cn.height / m.height : null;
+          const deformed = sx !== null && sy !== null && Math.abs(sx - sy) > 1e-4;
+          f.push(deformed
+            ? { code: 'LOGO_DEFORMED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: [sx, sy], message: 'Escala distinta en ancho y alto (deformación)' }
+            : { code: 'LOGO_SIZE_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: [cn.width, cn.height], expected: [wM, hM], message: k === 1 ? 'Tamaño distinto (modo estándar: tamaño fijo)' : `Tamaño distinto del factor declarado ×${k}` });
+        }
+        if (canonicalize(m.relativeTransform?.map((row) => row.slice(0, 2))) !== canonicalize(cn.relativeTransform?.map((row) => row.slice(0, 2)))) f.push({ code: 'LOGO_TRANSFORM_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Rotación, sesgo o espejo distintos' });
         const dOff = Math.max(Math.abs(offM[0]! - offC[0]!), Math.abs(offM[1]! - offC[1]!));
-        if (dOff > tol) f.push({ code: 'LOGO_INTERNAL_LAYOUT_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: offC, expected: offM, message: `Desplazamiento interno ${dOff} px` });
+        if (dOff > tol + (k === 1 ? 0 : 1e-4 * Math.max(mA.width ?? 0, mA.height ?? 0) * k)) f.push({ code: 'LOGO_INTERNAL_LAYOUT_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: offC, expected: offM, message: `Desplazamiento interno ${dOff} px` });
         if (m.clipsContent !== cn.clipsContent) f.push({ code: 'LOGO_CLIP_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Recorte distinto' });
+        if (k !== 1) {
+          // Lo que escala con el logo se valida aquí (content_preserved lo neutraliza): trazo y efectos.
+          if (typeof m.strokeWeight === 'number' && !near(typeof cn.strokeWeight === 'number' ? cn.strokeWeight : null, m.strokeWeight * k)) f.push({ code: 'LOGO_STROKE_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: cn.strokeWeight, expected: m.strokeWeight * k, message: 'Grosor de trazo no proporcional' });
+          const eff = (n: NodeSnapshot) => canonicalize(n.effects.map((e) => [e.type, e.visible]));
+          if (eff(m) !== eff(cn)) f.push({ code: 'LOGO_EFFECTS_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Efectos distintos' });
+        }
       }
     }
-    results.push(r('logo_locked', statusOf(f), 'Ancho/alto exactos, transformaciones lineales exactas, recorte y posición de cada nodo respecto al bloque del logo. El render del logo lo confirma la captura.', f));
+    results.push(r('logo_locked', statusOf(f), exp
+      ? `Modo EXPERIMENTAL (×${exp.scale}): mismo factor en ancho y alto de cada nodo del logo, disposición interna escalada, transformaciones lineales y recorte idénticos, trazos proporcionales y mismos efectos. La forma interna de cada vector se infiere por su caja; el render lo confirma la captura.`
+      : 'Modo estándar: ancho/alto exactos, transformaciones lineales exactas, recorte y posición de cada nodo respecto al bloque del logo. El render del logo lo confirma la captura.', f));
   }
 
   // 6. Zona interna de prueba (regla de DEMO, no especificación oficial) y recortes por el borde del frame.
@@ -359,6 +440,93 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       }
     }
     results.push(r('effective_visibility', statusOf(f), 'Contenido importante visible (sin ocultar, opacidad acumulada 1), con render dentro del frame y sin formas opacas pintadas encima (por cajas). El contraste y la legibilidad los juzga la captura.', f));
+  }
+
+  // 7d. Texto tras el render: desbordamiento de la caja, truncado, propiedades declaradas y límites del proyecto.
+  {
+    const f: Finding[] = [];
+    const edits = new Map((plan.textEdits ?? []).map((e) => [e.nodeId, e]));
+    const policy = plan.textPolicy;
+    const over = (n: NodeSnapshot) => {
+      const b = n.absoluteBoundingBox, rb0 = n.absoluteRenderBounds;
+      if (!b || !rb0) return null;
+      return { left: b.x - rb0.x, top: b.y - rb0.y, right: rb0.x + rb0.width - (b.x + b.width), bottom: rb0.y + rb0.height - (b.y + b.height) };
+    };
+    const textIds = master.nodes.filter((n) => n.text).map((n) => n.id);
+    for (const id of textIds) {
+      const m = mById.get(id)!, cn = pair(id);
+      if (!cn?.text || !m.text) continue;
+      const e = edits.get(id);
+      const k = e?.fontScale ?? 1;
+      // Desbordamiento: cuánto sale el render de la caja del clon, descontando lo que ya salía en la maestra (rasgos
+      // de los glifos), escalado por el cuerpo. 1 px absorbe la rasterización.
+      const om = over(m), oc = over(cn);
+      if (oc && om) {
+        const excess = Math.max(...(['left', 'top', 'right', 'bottom'] as const).map((side) => oc[side] - Math.max(0, om[side]) * k));
+        if (excess > 1) f.push({ code: 'TEXT_OVERFLOW', severity: 'blocking', nodeIds: [id, cn.id], measured: oc, message: `El texto se sale ${excess.toFixed(1)} px de su caja` });
+      } else if (oc === null && e && cn.visible) {
+        f.push({ code: 'TEXT_NOT_RENDERED', severity: 'blocking', nodeIds: [id, cn.id], message: 'Sin render: no se puede comprobar el desbordamiento' });
+      }
+      if (cn.text.truncation !== null && cn.text.truncation !== 'DISABLED' && cn.text.truncation !== m.text.truncation) {
+        f.push({ code: 'TEXT_TRUNCATION_ENABLED', severity: 'blocking', nodeIds: [id, cn.id], message: 'El truncado puede ocultar parte del copy' });
+      }
+      if (!e) continue;
+      if (e.align && cn.text.alignHorizontal !== e.align) f.push({ code: 'TEXT_ALIGN_MISMATCH', severity: 'blocking', nodeIds: [id, cn.id], measured: cn.text.alignHorizontal, expected: e.align, message: 'Alineación distinta de la declarada' });
+      if (e.box) {
+        const want = e.box.height === null ? 'HEIGHT' : 'NONE';
+        if (cn.text.autoResize !== want) f.push({ code: 'TEXT_AUTORESIZE_MISMATCH', severity: 'blocking', nodeIds: [id, cn.id], measured: cn.text.autoResize, expected: want, message: 'Modo de caja distinto del declarado' });
+      }
+      const sizes = cn.text.segments.map((g) => g.fontSize).filter((v): v is number => typeof v === 'number');
+      if (policy?.minFontSizePx != null && sizes.some((v) => v < policy.minFontSizePx! - 1e-3)) {
+        f.push({ code: 'TEXT_BELOW_PROJECT_MIN', severity: 'blocking', nodeIds: [id, cn.id], measured: Math.min(...sizes), expected: policy.minFontSizePx, message: 'Cuerpo por debajo del mínimo del proyecto' });
+      }
+    }
+    // Solapes NUEVOS entre renders de texto (no existían en la maestra).
+    const box = (n: NodeSnapshot, root: NodeSnapshot) => n.absoluteRenderBounds && root.absoluteBoundingBox
+      ? { x: n.absoluteRenderBounds.x - root.absoluteBoundingBox.x, y: n.absoluteRenderBounds.y - root.absoluteBoundingBox.y, width: n.absoluteRenderBounds.width, height: n.absoluteRenderBounds.height } : null;
+    const hit = (p: Rect | null, q: Rect | null) => !!p && !!q && Math.min(p.x + p.width, q.x + q.width) - Math.max(p.x, q.x) > 1 && Math.min(p.y + p.height, q.y + q.height) - Math.max(p.y, q.y) > 1;
+    for (let i = 0; i < textIds.length; i++) for (let j = i + 1; j < textIds.length; j++) {
+      const a = textIds[i]!, b = textIds[j]!;
+      const ca = pair(a), cb = pair(b);
+      if (!ca || !cb || !cRoot || !(edits.has(a) || edits.has(b))) continue;
+      if (hit(box(ca, cRoot), box(cb, cRoot)) && !hit(box(mById.get(a)!, mRoot), box(mById.get(b)!, mRoot))) {
+        f.push({ code: 'TEXT_RENDER_OVERLAP', severity: 'blocking', nodeIds: [a, b], message: 'Un texto editado se solapa con otro (no ocurría en la maestra)' });
+      }
+    }
+    results.push(r('text_fit', statusOf(f), 'Render de cada texto dentro de su caja (descontando lo que ya sobresalía en la maestra, ±1 px), sin truncado nuevo; en los textos editados, alineación y modo de caja declarados, límites de cuerpo del proyecto y sin solapes nuevos entre textos. Legibilidad y contraste: captura y revisión humana.', f));
+  }
+
+  // 7e. Relación persona/producto–mensaje (orientativa: registra la decisión; no es una regla geométrica rígida).
+  if (c.messagePlan) {
+    const f: Finding[] = [];
+    const mp = c.messagePlan;
+    const subj = mp.subject;
+    const union = (ids: string[]): Rect | null => {
+      const rs = ids.map((id) => { const cn = pair(id); return cn && cRoot ? (cn.absoluteRenderBounds ? relRect({ ...cn, absoluteBoundingBox: cn.absoluteRenderBounds }, cRoot) : relRect(cn, cRoot)) : null; }).filter((x): x is Rect => !!x);
+      if (!rs.length) return null;
+      const x0 = Math.min(...rs.map((q) => q.x)), y0 = Math.min(...rs.map((q) => q.y));
+      return { x: x0, y: y0, width: Math.max(...rs.map((q) => q.x + q.width)) - x0, height: Math.max(...rs.map((q) => q.y + q.height)) - y0 };
+    };
+    const msg = union(mp.main);
+    let anchor: Rect | null = null;
+    if (subj.nodeId && cRoot) {
+      const cn = pair(subj.nodeId), mn = mById.get(subj.nodeId);
+      const reg = c.protectedRegions.find((p) => p.nodeId === subj.nodeId);
+      const nb = cn ? relRect(cn, cRoot) : null;
+      if (nb && reg && mn?.width) {
+        const k = nb.width / mn.width;
+        anchor = { x: nb.x + reg.rect.x * k, y: nb.y + reg.rect.y * k, width: reg.rect.width * k, height: reg.rect.height * k };
+      } else anchor = nb;
+    }
+    if (msg && anchor && (subj.cue === 'gaze' || subj.cue === 'gesture') && subj.direction) {
+      const mc = { x: msg.x + msg.width / 2, y: msg.y + msg.height / 2 }, ac = { x: anchor.x + anchor.width / 2, y: anchor.y + anchor.height / 2 };
+      const ok = { left: mc.x < ac.x, right: mc.x > ac.x, up: mc.y < ac.y, down: mc.y > ac.y, toward_viewer: true, unclear: true }[subj.direction];
+      if (!ok) f.push({ code: 'MESSAGE_AGAINST_CUE', severity: 'warning', nodeIds: [...mp.main, subj.nodeId!], measured: { message: mc, subject: ac }, expected: subj.direction, message: `El mensaje principal no queda hacia donde apunta ${subj.cue === 'gaze' ? 'la mirada' : 'el gesto'} (${subj.direction}); revisar la decisión registrada` });
+    }
+    if (msg && anchor && subj.kind === 'person' && hitRect(msg, anchor)) {
+      f.push({ code: 'MESSAGE_OVER_FACE', severity: 'blocking', nodeIds: [...mp.main, subj.nodeId!], message: 'El mensaje principal se superpone a la región protegida de la persona' });
+    }
+    results.push(r('message_relation', statusOf(f), `Decisión registrada: ${subj.kind}, señal «${subj.cue}»${subj.direction ? ` (${subj.direction})` : ''}. Comprueba por cajas que el mensaje principal no tape la región protegida y queda hacia la dirección declarada; la conexión visual la juzga la revisión humana.`, f));
   }
 
   // 8. Maestra intacta (hash por nodo de la relectura frente a la instantánea del inventario).

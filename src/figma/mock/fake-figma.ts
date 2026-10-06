@@ -27,6 +27,7 @@ export interface MockTextSpec {
   fontFamily?: string;
   fontStyle?: string;
   fontSize?: number;
+  align?: string;
   /** Simula un entorno que rechaza campos avanzados de getStyledTextSegments. */
   rejectAdvancedSegmentFields?: boolean;
 }
@@ -226,7 +227,7 @@ export function createFakeFigma(opts: FakeFigmaOptions): FakeFigma {
       t.textAutoResize = tx.autoResize ?? 'HEIGHT';
       t.textTruncation = tx.truncation ?? 'DISABLED';
       t.maxLines = tx.maxLines ?? null;
-      t.textAlignHorizontal = 'LEFT';
+      t.textAlignHorizontal = tx.align ?? 'LEFT';
       t.textAlignVertical = 'TOP';
       t.leadingTrim = 'NONE';
       const fills = t.fills;

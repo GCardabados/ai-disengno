@@ -23,5 +23,6 @@
   "approvers": [],
   "ocr": { "enabled": false, "engine": "tesseract-local", "langs": [] },
   "visualReview": { "modelMayInspectScreenshots": false },
+  "textPolicy": { "editable": ["position", "alignment", "box", "reflow", "line_breaks", "font_size", "line_height"], "fontScale": null, "minFontSizePx": null },
   "heuristics": { "vectorGlyphMinCount": 3 }
 }

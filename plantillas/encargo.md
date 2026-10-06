@@ -35,15 +35,22 @@ Marca **una** opción por destino:
 > ambigüedad, pregunta.
 
 ## 5. Reglas de marca y contenido
-- **Logo:** solo se traslada. Esta regla es fija: ni escala, ni recorte, ni rotación.
-- **Copy:** no se añade, elimina ni reescribe nada.
-- **Texto** (marca lo permitido en esta prueba):
-  - ☐ solo trasladar (por defecto)
-  - ☐ se puede proponer reflujo (cambio de ancho de caja)
-  - ☐ se puede proponer cambio de cuerpo, entre ___ % y ___ % del original
-  > El piloto solo **ejecuta** traslaciones de texto. Reflujo y cambios de cuerpo se **proponen**
-  > con valores concretos y esperan tu visto bueno.
-- **Fuentes:** no se sustituyen nunca.
+- **Logo** (nunca se deforma, rota, recorta, sustituye ni se cambia por dentro):
+  - ☐ estándar: tamaño fijo, solo se traslada (por defecto)
+  - ☐ **experimental**: se permite escalarlo proporcionalmente para este encargo. Factor máximo: ___.
+    Autoriza: ___. El resultado se marcará como EXPERIMENTAL.
+- **Copy:** no se añade, elimina ni reescribe nada. Cambiar saltos de línea no es reescribir.
+- **Texto** (el texto no tiene tamaño ni posición fijos; marca lo permitido en esta prueba):
+  - ☐ posición ☐ alineación ☐ ancho/alto de caja y reflujo ☐ saltos de línea ☐ cuerpo ☐ interlineado
+  - Límites de la marca (déjalos vacíos si no los hay; el agente no inventa mínimos):
+    cuerpo entre ___ % y ___ % del original; cuerpo mínimo ___ px.
+  - Legales: ☐ no se reducen ☐ se pueden reducir hasta ___ % (autoriza: ___).
+  - Tipografía (familia y estilo): no cambia salvo autorización específica: ___.
+- **Fuentes:** no se sustituyen nunca. Si una fuente no está disponible en el entorno, el agente lo informa y esos
+  textos solo se trasladan.
+- **Persona o producto** (si los hay): ¿hacia dónde mira o señala la persona, y qué debe quedar protegido? ___
+  (si no se indica, el agente lo propone y registra la decisión).
+- **Mensaje:** principal ___ · secundarios ___ · oferta ___ · CTA ___ (si no se indica, el agente lo propone).
 - **Imágenes:** ☐ se pueden escalar proporcionalmente ☐ solo trasladar
 - **Decoración** (formas, cintas, fondos decorativos): ☐ se puede adaptar ☐ solo trasladar
 - **Otras reglas de esta marca:**
@@ -51,5 +58,7 @@ Marca **una** opción por destino:
 ## 6. Entrega esperada
 - Enlace al clon y captura limpia.
 - Captura con la safe zone superpuesta (generada fuera de Figma; la guía nunca entra en la creatividad).
+- ☐ Superposición de atención estimada con flechas y numeración del recorrido de lectura (separada de la
+  creatividad; es una estimación heurística del agente, no atención medida, y no lleva porcentajes).
 - Validaciones (`check/report.md`) y dudas.
 - Registro de la prueba (`registro-prueba.json`): tiempo, llamadas a Figma, intervenciones humanas, cambios técnicos.

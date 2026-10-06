@@ -12,6 +12,9 @@ Diseño y decisiones: [docs/00-auditoria-y-diseno.md](docs/00-auditoria-y-diseno
 - **Piloto compartible:** guía de inicio en [docs/03-guia-inicio.md](docs/03-guia-inicio.md), encargo en
   [plantillas/encargo.md](plantillas/encargo.md), `npm run doctor` (entorno) y `npm run ejemplo` (flujo sin Figma).
   Los resultados de `runs/` quedan fuera de Git por defecto.
+- **Criterios 2026-10:** texto flexible dentro de los límites del proyecto (`textPolicy`), logo en modo estándar o
+  experimental por encargo (`logoPolicy`), relación persona–mensaje y recorrido de lectura (`messagePlan`), con
+  superposición de atención estimada (heurística, separada de la creatividad). Ver la skill.
 
 Ningún comando del CLI escribe en Figma. `adapt-request` solo genera el script de escritura (DEMO) que actúa sobre un clon; lo ejecuta `use_figma` y requiere asiento Full.
 

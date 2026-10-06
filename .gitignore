@@ -7,3 +7,4 @@ node_modules/
 
 # Resultados y capturas de ejecuciones: fuera de Git por defecto (versionar solo con git add -f si se decide).
 runs/
+references/CONVERSACION-ASTRA.md

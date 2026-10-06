@@ -30,6 +30,9 @@ import { checkDemo } from './demo/check.ts';
 import { compareNodeDigests } from './figma/digests.ts';
 import { buildSafeZoneTemplateScript, resolveSafeZoneTemplate, SAFE_ZONE_TEMPLATES_SCHEMA_ID, type SafeZoneTemplates } from './figma/safe-zone-template.ts';
 import { runDoctor } from './doctor.ts';
+import { readingFlow } from './demo/attention.ts';
+import { buildTextCapabilitiesScript, summarizeTextCapabilities, TEXT_CAPABILITIES_SCHEMA_ID, type TextCapabilities } from './figma/text-capabilities.ts';
+import { fontRequiredNodeIds } from './figma/adapt-script.ts';
 import { assembleChunks } from './figma/chunks.ts';
 import { renderDemoReport, type DemoReportMeta } from './report/demo-md.ts';
 import type { CheckStatus, Finding } from './contracts/validation.ts';
@@ -56,7 +59,8 @@ const USAGE = `pcb <comando> [opciones]
   verify-sent    --request F [--request F2 ...] --calls F   El script enviado == el generado (SHA-256)
   record-acceptance --clone-snapshot F --composition F --plan F --checks F --by NOMBRE --scope TEXTO --file-key K --out F
   proposals-check --manifest F --proposals F --config F    Valida las propuestas del agente contra el borrador
-  demo-plan      --snapshot F --composition F --out F      Plan exacto (traslaciones/efectos) y comprobación previa
+  demo-plan      --snapshot F --composition F [--config F] --out F   Plan exacto y comprobación previa (--config obligatorio
+                 si edita texto o escala el logo: límites de texto del proyecto)
   adapt-request  --plan F --composition F --file-key K --clone-name N [--mode patch --existing-clone-id ID | --mode copy --source-clone-id ID] --out F
                  Script de ESCRITURA sobre un clon ('patch' actualiza el clon existente sin duplicar la salida;
                  'copy' duplica un clon existente tal cual y adapta solo la copia)
@@ -67,6 +71,10 @@ const USAGE = `pcb <comando> [opciones]
 
   PILOTO:
   doctor         [--config F]                            Comprobación de entorno y capacidades (no instala ni escribe)
+  attention-flow --clone-snapshot F --adapt-result F --composition F --out F   Recorrido de lectura y notas heurísticas
+                 (después: scripts/attention-overlay.py dibuja la superposición separada de la creatividad)
+  text-capabilities-request --file-key K --node-id N [--node-id N2 ...] --out F   Fuentes y APIs de edición (solo lectura)
+  text-capabilities-check --raw F [--plan F]             ¿Se pueden ejecutar las ediciones de texto / logo del plan?
   safe-zone-template-request --file-key K --node-id N --out F   Lee (solo lectura) las plantillas de safe zone de Figma
   safe-zone-resolve --raw F --width W --height H --provenance client|internal|platform_official
                  [--template-hint TXT] [--layer-hint TXT] --out F
@@ -308,21 +316,29 @@ async function main(argv: string[]): Promise<number> {
     case 'demo-plan': {
       const snap = await loadSnapshot(need(a.snapshot, 'snapshot'));
       const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
-      const r = buildDemoPlan(snap, comp);
+      if ((comp.textEdits.length > 0 || comp.logoPolicy.mode === 'experimental') && !a.config) throw new Error('Esta composición edita texto o escala el logo: indica --config (límites de texto del proyecto)');
+      const r = buildDemoPlan(snap, comp, a.config ? { textPolicy: (await loadConfig(a.config)).textPolicy } : {});
       if (!r.ok) {
         console.error(`Composición rechazada:\n${r.issues.map((i) => `  ${i}`).join('\n')}`);
         return 2;
       }
       await writeJson(need(a.out, 'out'), r.plan);
       console.log(r.plan.moves.map((m) => `${m.unitId}: dx=${m.dx} dy=${m.dy}`).join('\n'));
+      if (r.plan.logo.mode === 'experimental') console.log(`LOGO EXPERIMENTAL ×${r.plan.logo.scale} (${r.plan.logo.authorization})`);
+      for (const e of r.plan.textEdits) console.log(`texto ${e.nodeId}: ${[e.box && `caja ${e.box.width}×${e.box.height ?? 'auto'}`, e.align, e.lineBreaks && 'saltos de línea', e.fontScale !== null && `cuerpo ×${e.fontScale}`, e.lineHeight && `interlineado ${e.lineHeight.value}${e.lineHeight.unit === 'PIXELS' ? 'px' : '%'}`].filter(Boolean).join(', ')}`);
+      const req = fontRequiredNodeIds(r.plan);
+      if (req.length) console.log(`Fuentes que deben cargarse antes de escribir (comprobar con text-capabilities-request): ${req.join(', ')}`);
       return 0;
     }
     case 'adapt-request': {
       const plan = (await readJson(need(a.plan, 'plan'))) as DemoPlan;
       const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
       const mode = a.mode === 'patch' ? 'patch' : a.mode === 'copy' ? 'copy' : 'create';
+      // Un resultado con el logo escalado se identifica SIEMPRE como experimental en el propio nombre del clon.
+      let cloneName = need(a['clone-name'], 'clone-name');
+      if (plan.logo?.mode === 'experimental' && !/EXPERIMENTAL/.test(cloneName)) cloneName = `${cloneName} · LOGO EXPERIMENTAL ×${plan.logo.scale}`;
       const codeText = buildAdaptScript(plan, {
-        sectionName: comp.output.sectionName, cloneName: need(a['clone-name'], 'clone-name'), gapFromContentPx: comp.output.gapFromContentPx,
+        sectionName: comp.output.sectionName, cloneName, gapFromContentPx: comp.output.gapFromContentPx,
         mode, existingCloneId: mode === 'patch' ? need(a['existing-clone-id'], 'existing-clone-id') : undefined,
         sourceCloneId: mode === 'copy' ? need(a['source-clone-id'], 'source-clone-id') : undefined,
       });
@@ -462,6 +478,40 @@ async function main(argv: string[]): Promise<number> {
       await writeJson(need(a.out, 'out'), { schema: 'pcb.safe-zone-resolution.v1', source: { nodeId: inv.sourceNodeId, name: inv.sourceName, type: inv.sourceType, page: inv.page }, provenance: prov, ...res, safeArea });
       console.log(`${res.status}: ${res.reason}`);
       return res.status === 'applicable' ? 0 : res.status === 'none' ? 4 : 5;
+    }
+    case 'attention-flow': {
+      const clone = await loadSnapshot(need(a['clone-snapshot'], 'clone-snapshot'));
+      const res = parseOrThrow(AdaptResultSchema, await readJson(need(a['adapt-result'], 'adapt-result')), 'adapt-result');
+      const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
+      if (!comp.messagePlan) throw new Error('La composición no tiene messagePlan (mensaje principal, persona/producto y recorrido previsto)');
+      const flow = readingFlow(clone, res.idMap, comp.messagePlan);
+      await writeJson(need(a.out, 'out'), flow);
+      console.log(`${flow.elements.length} pasos · ${flow.notes.length} observación(es) heurística(s). ${flow.disclaimer}`);
+      for (const n of flow.notes) console.log(`  - ${n}`);
+      return 0;
+    }
+    case 'text-capabilities-request': {
+      const ids = a['node-id'] ?? [];
+      if (ids.length === 0) throw new Error('Falta --node-id (textos que se editarán y/o raíz del logo experimental)');
+      await writeJson(need(a.out, 'out'), {
+        tool: 'use_figma', fileKey: need(a['file-key'], 'file-key'), readOnly: true,
+        description: `Solo lectura: fuentes y capacidades de edición de ${ids.join(', ')} (no modifica el documento).`,
+        code: buildTextCapabilitiesScript(ids),
+      });
+      return 0;
+    }
+    case 'text-capabilities-check': {
+      const raws = a.raw ?? [];
+      if (raws.length !== 1) throw new Error('Indica una única --raw (respuesta de text-capabilities-request)');
+      const ext = extractEnvelope(await readFile(raws[0]!, 'utf8'), TEXT_CAPABILITIES_SCHEMA_ID);
+      if ('code' in ext) throw new Error(`${raws[0]}: ${ext.message}`);
+      const caps = ext.value as TextCapabilities;
+      const plan = a.plan ? ((await readJson(a.plan)) as DemoPlan) : null;
+      const apis = plan ? [...(plan.textEdits.length ? ['setRangeFontSize', 'setRangeLineHeight', 'resize', ...(plan.textEdits.some((e) => e.lineBreaks) ? ['insertCharacters', 'deleteCharacters'] : [])] : []), ...(plan.logo.mode === 'experimental' ? ['rescale'] : [])] : [];
+      const sum = summarizeTextCapabilities(caps, apis);
+      for (const l of sum.lines) console.log(l);
+      console.log(sum.ok ? 'Se puede ejecutar.' : 'NO se puede ejecutar tal cual en este entorno (ver arriba); no se sustituye ninguna fuente.');
+      return sum.ok ? 0 : 6;
     }
     case 'digests-compare': {
       const payload = await assembledPayload(a['master-raw'] ?? []);

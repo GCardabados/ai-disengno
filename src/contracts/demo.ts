@@ -106,6 +106,69 @@ export const ImageScaleSchema = z.strictObject({
 export type ImageScale = z.infer<typeof ImageScaleSchema>;
 
 /**
+ * Política del logo para ESTE encargo. Invariantes del producto en ambos modos: sin deformación, rotación, recorte,
+ * sustitución ni cambios internos (pinturas, estructura, disposición relativa). 'standard' (por defecto): tamaño fijo,
+ * solo traslación. 'experimental': escala PROPORCIONAL de todo el bloque del logo, con activación explícita para el
+ * encargo, factor registrado y validado, y resultado identificado como experimental.
+ */
+export const LogoPolicySchema = z.discriminatedUnion('mode', [
+  z.strictObject({ mode: z.literal('standard') }),
+  z.strictObject({
+    mode: z.literal('experimental'),
+    /** Raíz del bloque del logo (debe estar en sizeLockedNodeIds y ser el ancla de un bloque propio). */
+    logoNodeId: z.string(),
+    scale: z.number().positive().max(4),
+    /** Quién y en qué encargo activó el modo (dato declarado; no autentica). */
+    authorization: z.string().min(3),
+    why: z.string(),
+  }),
+]);
+export type LogoPolicy = z.infer<typeof LogoPolicySchema>;
+
+/**
+ * Edición de un texto. El COPY no cambia: 'lineBreaks' solo puede sustituir caracteres de espacio por saltos de línea
+ * (o al revés) en las mismas posiciones; la tipografía (familia/estilo) nunca cambia. La posición se da con 'units'.
+ */
+export const TextEditSchema = z.strictObject({
+  nodeId: z.string(),
+  /** Caja del texto. height null = altura automática (autoResize HEIGHT). */
+  box: z.strictObject({ width: z.number().positive(), height: z.number().positive().nullable() }).nullable().default(null),
+  align: z.enum(['LEFT', 'CENTER', 'RIGHT', 'JUSTIFIED']).nullable().default(null),
+  /** Mismo texto con otros saltos de línea (solo espacios ↔ saltos en las mismas posiciones). */
+  lineBreaks: z.strictObject({ characters: z.string() }).nullable().default(null),
+  /** Factor sobre el cuerpo de TODOS los segmentos (conserva la jerarquía interna del texto). */
+  fontScale: z.number().positive().max(4).nullable().default(null),
+  /** Interlineado para todo el texto. Sin él, un interlineado en px escala con fontScale; en % se conserva. */
+  lineHeight: z.strictObject({ unit: z.enum(['PERCENT', 'PIXELS']), value: z.number().positive() }).nullable().default(null),
+  /** Obligatoria para reducir el cuerpo de un legal (nunca se reduce automáticamente para que quepa). */
+  authorization: z.string().nullable().default(null),
+  why: z.string(),
+});
+export type TextEdit = z.infer<typeof TextEditSchema>;
+
+/**
+ * Jerarquía del mensaje y relación persona/producto–mensaje, identificadas ANTES de componer. Es una decisión
+ * registrada (no una regla geométrica rígida); las comprobaciones derivadas son orientativas.
+ */
+export const MessagePlanSchema = z.strictObject({
+  main: z.array(z.string()).min(1),
+  secondary: z.array(z.string()).default([]),
+  offer: z.array(z.string()).default([]),
+  cta: z.array(z.string()).default([]),
+  subject: z.strictObject({
+    kind: z.enum(['person', 'product', 'none']),
+    nodeId: z.string().nullable(),
+    /** Qué guía la relación con el mensaje: mirada, gesto, o (sin dirección clara) proximidad, alineación o espacio libre. */
+    cue: z.enum(['gaze', 'gesture', 'proximity', 'alignment', 'space', 'none']),
+    direction: z.enum(['left', 'right', 'up', 'down', 'toward_viewer', 'unclear']).nullable().default(null),
+    decision: z.string().min(3),
+  }),
+  /** Recorrido de lectura previsto (ids de la maestra, en orden). */
+  readingPath: z.array(z.string()).min(2),
+});
+export type MessagePlan = z.infer<typeof MessagePlanSchema>;
+
+/**
  * Edición mínima de la geometría de una DECORACIÓN o de su MÁSCARA (nunca de contenido importante ni del logo).
  * Coordenadas en el frame DESTINO. `from` es la posición esperada antes de editar (guarda contra editar otro vértice).
  */
@@ -150,6 +213,14 @@ export const DemoCompositionSchema = z.strictObject({
   effectResizes: z.array(EffectResizeSchema),
   vectorEdits: z.array(VectorEditSchema).default([]),
   imageScales: z.array(ImageScaleSchema).default([]),
+  /** Política del logo para este encargo (por defecto, estándar: tamaño fijo). */
+  logoPolicy: LogoPolicySchema.default({ mode: 'standard' }),
+  /** Ediciones de texto (caja, alineación, saltos, cuerpo, interlineado) dentro de los límites del proyecto. */
+  textEdits: z.array(TextEditSchema).default([]),
+  /** Textos legales de la pieza (no se reduce su cuerpo sin autorización explícita). */
+  legalNodeIds: z.array(z.string()).default([]),
+  /** Jerarquía del mensaje, relación persona/producto–mensaje y recorrido de lectura previsto. */
+  messagePlan: MessagePlanSchema.nullable().default(null),
   /**
    * Comprobaciones GEOMÉTRICAS de maquetación declaradas para esta pieza (no sustituyen a la revisión visual):
    * orden de lectura por cajas de render, CTA centrado respecto a su bloque de copy y separado de él, y máscaras de
@@ -162,7 +233,10 @@ export const DemoCompositionSchema = z.strictObject({
   }).default({ readingOrder: [], cta: null, decorationMasks: [] }),
   /** Nodos cuya caja debe quedar completa dentro de la zona interna de prueba. */
   importantNodeIds: z.array(z.string()),
-  /** Nodos cuyo tamaño y disposición interna deben ser idénticos a la maestra (el logo). */
+  /**
+   * Bloques de logo: disposición interna idéntica a la maestra. Tamaño idéntico en modo estándar; en modo experimental
+   * (logoPolicy) el bloque declarado escala con un único factor proporcional.
+   */
   sizeLockedNodeIds: z.array(z.string()),
   /** Regiones protegidas de imágenes, en coordenadas locales del nodo EN LA MAESTRA (se escalan con imageScales). */
   protectedRegions: z.array(z.strictObject({ nodeId: z.string(), rect: RectSchema, purpose: z.string() })),
@@ -253,7 +327,7 @@ export const AdaptResultSchema = z.strictObject({
   mode: z.enum(['create', 'patch', 'copy']).default('create'),
   /** Solo en 'copy': clon del que se partió (se copia tal cual, con cualquier cambio manual, y se adapta la copia). */
   sourceCloneId: z.string().nullable().default(null),
-  applied: z.array(z.strictObject({ op: z.enum(['resize_root', 'translate', 'resize_effect', 'vector_edit', 'scale_image']), cloneNodeId: z.string(), masterNodeId: z.string(), detail: z.unknown() })),
+  applied: z.array(z.strictObject({ op: z.enum(['resize_root', 'translate', 'resize_effect', 'vector_edit', 'scale_image', 'scale_logo', 'edit_text']), cloneNodeId: z.string(), masterNodeId: z.string(), detail: z.unknown() })),
   master: z.strictObject({ width: z.number(), height: z.number(), childCount: z.number(), name: z.string() }),
 });
 export type AdaptResult = z.infer<typeof AdaptResultSchema>;

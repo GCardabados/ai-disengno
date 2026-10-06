@@ -7,7 +7,10 @@ import { validateProposals } from '../src/inventory/proposals.ts';
 import { buildDemoPlan, type DemoPlan } from '../src/demo/plan.ts';
 import { checkDemo } from '../src/demo/check.ts';
 import { precheckPlan } from '../src/demo/tools.ts';
-import { buildAdaptScript, staticAdaptViolations } from '../src/figma/adapt-script.ts';
+import { buildAdaptScript, staticAdaptViolations, fontRequiredNodeIds } from '../src/figma/adapt-script.ts';
+import { summarizeTextCapabilities } from '../src/figma/text-capabilities.ts';
+import { readingFlow } from '../src/demo/attention.ts';
+import { renderDemoReport } from '../src/report/demo-md.ts';
 import { compareNodeDigests } from '../src/figma/digests.ts';
 import { mockReadRaw } from '../src/figma/mock/mock-relay.ts';
 import { assembleChunks } from '../src/figma/chunks.ts';
@@ -39,6 +42,10 @@ function composition(over: Partial<DemoComposition> = {}): DemoComposition {
     effectResizes: [],
     vectorEdits: [],
     imageScales: [],
+    logoPolicy: { mode: 'standard' },
+    textEdits: [],
+    legalNodeIds: [],
+    messagePlan: null,
     layoutChecks: { readingOrder: [], cta: null, decorationMasks: [] },
     importantNodeIds: ['10:3', '10:6', '10:7', '10:8', '10:9', '10:10', '10:12'],
     sizeLockedNodeIds: ['10:3'],
@@ -191,8 +198,9 @@ test('MOCK [script]: solo escribe en el clon, no sustituye fuentes y no contiene
   const code = buildAdaptScript(plan, { sectionName: 'PCB · Salida DEMO', cloneName: 'DEMO clon', gapFromContentPx: 400 });
   assert.deepEqual(staticAdaptViolations(code), []);
   assert.ok(code.includes('PCB_REFUSED_MASTER_NODE') && code.includes('PCB_NOT_IN_CLONE'), 'guardas contra escribir en la maestra');
-  assert.ok(code.includes('PCB_FONT_LOAD_FAILED') && !code.includes('fontName ='), 'nunca asigna otra fuente');
-  assert.ok(code.includes('var FONT_REQUIRED = false;'), 'solo traslada textos: no exige cargar su fuente');
+  assert.ok(code.includes('PCB_FONT_UNAVAILABLE') && !code.includes('fontName ='), 'nunca asigna otra fuente');
+  assert.ok(code.includes('var FONT_REQUIRED_NODE_IDS = [];'), 'sin ediciones de texto no exige cargar fuentes');
+  assert.ok(!code.includes('insertCharacters') && !code.includes('setRangeFontSize'), 'sin ediciones declaradas no toca textos');
   assert.ok(code.includes('PCB_ADAPT_FAILED_CLONE_DISCARDED'), 'todo o nada: descarta su propio clon si algo falla');
   assert.equal(code.split('.remove(').length - 1, 1, 'única eliminación: el clon propio');
   assert.ok(code.includes('resizeWithoutConstraints(PLAN.target.width'), 'la raíz se redimensiona sin escalar hijos');
@@ -412,4 +420,192 @@ test('zona segura: las composiciones sin exclusiones siguen siendo válidas (val
   const c = parse(DemoCompositionSchema, { ...composition(), safeArea: { kind: 'safe_zone_rule', ruleId: 'r', version: 'v', provenance: 'client', allowed: { x: 0, y: 0, width: 10, height: 10 }, note: '' } });
   assert.ok(c.ok);
   assert.deepEqual(c.ok && c.value.safeArea.kind === 'safe_zone_rule' ? c.value.safeArea.exclusions : null, []);
+});
+
+
+// ============================================================================
+// Criterios 2026-10: logo estándar/experimental, texto flexible, fuentes y flujo de lectura
+// ============================================================================
+
+const logoUnit = { unitId: 'logo', nodeIds: ['10:3'], anchorNodeId: '10:3', to: { x: 60, y: 60 }, why: 'MOCK' };
+const experimental = (scale = 1.25) => composition({
+  units: [...composition().units, logoUnit],
+  logoPolicy: { mode: 'experimental', logoNodeId: '10:3', scale, authorization: 'MOCK encargo E-1 (persona declarada)', why: 'MOCK' },
+});
+/** Simula rescale(): el bloque y TODOS sus nodos escalan desde la esquina del grupo. */
+const scaleLogo = (k: number, kx = k, ky = k) => (c: MockNodeSpec) => {
+  const g = find(c, '90:3')!;
+  g.width *= kx; g.height *= ky;
+  for (const ch of g.children ?? []) { ch.x = (ch.x ?? 0) * kx; ch.y = (ch.y ?? 0) * ky; ch.width *= kx; ch.height *= ky; }
+};
+const findings = (rep: ReturnType<typeof checkDemo>, id: string) => rep.results.find((r) => r.validatorId === id)?.findings.map((f) => f.code) ?? [];
+
+test('logo ESTÁNDAR: el escalado se rechaza en el plan, no entra en el script y la validación lo detecta', async () => {
+  const s = await snap(baseMasterSpec());
+  const r = buildDemoPlan(s, composition({ imageScales: [{ nodeId: '10:4', scale: 1.2, to: { x: 60, y: 60 }, why: '' }] }));
+  assert.ok(!r.ok && r.issues.some((i) => /logo/.test(i)), 'no se escala un nodo del logo como imagen');
+  const std = await scenario();
+  assert.equal(std.plan.logo.mode, 'standard');
+  assert.ok(!buildAdaptScript(std.plan, { sectionName: 'S', cloneName: 'C', gapFromContentPx: 0 }).includes('rescale('));
+  // Un clon con el logo escalado en modo estándar falla, aunque la escala sea proporcional.
+  const scaled = run(await scenario(scaleLogo(1.25)));
+  assert.equal(statusOf(scaled, 'logo_locked'), 'fail');
+  assert.ok(findings(scaled, 'logo_locked').includes('LOGO_SIZE_CHANGED'));
+});
+
+test('logo EXPERIMENTAL: escala proporcional de extremo a extremo (plan, script, validación e informe)', async () => {
+  const s = await snap(baseMasterSpec());
+  const r = buildDemoPlan(s, experimental());
+  assert.ok(r.ok, r.ok ? '' : r.issues.join('\n'));
+  const plan = (r as { ok: true; plan: DemoPlan }).plan;
+  assert.deepEqual(plan.logo, { mode: 'experimental', nodeId: '10:3', scale: 1.25, x: 60, y: 60, authorization: 'MOCK encargo E-1 (persona declarada)' });
+  assert.deepEqual(plan.expected['10:5']!.rect, { x: 60 + 90 * 1.25, y: 60 + 20 * 1.25, width: 250, height: 50 }, 'disposición interna escalada');
+  const code = buildAdaptScript(plan, { sectionName: 'S', cloneName: 'C', gapFromContentPx: 0 });
+  assert.deepEqual(staticAdaptViolations(code), [], 'la escala solo aparece en la línea permitida');
+  assert.equal(code.split('rescale(').length - 1, 1);
+  assert.ok(code.includes('PCB_LOGO_UNEXPECTED_SIZE') && code.includes("op: 'scale_logo'"));
+  const AsyncFn = Object.getPrototypeOf(async function () {}).constructor as new (...a: string[]) => unknown;
+  assert.doesNotThrow(() => new AsyncFn('figma', code), 'el script generado es JavaScript válido');
+  const both = buildDemoPlan(s, experimental(), {});
+  assert.ok(both.ok);
+  const sc = await scenario(scaleLogo(1.25), experimental());
+  const rep = run(sc);
+  assert.equal(statusOf(rep, 'logo_locked'), 'needs_review', 'experimental: correcto pero siempre a revisión');
+  assert.deepEqual(findings(rep, 'logo_locked'), ['LOGO_EXPERIMENTAL_SCALE']);
+  for (const id of ['content_preserved', 'allowed_operations', 'nodes_preserved', 'text_fit']) assert.equal(statusOf(rep, id), 'pass', id);
+  const md = renderDemoReport(sc.comp, rep, { fileKey: 'K', cloneId: '90:1', cloneName: 'C', sectionId: 'S', screenshotPath: null, fonts: [], designerDecisions: [] });
+  assert.match(md, /^# EXPERIMENTAL — DEMO/);
+  assert.match(md, /Logo en modo EXPERIMENTAL/);
+  // Factor distinto del declarado: falla.
+  assert.ok(findings(run(await scenario(scaleLogo(1.1), experimental())), 'logo_locked').includes('LOGO_SIZE_CHANGED'));
+  // Activación incompleta: el logo debe ser el ancla única de su bloque y estar declarado como bloque de logo.
+  const noUnit = buildDemoPlan(s, composition({ logoPolicy: { mode: 'experimental', logoNodeId: '10:3', scale: 1.2, authorization: 'MOCK', why: '' } }));
+  assert.ok(!noUnit.ok && noUnit.issues.some((i) => /ancla y único nodo/.test(i)));
+  const notLogo = buildDemoPlan(s, composition({ units: [...composition().units, { ...logoUnit, nodeIds: ['10:13'], anchorNodeId: '10:13' }], logoPolicy: { mode: 'experimental', logoNodeId: '10:13', scale: 1.2, authorization: 'MOCK', why: '' } }));
+  assert.ok(!notLogo.ok && notLogo.issues.some((i) => /no es un bloque de logo/.test(i)));
+});
+
+test('logo: deformación o alteración interna se rechaza en cualquier modo', async () => {
+  const deformed = run(await scenario(scaleLogo(1.25, 1.25, 1.1), experimental()));
+  assert.ok(findings(deformed, 'logo_locked').includes('LOGO_DEFORMED'));
+  const moved = run(await scenario((c) => { find(c, '90:5')!.x = 120; }));
+  assert.ok(findings(moved, 'logo_locked').includes('LOGO_INTERNAL_LAYOUT_CHANGED'));
+  const movedExp = run(await scenario((c) => { scaleLogo(1.25)(c); find(c, '90:5')!.y = 0; }, experimental()));
+  assert.ok(findings(movedExp, 'logo_locked').includes('LOGO_INTERNAL_LAYOUT_CHANGED'));
+  const recolored = run(await scenario((c) => { scaleLogo(1.25)(c); find(c, '90:4')!.fills = [{ type: 'SOLID', color: { r: 1, g: 0, b: 0 } }]; }, experimental()));
+  assert.equal(statusOf(recolored, 'content_preserved'), 'fail', 'cambio interno de pinturas');
+  const rotated = run(await scenario((c) => { find(c, '90:4')!.rotation = 10; }));
+  assert.ok(findings(rotated, 'logo_locked').includes('LOGO_TRANSFORM_CHANGED'));
+});
+
+// ---------- Texto flexible ----------
+
+const titleEdit = { nodeId: '10:6', box: { width: 600, height: null }, align: 'CENTER' as const, lineBreaks: { characters: 'Nueva colección\nde otoño' }, fontScale: 1.25, lineHeight: null, authorization: null, why: 'MOCK' };
+const editedTitle = (over: Partial<MockNodeSpec> = {}) => (c: MockNodeSpec) => {
+  const t = find(c, '90:6')!;
+  Object.assign(t, { width: 600, height: 130, text: { characters: 'Nueva colección\nde otoño', fontSize: 40, autoResize: 'HEIGHT', align: 'CENTER' } }, over);
+};
+
+test('texto: edición autorizada (caja, alineación, saltos, cuerpo) conservando el copy y la tipografía', async () => {
+  const sc = await scenario(editedTitle(), composition({ textEdits: [titleEdit] }));
+  assert.deepEqual(sc.plan.expected['10:6']!.free, { width: false, height: true });
+  const rep = run(sc);
+  for (const id of ['content_preserved', 'allowed_operations', 'text_fit']) assert.equal(statusOf(rep, id), 'pass', `${id}: ${findings(rep, id)}`);
+  const code = buildAdaptScript(sc.plan, { sectionName: 'S', cloneName: 'C', gapFromContentPx: 0 });
+  assert.deepEqual(staticAdaptViolations(code), []);
+  assert.ok(code.includes('setRangeFontSize') && code.includes('PCB_TEXT_NOT_LINEBREAK_ONLY') && !code.includes('fontName ='));
+  assert.deepEqual(fontRequiredNodeIds(sc.plan), ['10:6']);
+  const AsyncFn = Object.getPrototypeOf(async function () {}).constructor as new (...a: string[]) => unknown;
+  assert.doesNotThrow(() => new AsyncFn('figma', code), 'el script generado es JavaScript válido');
+  // Reescribir el mensaje con la excusa de un salto de línea: rechazado en el plan…
+  const s = await snap(baseMasterSpec());
+  const rew = buildDemoPlan(s, composition({ textEdits: [{ ...titleEdit, lineBreaks: { characters: 'Nueva colección\nde invierno' } }] }));
+  assert.ok(!rew.ok && rew.issues.some((i) => /cambia el copy/.test(i)));
+  // …y detectado en el clon.
+  const changed = run(await scenario(editedTitle({ text: { characters: 'Nueva colecciónXde otoño', fontSize: 40, autoResize: 'HEIGHT', align: 'CENTER' } }), composition({ textEdits: [titleEdit] })));
+  assert.ok(findings(changed, 'content_preserved').includes('TEXT_CHANGED'));
+  // Cuerpo distinto del declarado o fuente cambiada: estilo distinto.
+  const size = run(await scenario(editedTitle({ text: { characters: 'Nueva colección\nde otoño', fontSize: 36, autoResize: 'HEIGHT', align: 'CENTER' } }), composition({ textEdits: [titleEdit] })));
+  assert.ok(findings(size, 'content_preserved').includes('TEXT_STYLE_CHANGED'));
+  const font = run(await scenario(editedTitle({ text: { characters: 'Nueva colección\nde otoño', fontSize: 40, fontFamily: 'Otra', autoResize: 'HEIGHT', align: 'CENTER' } }), composition({ textEdits: [titleEdit] })));
+  assert.ok(findings(font, 'content_preserved').includes('TEXT_STYLE_CHANGED'));
+  // Alineación no aplicada.
+  const align = run(await scenario(editedTitle({ text: { characters: 'Nueva colección\nde otoño', fontSize: 40, autoResize: 'HEIGHT', align: 'LEFT' } }), composition({ textEdits: [titleEdit] })));
+  assert.ok(findings(align, 'text_fit').includes('TEXT_ALIGN_MISMATCH'));
+});
+
+test('texto: los límites los pone el proyecto (sin mínimos inventados) y un legal no se reduce sin autorización', async () => {
+  const s = await snap(baseMasterSpec());
+  const plan = (c: Partial<DemoComposition>, policy?: Parameters<typeof buildDemoPlan>[2]) => buildDemoPlan(s, composition(c), policy);
+  // Sin política configurada no hay mínimo: una reducción fuerte de un titular es técnicamente válida.
+  assert.ok(plan({ textEdits: [{ ...titleEdit, fontScale: 0.3 }] }).ok);
+  const strict = { textPolicy: { editable: ['position', 'box', 'reflow', 'alignment', 'line_breaks'] as Array<'position' | 'box' | 'reflow' | 'alignment' | 'line_breaks'>, fontScale: { min: 0.8, max: 1.5 }, minFontSizePx: 24 } };
+  const denied = plan({ textEdits: [titleEdit] }, strict);
+  assert.ok(!denied.ok && denied.issues.some((i) => /no permite editar font_size/.test(i)));
+  const minimum = plan({ textEdits: [{ ...titleEdit, fontScale: 0.7 }] }, { textPolicy: { ...strict.textPolicy, editable: [...strict.textPolicy.editable, 'font_size'] } });
+  assert.ok(!minimum.ok && minimum.issues.some((i) => /fuera del rango/.test(i)) && minimum.issues.some((i) => /mínimo del proyecto/.test(i)));
+  const legal = { nodeId: '10:10', box: null, align: null, lineBreaks: null, fontScale: 0.8, lineHeight: null, authorization: null, why: 'MOCK' };
+  const noAuth = plan({ legalNodeIds: ['10:10'], textEdits: [legal] });
+  assert.ok(!noAuth.ok && noAuth.issues.some((i) => /legal exige autorización/.test(i)));
+  assert.ok(plan({ legalNodeIds: ['10:10'], textEdits: [{ ...legal, authorization: 'MOCK: legal aprobado por cliente' }] }).ok);
+  const noPos = plan({}, { textPolicy: { editable: ['box'], fontScale: null, minFontSizePx: null } });
+  assert.ok(!noPos.ok && noPos.issues.some((i) => /posición del texto/.test(i)));
+});
+
+test('texto: el desbordamiento de la caja tras editar se detecta en la relectura', async () => {
+  // El render (glifos) se sale 100 px por la derecha de una caja de 600 px.
+  const over = run(await scenario(editedTitle({ renderBounds: { x: 5000 + 60, y: 300, width: 700, height: 130 } }), composition({ textEdits: [titleEdit] })));
+  assert.equal(statusOf(over, 'text_fit'), 'fail');
+  assert.ok(findings(over, 'text_fit').includes('TEXT_OVERFLOW'));
+  const trunc = run(await scenario(editedTitle({ text: { characters: 'Nueva colección\nde otoño', fontSize: 40, autoResize: 'HEIGHT', align: 'CENTER', truncation: 'ENDING' } }), composition({ textEdits: [titleEdit] })));
+  assert.ok(findings(trunc, 'text_fit').includes('TEXT_TRUNCATION_ENABLED'));
+});
+
+test('fuentes: una fuente no disponible detiene la edición ANTES de escribir y se informa sin sustituirla', async () => {
+  const { plan } = await scenario(undefined, composition({ textEdits: [titleEdit] }));
+  const code = buildAdaptScript(plan, { sectionName: 'S', cloneName: 'C', gapFromContentPx: 0 });
+  const stub = (available: boolean) => {
+    const calls: string[] = [];
+    const page: Record<string, unknown> = { type: 'PAGE', children: [], loadAsync: async () => {} };
+    const title = { id: '10:6', type: 'TEXT', characters: 'Nueva colección de otoño', getStyledTextSegments: () => [{ start: 0, end: 24, fontName: { family: 'Marca', style: 'Bold' } }] };
+    const master = { id: '10:1', type: 'FRAME', name: plan.masterName, width: 1080, height: 1350, parent: page, absoluteBoundingBox: { x: 0, y: 0, width: 1080, height: 1350 },
+      findAllWithCriteria: () => [title], findAll: () => [], clone: () => { calls.push('clone'); throw new Error('STOP_CLONE'); } };
+    const figma = {
+      getNodeByIdAsync: async (id: string) => (id === '10:1' ? master : id === '10:6' ? title : null),
+      loadFontAsync: async (f: { family: string; style: string }) => { calls.push(`load ${f.family}`); if (!available) throw new Error(`The font "${f.family} ${f.style}" could not be loaded.`); },
+      createSection: () => { calls.push('createSection'); throw new Error('STOP_SECTION'); },
+    };
+    return { calls, run: () => new (Object.getPrototypeOf(async function () {}).constructor)('figma', code)(figma) as Promise<unknown> };
+  };
+  const missing = stub(false);
+  await assert.rejects(missing.run(), (e: Error) => /PCB_FONT_UNAVAILABLE/.test(e.message) && /"family":"Marca"/.test(e.message) && /10:6/.test(e.message));
+  assert.deepEqual(missing.calls, ['load Marca'], 'no crea sección ni clon: nada escrito');
+  const ok = stub(true);
+  await assert.rejects(ok.run(), /STOP_SECTION/, 'con la fuente disponible continúa hacia la escritura');
+  // La comprobación previa lo informa como limitación técnica del entorno, no como regla.
+  const sum = summarizeTextCapabilities({ schema: 'pcb.text-capabilities.v1', fonts: [{ family: 'Marca', style: 'Bold', loaded: false, error: 'not found', nodeIds: ['10:6'] }], nodes: [{ id: '10:6', type: 'TEXT', found: true, hasMissingFont: true, api: { setRangeFontSize: true } }] }, ['setRangeFontSize']);
+  assert.equal(sum.ok, false);
+  assert.match(sum.lines.join('\n'), /Marca Bold NO disponible.*Limitación técnica: no se sustituye/);
+});
+
+// ---------- Mensaje y flujo de lectura ----------
+
+test('mensaje: persona sin región protegida o mirada sin dirección se rechazan; el flujo es una estimación declarada', async () => {
+  const s = await snap(baseMasterSpec());
+  const mp = { main: ['10:6'], secondary: ['10:7'], offer: ['10:12'], cta: ['10:8'], subject: { kind: 'person' as const, nodeId: '10:13', cue: 'gaze' as const, direction: 'left' as const, decision: 'MOCK' }, readingPath: ['10:6', '10:7', '10:12', '10:8'] };
+  const noFace = buildDemoPlan(s, composition({ messagePlan: mp }));
+  assert.ok(!noFace.ok && noFace.issues.some((i) => /región protegida/.test(i)));
+  const unclear = buildDemoPlan(s, composition({ messagePlan: { ...mp, subject: { ...mp.subject, nodeId: '10:11', direction: 'unclear' } } }));
+  assert.ok(!unclear.ok && unclear.issues.some((i) => /proximidad, alineación o espacio libre/.test(i)));
+  // Persona = producto 10:11 (tiene región protegida en la composición de prueba) mirando a la izquierda: el titular
+  // está a su izquierda → sin aviso; mirando a la derecha → aviso orientativo (no bloqueante).
+  const left = await scenario(undefined, composition({ messagePlan: { ...mp, subject: { ...mp.subject, nodeId: '10:11' } } }));
+  assert.equal(statusOf(run(left), 'message_relation'), 'pass');
+  const right = run(await scenario(undefined, composition({ messagePlan: { ...mp, subject: { ...mp.subject, nodeId: '10:11', direction: 'right' } } })));
+  assert.equal(statusOf(right, 'message_relation'), 'needs_review');
+  const flow = readingFlow(left.clone, left.idMap, left.comp.messagePlan!);
+  assert.deepEqual(flow.elements.map((e) => [e.order, e.nodeId, e.role]), [[1, '10:6', 'main'], [2, '10:7', 'secondary'], [3, '10:12', 'offer'], [4, '10:8', 'cta']]);
+  assert.deepEqual(flow.arrows, [{ from: 1, to: 2 }, { from: 2, to: 3 }, { from: 3, to: 4 }]);
+  assert.match(flow.disclaimer, /heurística/);
+  assert.ok(!JSON.stringify(flow).includes('%'), 'sin porcentajes');
 });

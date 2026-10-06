@@ -21,8 +21,9 @@ Se usa la skill `.claude/skills/adapt-master-creative/SKILL.md` (procedimiento: 
   mediciones geométricas; entregar enlace, captura e informe.
 
 ## Limitaciones vigentes
-- Sin cambio de cuerpo ni reflujo de texto salvo que el proyecto lo configure; sin sustituir fuentes.
-- El logo nunca se escala (regla permanente).
+- Texto flexible dentro de los límites del proyecto (`textPolicy`), salvo textos dentro de contenedores con
+  maquetación automática; sin sustituir fuentes (si no cargan, solo se trasladan).
+- Logo: tamaño fijo en modo estándar; escala proporcional solo en modo experimental activado por el encargo.
 - Sin OCR; la revisión visual del agente no sustituye a la humana.
 - Los activos recortados limitan el encuadre (p. ej. un recorte que termina en la cintura).
 - Las decoraciones que pasan por detrás de una persona exigen trazar máscaras sobre la silueta; se simulan antes.

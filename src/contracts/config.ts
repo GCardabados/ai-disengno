@@ -11,7 +11,11 @@ export type EntityOp = (typeof ENTITY_OPS)[number];
 export const GLOBAL_INVARIANTS = {
   masterImmutable: true,
   noContentAddRemoveReplaceRewrite: true,
-  /** Operaciones máximas que puede tener una entidad de protección 'logo'. */
+  /**
+   * Operaciones de una entidad 'logo' en el inventario (modo ESTÁNDAR). El modo experimental de escala proporcional
+   * no es una operación de rol: se activa por encargo en la composición (logoPolicy) y nunca permite deformar, rotar,
+   * recortar, sustituir ni cambiar el interior del logo.
+   */
   logoAllowedOps: ['translate'] as readonly EntityOp[],
   logoAllowReflow: false,
   protectedMustBeFullyInsideAllowedZone: true,
@@ -22,6 +26,10 @@ export const GLOBAL_INVARIANTS = {
  * No autorizan ningún cambio. Un proyecto puede reducirlas, nunca ampliarlas.
  */
 export const NUMERIC_TOLERANCE_MAX = { linear: 1e-6, px: 0.01 } as const;
+
+/** Propiedades de texto que un proyecto puede permitir editar (configuración, no invariante). */
+export const TEXT_EDITABLE = ['position', 'alignment', 'box', 'reflow', 'line_breaks', 'font_size', 'line_height'] as const;
+export type TextEditable = (typeof TEXT_EDITABLE)[number];
 
 export const PROTECTION_LEVELS = ['logo', 'protected', 'flexible', 'decorative'] as const;
 
@@ -55,6 +63,17 @@ export const ProjectConfigSchema = z.strictObject({
     langs: z.array(z.string()),
   }),
   visualReview: z.strictObject({ modelMayInspectScreenshots: z.boolean() }),
+  /**
+   * Límites de marca y legibilidad del TEXTO para las adaptaciones (configuración del proyecto, no invariante).
+   * Por defecto el texto es flexible y sin mínimos: el producto no inventa mínimos universales.
+   */
+  textPolicy: z.strictObject({
+    editable: z.array(z.enum(TEXT_EDITABLE)),
+    /** Rango permitido del factor de cuerpo (null = sin límite configurado). */
+    fontScale: z.strictObject({ min: z.number().positive(), max: z.number().positive() }).nullable(),
+    /** Cuerpo mínimo en px tras editar (null = sin mínimo configurado). */
+    minFontSizePx: z.number().positive().nullable(),
+  }).default({ editable: [...TEXT_EDITABLE], fontScale: null, minFontSizePx: null }),
   heuristics: z.strictObject({
     /** Mínimo de vectores hermanos alineados para marcar "posible texto vectorizado". */
     vectorGlyphMinCount: z.number().int().min(2),
@@ -86,6 +105,9 @@ export function checkConfigSemantics(cfg: ProjectConfig): ConfigIssue[] {
         issues.push({ code: 'ROLE_LOOSENS_LOGO_INVARIANT', message: `${r.id} permite ${extra.join(',')}` });
       }
     }
+  }
+  if (cfg.textPolicy.fontScale && cfg.textPolicy.fontScale.min > cfg.textPolicy.fontScale.max) {
+    issues.push({ code: 'BAD_FONT_SCALE_RANGE', message: 'textPolicy.fontScale: min > max' });
   }
   if (cfg.ocr.enabled && cfg.ocr.langs.length === 0) {
     issues.push({ code: 'OCR_WITHOUT_LANGS', message: 'OCR activado sin idiomas.' });

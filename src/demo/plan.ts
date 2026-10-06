@@ -3,7 +3,33 @@
 // composición solo usa operaciones permitidas: traslación rígida de bloques y redimensionado de efectos no-contenido.
 import type { Rect } from '../contracts/geometry.ts';
 import type { MasterSnapshot, NodeSnapshot } from '../contracts/snapshot.ts';
-import type { DemoComposition, VectorEdit } from '../contracts/demo.ts';
+import type { DemoComposition, TextEdit, VectorEdit } from '../contracts/demo.ts';
+import { TEXT_EDITABLE, type ProjectConfig, type TextEditable } from '../contracts/config.ts';
+
+export type TextPolicy = ProjectConfig['textPolicy'];
+/** Política por defecto: texto flexible y SIN mínimos (los límites de marca/legibilidad los configura el proyecto). */
+export const DEFAULT_TEXT_POLICY: TextPolicy = { editable: [...TEXT_EDITABLE], fontScale: null, minFontSizePx: null };
+
+/** Caracteres que pueden intercambiarse como salto de línea sin reescribir el mensaje. */
+const BREAKABLE = new Set([' ', '\n', '\u2028', '\u00a0']);
+/** ¿b es el mismo texto que a salvo espacios ↔ saltos de línea en las mismas posiciones? */
+export function onlyLineBreaksDiffer(a: string, b: string): boolean {
+  const A = [...a], B = [...b];
+  if (A.length !== B.length) return false;
+  return A.every((ch, i) => ch === B[i] || (BREAKABLE.has(ch) && BREAKABLE.has(B[i]!)));
+}
+
+/** Propiedades de la política que exige una edición de texto. */
+export function textEditNeeds(e: TextEdit, masterWidth: number | null): TextEditable[] {
+  const out: TextEditable[] = [];
+  if (e.box) out.push('box');
+  if (e.box && (e.box.height === null || e.box.width !== masterWidth)) out.push('reflow');
+  if (e.align) out.push('alignment');
+  if (e.lineBreaks) out.push('line_breaks');
+  if (e.fontScale !== null && e.fontScale !== 1) out.push('font_size');
+  if (e.lineHeight) out.push('line_height');
+  return out;
+}
 
 export const DEMO_PLAN_SCHEMA_ID = 'pcb.demo-plan.v1';
 
@@ -20,8 +46,17 @@ export interface DemoPlan {
   vectorEdits: VectorEdit[];
   /** Escalas proporcionales de imágenes: tamaño final (maestra × factor) y posición en coordenadas del frame raíz. */
   imageScales: Array<{ nodeId: string; scale: number; x: number; y: number; width: number; height: number }>;
-  /** Caja esperada de cada nodo en coordenadas del frame destino (para validar el clon). */
-  expected: Record<string, { rect: Rect | null; dx: number; dy: number; resized: boolean; derived?: boolean; edited?: boolean; scale?: number }>;
+  /** Política del logo aplicada (estándar o experimental con su factor). */
+  logo: { mode: 'standard' } | { mode: 'experimental'; nodeId: string; scale: number; x: number; y: number; authorization: string };
+  /** Ediciones de texto validadas contra la política del proyecto. */
+  textEdits: TextEdit[];
+  /** Política de texto del proyecto con la que se validó el plan (se vuelve a aplicar tras el render). */
+  textPolicy: TextPolicy;
+  /**
+   * Caja esperada de cada nodo en coordenadas del frame destino (para validar el clon). 'free' marca dimensiones que
+   * dependen del render (texto con altura/anchura automática): en el plan son una estimación y no se comparan.
+   */
+  expected: Record<string, { rect: Rect | null; dx: number; dy: number; resized: boolean; derived?: boolean; edited?: boolean; scale?: number; logoScale?: number; text?: boolean; free?: { width: boolean; height: boolean } }>;
 }
 
 export type PlanResult = { ok: true; plan: DemoPlan } | { ok: false; issues: string[] };
@@ -33,7 +68,8 @@ export function relRect(n: NodeSnapshot, root: NodeSnapshot): Rect | null {
   return { x: b.x - r.x, y: b.y - r.y, width: b.width, height: b.height };
 }
 
-export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult {
+export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition, opts: { textPolicy?: TextPolicy } = {}): PlanResult {
+  const policy = opts.textPolicy ?? DEFAULT_TEXT_POLICY;
   const issues: string[] = [];
   const byId = new Map(s.nodes.map((n) => [n.id, n]));
   const root = byId.get(s.rootNodeId);
@@ -131,6 +167,71 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
   for (const id of locked) {
     for (const r of c.effectResizes) if (r.nodeId === id || ancestors(r.nodeId).includes(id)) issues.push(`${r.nodeId}: dentro de un bloque de tamaño bloqueado`);
   }
+  // Logo: estándar (tamaño fijo) o experimental (escala proporcional del bloque, activada para este encargo).
+  let logo: DemoPlan['logo'] = { mode: 'standard' };
+  const lp = c.logoPolicy ?? { mode: 'standard' };
+  if (lp.mode === 'experimental') {
+    const ln = byId.get(lp.logoNodeId);
+    const unit = c.units.find((u) => u.anchorNodeId === lp.logoNodeId);
+    if (!ln) issues.push(`logo experimental: nodo desconocido ${lp.logoNodeId}`);
+    else if (!locked.has(lp.logoNodeId)) issues.push(`logo experimental: ${lp.logoNodeId} no es un bloque de logo (sizeLockedNodeIds)`);
+    else if (!unit || unit.nodeIds.length !== 1) issues.push(`logo experimental: ${lp.logoNodeId} debe ser el ancla y único nodo de su bloque (la escala parte de su esquina superior izquierda)`);
+    else if ([lp.logoNodeId, ...s.nodes.filter((n) => ancestors(n.id).includes(lp.logoNodeId)).map((n) => n.id)].some((id) => (byId.get(id)?.rotation ?? 0) !== 0)) issues.push('logo experimental: hay nodos rotados en el logo');
+    else logo = { mode: 'experimental', nodeId: lp.logoNodeId, scale: lp.scale, x: unit.to.x, y: unit.to.y, authorization: lp.authorization };
+  }
+  const inLogo = (id: string, logoId: string) => id === logoId || ancestors(id).includes(logoId);
+
+  // Texto: cada propiedad editada debe estar permitida por el proyecto; el copy y la tipografía no cambian.
+  const textMoved = s.nodes.filter((n) => n.text && [n.id, ...ancestors(n.id)].some((a) => moved.has(a)));
+  if (!policy.editable.includes('position') && textMoved.length > 0) issues.push(`el proyecto no permite cambiar la posición del texto (${textMoved.map((n) => n.id).join(', ')})`);
+  const edited = new Set<string>();
+  for (const e of c.textEdits ?? []) {
+    const n = byId.get(e.nodeId);
+    if (!n) { issues.push(`edición de texto de nodo desconocido ${e.nodeId}`); continue; }
+    if (!n.text) { issues.push(`${e.nodeId}: no es un texto`); continue; }
+    if (edited.has(e.nodeId)) issues.push(`${e.nodeId}: dos ediciones de texto`);
+    edited.add(e.nodeId);
+    if (!coordsRelativeToRoot(e.nodeId)) issues.push(`${e.nodeId}: dentro de un frame intermedio (p. ej. un botón con maquetación automática); editarlo cambiaría su contenedor`);
+    if (underLocked(e.nodeId)) issues.push(`${e.nodeId}: está dentro del logo; el logo no se edita por dentro`);
+    if (n.rotation !== 0) issues.push(`${e.nodeId}: rotado`);
+    const needs = textEditNeeds(e, n.width);
+    const denied = needs.filter((k) => !policy.editable.includes(k));
+    if (denied.length) issues.push(`${e.nodeId}: el proyecto no permite editar ${denied.join(', ')}`);
+    if (needs.length === 0) issues.push(`${e.nodeId}: edición de texto vacía`);
+    if (e.lineBreaks && !onlyLineBreaksDiffer(n.text.characters, e.lineBreaks.characters)) {
+      issues.push(`${e.nodeId}: 'lineBreaks' cambia el copy (solo se permiten espacios ↔ saltos de línea en las mismas posiciones)`);
+    }
+    if (e.fontScale !== null) {
+      if (policy.fontScale && (e.fontScale < policy.fontScale.min || e.fontScale > policy.fontScale.max)) {
+        issues.push(`${e.nodeId}: factor de cuerpo ${e.fontScale} fuera del rango del proyecto ${policy.fontScale.min}–${policy.fontScale.max}`);
+      }
+      const sizes = n.text.segments.map((g) => g.fontSize).filter((v): v is number => typeof v === 'number');
+      if (policy.minFontSizePx !== null && sizes.some((v) => v * e.fontScale! < policy.minFontSizePx! - 1e-9)) {
+        issues.push(`${e.nodeId}: el cuerpo resultante (${Math.min(...sizes) * e.fontScale} px) queda por debajo del mínimo del proyecto (${policy.minFontSizePx} px)`);
+      }
+      if (e.fontScale < 1 && (c.legalNodeIds ?? []).includes(e.nodeId) && !e.authorization) {
+        issues.push(`${e.nodeId}: reducir el cuerpo de un legal exige autorización explícita (no se reduce para que quepa)`);
+      }
+    }
+    if (e.lineHeight && e.lineHeight.unit === 'PIXELS' && policy.minFontSizePx !== null && e.lineHeight.value < policy.minFontSizePx) {
+      issues.push(`${e.nodeId}: interlineado ${e.lineHeight.value} px por debajo del cuerpo mínimo del proyecto`);
+    }
+    if (c.imageScales.some((x) => x.nodeId === e.nodeId) || c.effectResizes.some((x) => x.nodeId === e.nodeId)) issues.push(`${e.nodeId}: no puede ser imagen o efecto`);
+  }
+  for (const id of c.legalNodeIds ?? []) if (!byId.get(id)?.text) issues.push(`legal ${id}: no es un texto de la maestra`);
+
+  // Plan de mensaje: identificado antes de componer; si hay una persona, su rostro debe estar protegido.
+  const mp = c.messagePlan;
+  if (mp) {
+    for (const id of [...mp.main, ...mp.secondary, ...mp.offer, ...mp.cta, ...mp.readingPath]) if (!byId.has(id)) issues.push(`plan de mensaje: nodo desconocido ${id}`);
+    if (mp.subject.kind !== 'none' && (!mp.subject.nodeId || !byId.has(mp.subject.nodeId))) issues.push('plan de mensaje: falta el nodo de la persona o el producto');
+    if (mp.subject.kind === 'person' && mp.subject.nodeId && !c.protectedRegions.some((p) => p.nodeId === mp.subject.nodeId)) {
+      issues.push('plan de mensaje: hay una persona y no se declara ninguna región protegida (rostro y zonas importantes)');
+    }
+    if ((mp.subject.cue === 'gaze' || mp.subject.cue === 'gesture') && (!mp.subject.direction || mp.subject.direction === 'unclear')) {
+      issues.push('plan de mensaje: mirada o gesto sin dirección clara; usa proximidad, alineación o espacio libre');
+    }
+  }
   if (issues.length > 0) return { ok: false, issues };
 
   const deltaOf = (id: string) => {
@@ -159,7 +260,31 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
       expected[n.id] = { rect: { x: r.x, y: r.y, width: r.width, height: r.height }, dx: 0, dy: 0, resized: true };
       continue;
     }
+    // Logo experimental: todo el bloque escala desde la esquina superior izquierda del ancla, que va a 'to'.
+    if (logo.mode === 'experimental' && inLogo(n.id, logo.nodeId)) {
+      const a = relRect(byId.get(logo.nodeId)!, root)!, rr = relRect(n, root);
+      const k = logo.scale;
+      expected[n.id] = {
+        rect: rr ? { x: logo.x + (rr.x - a.x) * k, y: logo.y + (rr.y - a.y) * k, width: rr.width * k, height: rr.height * k } : null,
+        dx: logo.x - a.x, dy: logo.y - a.y, resized: k !== 1, logoScale: k, derived: n.type === 'GROUP' ? true : undefined,
+      };
+      continue;
+    }
     const d = deltaOf(n.id);
+    const te = (c.textEdits ?? []).find((e) => e.nodeId === n.id);
+    if (te) {
+      const rr = relRect(n, root);
+      const changesFlow = te.fontScale !== null || te.lineBreaks !== null || te.lineHeight !== null;
+      const ar = n.text?.autoResize ?? 'NONE';
+      const free = te.box
+        ? { width: false, height: te.box.height === null }
+        : { width: changesFlow && ar === 'WIDTH_AND_HEIGHT', height: changesFlow && ar !== 'NONE' };
+      const k = te.fontScale ?? 1;
+      const w = te.box ? te.box.width : (free.width && rr ? rr.width * k : rr?.width ?? 0);
+      const h = te.box?.height ?? (free.height && rr ? rr.height * k : rr?.height ?? 0);
+      expected[n.id] = { rect: rr ? { x: rr.x + d.dx, y: rr.y + d.dy, width: w, height: h } : null, ...d, resized: true, text: true, free };
+      continue;
+    }
     if (c.vectorEdits.some((v) => v.nodeId === n.id)) {
       expected[n.id] = { rect: null, ...d, resized: false, edited: true };
       continue;
@@ -187,6 +312,9 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition): PlanResult
       effectResizes,
       vectorEdits: c.vectorEdits,
       imageScales,
+      logo,
+      textEdits: c.textEdits ?? [],
+      textPolicy: policy,
       expected,
     },
   };
