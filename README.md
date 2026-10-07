@@ -15,6 +15,10 @@ Diseño y decisiones: [docs/00-auditoria-y-diseno.md](docs/00-auditoria-y-diseno
 - **Criterios 2026-10:** texto flexible dentro de los límites del proyecto (`textPolicy`), logo en modo estándar o
   experimental por encargo (`logoPolicy`), relación persona–mensaje y recorrido de lectura (`messagePlan`), con
   superposición de atención estimada (heurística, separada de la creatividad). Ver la skill.
+- **Traducciones (2026-10-07):** la skill paid (`references/Paid SKILL/`) incluye un modo traducción: textos de la
+  maestra etiquetados (`Texto N → Text N`) con confirmación antes de escribir, copias con sufijo de idioma y parada si
+  una fuente no está disponible (fallback solo autorizado y marcado `_PENDIENTE-FUENTE`). Scripts de `use_figma` en
+  `references/Paid SKILL/scripts/`; todavía no integrados en el CLI ni probados contra Figma.
 
 Ningún comando del CLI escribe en Figma. `adapt-request` solo genera el script de escritura (DEMO) que actúa sobre un clon; lo ejecuta `use_figma` y requiere asiento Full.
 

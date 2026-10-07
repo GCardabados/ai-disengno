@@ -1,13 +1,19 @@
 ---
 name: paid-creative-builder
-description: Orquesta la creación y adaptación de piezas de publicidad paid (Meta Ads e Google Ads) en Figma, partiendo de una pieza maestra ya diseñada y generando el resto de tamaños/formatos exigidos por cada plataforma según las especificaciones oficiales vigentes. Actívala siempre que el usuario pida crear anuncios, banners, creatividades paid, adaptar/redimensionar una pieza a varios formatos, o mencione Meta Ads, Facebook/Instagram Ads, Google Ads, Display, Demand Gen, Performance Max, Feed, Stories, Reels, Lead Ads, o "adaptaciones" de una campaña publicitaria — incluso si el usuario no la nombra explícitamente. Es la skill que debe arrancar la conversación cuando alguien empieza a trabajar en un encargo de piezas paid (por ejemplo, tras un simple "hola" al abrir un proyecto de este tipo).
+description: Orquesta la creación, adaptación y traducción de piezas de publicidad paid (Meta Ads e Google Ads) en Figma. Parte de una pieza maestra ya diseñada para generar el resto de tamaños/formatos según las especificaciones oficiales vigentes, y también traduce/localiza al inglés, francés o catalán (u otros idiomas) piezas que ya existen en un archivo de Figma, duplicándolas sin romper la maquetación. Actívala siempre que el usuario pida crear anuncios, banners, creatividades paid, adaptar/redimensionar una pieza a varios formatos, traducir o sacar la versión en inglés, francés o catalán (u otros idiomas) de unas piezas o banners de Figma, o mencione Meta Ads, Facebook/Instagram Ads, Google Ads, Display, Demand Gen, Performance Max, Feed, Stories, Reels, Lead Ads, "adaptaciones" o "versiones por idioma/mercado" de una campaña publicitaria — incluso si el usuario no la nombra explícitamente. Es la skill que debe arrancar la conversación cuando alguien empieza a trabajar en un encargo de piezas paid (por ejemplo, tras un simple "hola" al abrir un proyecto de este tipo).
 ---
 
 # Paid Creative Builder
 
-Ayuda a crear el set completo de piezas de un anuncio paid a partir de UNA pieza maestra ya maquetada en Figma, generando el resto de formatos/tamaños que exige cada plataforma (Meta Ads, Google Ads) sin perder marca, mensaje ni jerarquía visual.
+Ayuda a crear el set completo de piezas de un anuncio paid a partir de UNA pieza maestra ya maquetada en Figma, generando el resto de formatos/tamaños que exige cada plataforma (Meta Ads, Google Ads) sin perder marca, mensaje ni jerarquía visual. También traduce piezas ya existentes a otro idioma.
 
 Esta skill es genérica a propósito: no asume cliente, cuenta de Figma, sistema de diseño ni objetivo de campaña. Todo eso se pregunta al arrancar, porque cada proyecto (cada cuenta/cliente) tiene su propio archivo de Figma, su propio branding y sus propios formatos objetivo. No la conviertas en algo hardcodeado para un único cliente.
+
+## Elegir el modo de trabajo
+
+- **Crear / adaptar tamaños** (por defecto): sigue el resto de este documento.
+- **Traducir piezas existentes**: si el usuario pide traducir, localizar o sacar la versión en otro idioma de piezas que ya están en Figma, lee [references/translation.md](references/translation.md) y sigue ese flujo. No hace falta el flujo de inicio completo ni las tablas de especificaciones, porque los tamaños ya existen. Ese flujo extrae los textos de la pieza maestra etiquetados (Texto 1, Texto 2…), muestra la traducción con las mismas etiquetas y espera la confirmación del usuario antes de escribir nada en Figma.
+- **Ambos** (p. ej. "adapta a todos los tamaños y sácalo también en inglés"): primero adapta y valida los tamaños en el idioma original, y después traduce el set completo con el modo traducción. Así el copy se traduce una sola vez y no por cada tamaño.
 
 ## Flujo de inicio (obligatorio, siempre antes de tocar Figma)
 
@@ -16,7 +22,7 @@ En cuanto esta skill entra en juego — porque el usuario pide piezas paid, adap
 1. **Qué se necesita crear o adaptar**: ¿es una pieza nueva desde cero o adaptaciones de una ya existente? ¿Qué tipo de piezas (imagen estática, carrusel, vídeo, Stories/Reels)? ¿Para qué plataforma(s) — Meta, Google Ads, o ambas — y, si lo sabe, para qué campaña/objetivo (awareness, tráfico, leads, conversión)? El objetivo de campaña importa porque cambia qué formatos son obligatorios (p. ej. Lead Ads en Meta pide medidas distintas al Feed estándar).
 2. **En qué archivo de Figma se va a trabajar**: pide el link del archivo (y la página/frame si ya lo tiene claro). Si no existe todavía un archivo, pregunta si hay que crear uno o si se debe partir de un archivo de plantillas de la cuenta.
 3. **La pieza maestra**: exige que exista ya un diseño maestro completo — con todos los elementos que las adaptaciones van a necesitar (logo, imagen/producto, titular, cuerpo de texto, CTA, disclaimers legales, colores/tipografías de marca) — antes de generar el resto de tamaños. Si no existe, no improvises una desde cero por tu cuenta: dile al usuario que hace falta esa pieza base primero (puede diseñarla él, pedirte que la construyas como un paso previo explícito, o señalarte un componente/frame ya existente en el archivo que cumpla ese rol). Generar adaptaciones sin una maestra fiable produce piezas inconsistentes entre sí.
-4. **Idiomas y variantes de copy**, si aplica (una campaña multi-mercado puede necesitar el mismo set de tamaños en varios idiomas).
+4. **Idiomas y variantes de copy**, si aplica (una campaña multi-mercado puede necesitar el mismo set de tamaños en varios idiomas; en ese caso, la traducción se hace al final con el modo traducción).
 5. **Qué entregable final espera**: ¿los frames dentro de Figma son suficientes, o también hay que exportar los assets (PNG/JPG/MP4) con una convención de nombres concreta para subirlos al gestor de anuncios? Si hace falta exportar, pregunta la convención de nombres que usa la cuenta (cliente_plataforma_formato_tamaño_idioma suele ser un buen punto de partida si no tienen una propia).
 
 Si el proyecto ya tiene un sistema de diseño documentado (tokens, tipografías, reglas de contraste, etc. — por ejemplo, en memoria o en un archivo del propio proyecto), respétalo en vez de improvisar estilos nuevos.
@@ -38,7 +44,7 @@ Nunca inventes ni "redondees de memoria" las dimensiones de un formato publicita
 Esta skill decide **qué** hay que crear (tamaños, formatos, cantidad) y **con qué criterio de marca**, pero no debe reinventar cómo manipular Figma a bajo nivel — eso ya existe como herramienta dedicada en este entorno y hay que delegárselo:
 
 - Usa las skills/herramientas de Figma ya disponibles (`figma-use`, `figma-generate-design`, `get_design_context`, `get_screenshot`, `use_figma`) para leer la pieza maestra, entender sus componentes/auto-layout, y construir cada adaptación redimensionando y reordenando esos mismos elementos — no recreando todo desde cero a mano ni describiendo el resultado en texto.
-- Si el conector de Figma no está autorizado en la sesión, dile al usuario que necesita autorizarlo (vía `claude mcp` o los ajustes de conectores) antes de poder ejecutar cambios reales en el archivo.
+- Si el conector de Figma no está autorizado en la sesión, dile al usuario que necesita autorizarlo (vía `claude mcp` o los ajustes de conectores) antes de poder ejecutar cambios reales en el archivo. Si Figma responde que no hay acceso de edición, comprueba con `whoami` el tipo de asiento: con un asiento "View" el conector no puede leer ni escribir el archivo, y hace falta pedir un asiento Full o Dev al admin.
 - Para cada adaptación nueva: parte de la pieza maestra, aplica el tamaño/relación de aspecto objetivo, reajusta jerarquía (qué se recorta, qué se reescala, qué cambia de posición) para que el mensaje principal y el CTA sigan siendo legibles, y respeta zonas de seguridad cuando el formato las tenga (p. ej. Stories/Reels).
 - Nombra los frames de forma consistente y trazable al formato de origen (cliente_plataforma_ubicación_tamaño), para que sea fácil auditar qué falta o qué sobra.
 
@@ -48,3 +54,5 @@ Esta skill decide **qué** hay que crear (tamaños, formatos, cantidad) y **con 
 - No produzcas el set completo de adaptaciones si todavía no hay una pieza maestra validada — para ahí y pregunta primero.
 - No asumas un único cliente, cuenta de Figma o paleta de marca: cada vez que se invoque la skill en un proyecto nuevo, vuelve a preguntar los datos del flujo de inicio.
 - No exportes ni publiques nada fuera de Figma sin que el usuario confirme la convención de nombres y el destino.
+- No sobrescribas las piezas originales al traducir salvo que el usuario lo pida: duplica y añade el sufijo de idioma.
+- No sustituyas en silencio una fuente que no se puede cargar, ni al traducir ni al adaptar. Para, avisa de qué fuente falla y a qué textos afecta, y propón opciones. Si el usuario aprueba un fallback, marca la pieza como pendiente de fuente (ver [references/translation.md](references/translation.md), paso 4).
