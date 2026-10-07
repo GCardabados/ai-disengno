@@ -12,7 +12,6 @@ Pregunta solo lo que no se deduzca del mensaje del usuario:
 - **Idioma y variante**: el que pida el usuario. En inglés, pregunta si es en-US o en-GB solo si el mercado no está claro, porque afecta a la ortografía (color/colour) y a los formatos de precio y fecha.
 - **Dónde dejar el resultado**: por defecto, duplicar los frames junto a los originales con sufijo de idioma (`_EN`, `_FR`…), sin sobrescribir el original. Sobrescribe solo si el usuario lo pide explícitamente: el original suele seguir haciendo falta para el mercado local.
 - **Términos que no se traducen**: marca, producto, claims registrados, hashtags. Si la cuenta tiene glosario o memoria con estos términos, úsalo sin preguntar.
-- **Legales**: tradúcelos, pero márcalos en el informe como "pendiente de validación legal", porque suelen requerir un texto aprobado por el cliente.
 
 ## 2. Extraer y etiquetar los textos de la pieza maestra (barato)
 
@@ -42,7 +41,7 @@ Text 2 · CTA: Learn more
 Text 3 · Legal: Returns subject to terms… ⚠ pendiente de validación legal
 ```
 
-Después de las dos listas, pregunta si confirma el copy o quiere cambiar algún texto, por ejemplo: "¿Lo doy por bueno o quieres cambiar algún texto? Puedes decirme algo como *Text 1: …*". Si el usuario modifica un campo, actualiza solo ese, vuelve a mostrar únicamente los campos cambiados y pide confirmación otra vez. No pases al paso 4 sin un OK explícito.
+Después de las dos listas, pregunta si confirma el copy o quiere cambiar algún texto, por ejemplo: "¿Lo doy por bueno o quieres cambiar algún texto antes de construir en figma?". Si el usuario modifica un campo, actualiza solo ese, vuelve a mostrar únicamente los campos cambiados y pide confirmación otra vez. No pases al paso 4 sin un OK explícito.
 
 Usa la etiqueta en el idioma de cada bloque (`Texto` en el original, `Text` en inglés, `Texte` en francés…) y conserva el nombre de capa de Figma tal cual. Así el usuario lo localiza en el panel de capas.
 
@@ -51,9 +50,36 @@ Criterios de traducción:
 - **Copy publicitario, no traducción literal**: titulares cortos y con gancho, en el registro de la marca. Si el original es un juego de palabras, adapta la idea en vez de calcarla y avisa con una nota junto a ese campo.
 - **Longitud**: intenta que ocupe lo mismo o menos que el original. Si una traducción es claramente más larga, señálalo junto al campo (`+20 % de longitud`) para que el usuario decida antes de maquetar.
 - **CTAs**: usa la forma estándar del botón de la plataforma cuando exista (Más información → Learn more, Comprar ahora → Shop now, Regístrate → Sign up, Descargar → Download, Reservar → Book now). Así el texto de la pieza coincide con el botón del gestor de anuncios.
-- **Formatos locales**: precios, fechas y unidades se adaptan al mercado. Las divisas no se convierten: solo cambia el formato.
+- **Formatos locales**: precios, fechas y unidades se adaptan al mercado según las normas del idioma (ver abajo). Las divisas no se convierten: solo cambia el formato.
 - Respeta las mayúsculas del original y no traduzcas los términos excluidos.
 - **Estilos mixtos**: si un campo viene marcado como de estilos mixtos, indícalo junto al campo ("lleva una parte en negrita"). Pregunta qué parte de la traducción debe llevar ese estilo, porque al reemplazar el texto se pierde el formato parcial.
+
+### Normas ortotipográficas del idioma destino
+
+La traducción sigue **las normas ortográficas y ortotipográficas del idioma al que se traduce**, no las del original. Un texto en francés se escribe como lo escribiría un francés, aunque el original en español lo hiciera de otra forma. Esto abarca todo lo que tenga norma en ese idioma, por ejemplo:
+
+- puntuación y espacios alrededor de los signos (antes de `%`, `:`, `?`, signos de apertura `¿ ¡` solo en español…);
+- comillas, apóstrofos y guiones propios del idioma;
+- números: separador decimal y de miles, posición del símbolo de moneda, fechas y horas;
+- mayúsculas (p. ej. días y meses en minúscula en fr/ca/es, en mayúscula en en; title case solo si el registro de la marca lo usa);
+- grafías propias (p. ej. punt volat `l·l` en catalán).
+
+Aplica las normas del idioma (y de su variante, si se pidió: en-US/en-GB, pt-PT/pt-BR, fr-FR/fr-CA…). Si no conoces con seguridad una norma concreta, dilo en el informe en vez de suponerla.
+
+Algunas normas añaden ancho y pueden mover la maquetación. Por eso:
+
+1. **Si aplicar la norma no cambia el ancho del texto de forma visible, aplícala.**
+2. **Si lo cambia, aplícala igualmente y anótalo siempre en el informe de entrega.** Si además provoca un desbordamiento (paso 6), propón cómo resolverlo (acortar el texto, permitir un salto de línea) en vez de quitar la norma por tu cuenta. Omitir una norma solo se hace si el usuario lo decide, y también se anota.
+
+**Ninguna norma se aplica ni se omite en silencio.** Además del informe, el bloque de traducción del paso 3 ya muestra el texto con las normas aplicadas, para que el usuario lo vea antes de confirmar. Formato de la anotación en el informe:
+
+```
+Text 2 · cifra 25 %: la norma (fr) pide espacio fino antes del %. → Aplicada; el texto gana ~6 px de ancho, sin salto de línea.
+Text 5 · «Offre limitée»: la norma (fr) pide comillas « » con espacios interiores. → Aplicada; pasa a dos líneas (ver paso 6).
+Text 3 · 25%: la norma (ca) pide espacio antes del %. → Omitida por decisión del usuario.
+```
+
+Anota en el informe las normas que cambian el ancho y las que se omiten. Las que no cambian el ancho no hace falta listarlas una a una: basta una línea del tipo "Aplicadas las normas ortotipográficas de fr sin cambios de ancho (comillas, apóstrofos, decimales)".
 
 ## 4. Comprobar las fuentes (antes de duplicar nada)
 
@@ -101,4 +127,4 @@ El script comprueba las fuentes otra vez antes de duplicar. Si falta alguna sin 
 
 ## 7. Informe final (corto)
 
-Una tabla con: frame original → frame traducido, textos ajustados, textos pendientes de validación (legales, juegos de palabras) y frames **pendientes de fuente**, indicando qué fuente sustituye a cuál. No vuelvas a listar todas las traducciones: ya se aprobaron en el paso 3.
+Una tabla con: frame original → frame traducido, textos ajustados, textos pendientes de validación (legales, juegos de palabras) y frames **pendientes de fuente**, indicando qué fuente sustituye a cuál. Debajo de la tabla, las **normas del idioma** que cambiaron el ancho o se omitieron, más la línea resumen de las aplicadas sin cambio de ancho, con el formato de "Normas ortotipográficas del idioma destino" (paso 3). Esta parte no se omite nunca. No vuelvas a listar todas las traducciones: ya se aprobaron en el paso 3.
