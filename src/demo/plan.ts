@@ -3,7 +3,7 @@
 // composición solo usa operaciones permitidas: traslación rígida de bloques y redimensionado de efectos no-contenido.
 import type { Rect } from '../contracts/geometry.ts';
 import type { MasterSnapshot, NodeSnapshot } from '../contracts/snapshot.ts';
-import type { DemoComposition, TextEdit, VectorEdit } from '../contracts/demo.ts';
+import type { BlockScale, DemoComposition, TextEdit, VectorEdit } from '../contracts/demo.ts';
 import { TEXT_EDITABLE, type ProjectConfig, type TextEditable } from '../contracts/config.ts';
 
 export type TextPolicy = ProjectConfig['textPolicy'];
@@ -47,7 +47,9 @@ export interface DemoPlan {
   /** Escalas proporcionales de imágenes: tamaño final (maestra × factor) y posición en coordenadas del frame raíz. */
   imageScales: Array<{ nodeId: string; scale: number; x: number; y: number; width: number; height: number }>;
   /** Política del logo aplicada (estándar o experimental con su factor). */
-  logo: { mode: 'standard' } | { mode: 'experimental'; nodeId: string; scale: number; x: number; y: number; authorization: string };
+  logo: { mode: 'standard' } | { mode: 'experimental'; nodeId: string; scale: number; x: number; y: number; authorization: string; /** El logo escala dentro de un bloque escalado (p. ej. la fila de marca) con el factor del bloque. */ viaBlock?: boolean };
+  /** Escalas proporcionales de bloques de contenido con maquetación automática: factor y esquina superior izquierda final. */
+  blockScales: Array<{ nodeId: string; scale: number; x: number; y: number; authorization: string | null }>;
   /** Ediciones de texto validadas contra la política del proyecto. */
   textEdits: TextEdit[];
   /** Política de texto del proyecto con la que se validó el plan (se vuelve a aplicar tras el render). */
@@ -56,7 +58,7 @@ export interface DemoPlan {
    * Caja esperada de cada nodo en coordenadas del frame destino (para validar el clon). 'free' marca dimensiones que
    * dependen del render (texto con altura/anchura automática): en el plan son una estimación y no se comparan.
    */
-  expected: Record<string, { rect: Rect | null; dx: number; dy: number; resized: boolean; derived?: boolean; edited?: boolean; scale?: number; logoScale?: number; text?: boolean; free?: { width: boolean; height: boolean } }>;
+  expected: Record<string, { rect: Rect | null; dx: number; dy: number; resized: boolean; derived?: boolean; edited?: boolean; scale?: number; logoScale?: number; blockScale?: number; blockSlackPx?: number; text?: boolean; free?: { width: boolean; height: boolean } }>;
 }
 
 export type PlanResult = { ok: true; plan: DemoPlan } | { ok: false; issues: string[] };
@@ -124,7 +126,7 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition, opts: { tex
     if (!['RECTANGLE', 'ELLIPSE'].includes(n.type) || n.childIds.length > 0) issues.push(`${e.nodeId}: solo se redimensionan formas simples`);
     if (n.fills === 'MIXED' || n.fills.some((f) => f.type === 'IMAGE' || f.type === 'VIDEO')) issues.push(`${e.nodeId}: tiene imagen; no es un efecto`);
     if (n.text) issues.push(`${e.nodeId}: es texto`);
-    if (n.rotation !== 0) issues.push(`${e.nodeId}: rotado`);
+    if (Math.abs(n.rotation ?? 0) > 1e-6) issues.push(`${e.nodeId}: rotado`); // ≈0: un espejo vertical se lee como rotación de ruido (~1e-15)
     if (locked.has(e.nodeId) || important.has(e.nodeId)) issues.push(`${e.nodeId}: bloqueado o importante; no se redimensiona`);
     // El destino del efecto se da en coordenadas FINALES del frame; puede estar dentro de un bloque trasladado
     // (se aplica después de las traslaciones), pero no ser él mismo un nodo trasladado.
@@ -139,7 +141,7 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition, opts: { tex
     if (n.childIds.length > 0 || !['RECTANGLE', 'ELLIPSE'].includes(n.type)) issues.push(`${e.nodeId}: solo se escalan imágenes en formas simples`);
     if (n.fills === 'MIXED' || !n.fills.some((f) => f.type === 'IMAGE' && f.visible)) issues.push(`${e.nodeId}: no tiene una imagen visible`);
     if (n.text) issues.push(`${e.nodeId}: es texto`);
-    if (n.rotation !== 0) issues.push(`${e.nodeId}: rotado`);
+    if (Math.abs(n.rotation ?? 0) > 1e-6) issues.push(`${e.nodeId}: rotado`); // ≈0: un espejo vertical se lee como rotación de ruido (~1e-15)
     if (locked.has(e.nodeId) || [...ancestors(e.nodeId)].some((a) => locked.has(a))) issues.push(`${e.nodeId}: dentro de un bloque de tamaño bloqueado (logo); no se escala`);
     if (moved.has(e.nodeId)) issues.push(`${e.nodeId}: no puede trasladarse en un bloque y escalarse a la vez`);
     if (effectResizes.some((r) => r.nodeId === e.nodeId)) issues.push(`${e.nodeId}: no puede ser efecto y escalarse`);
@@ -173,13 +175,67 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition, opts: { tex
   if (lp.mode === 'experimental') {
     const ln = byId.get(lp.logoNodeId);
     const unit = c.units.find((u) => u.anchorNodeId === lp.logoNodeId);
+    const host = (c.blockScales ?? []).find((b) => b.nodeId !== lp.logoNodeId && ancestors(lp.logoNodeId).includes(b.nodeId));
     if (!ln) issues.push(`logo experimental: nodo desconocido ${lp.logoNodeId}`);
     else if (!locked.has(lp.logoNodeId)) issues.push(`logo experimental: ${lp.logoNodeId} no es un bloque de logo (sizeLockedNodeIds)`);
-    else if (!unit || unit.nodeIds.length !== 1) issues.push(`logo experimental: ${lp.logoNodeId} debe ser el ancla y único nodo de su bloque (la escala parte de su esquina superior izquierda)`);
     else if ([lp.logoNodeId, ...s.nodes.filter((n) => ancestors(n.id).includes(lp.logoNodeId)).map((n) => n.id)].some((id) => (byId.get(id)?.rotation ?? 0) !== 0)) issues.push('logo experimental: hay nodos rotados en el logo');
+    else if (host) {
+      // El logo vive dentro de un contenedor con maquetación automática (fila de marca): escala con el bloque, mismo factor.
+      if (Math.abs(host.scale - lp.scale) > 1e-9) issues.push(`logo experimental: ${lp.logoNodeId} está dentro del bloque escalado ${host.nodeId}; el factor del logo (${lp.scale}) debe ser el del bloque (${host.scale})`);
+      else logo = { mode: 'experimental', nodeId: lp.logoNodeId, scale: lp.scale, x: 0, y: 0, authorization: lp.authorization, viaBlock: true };
+    }
+    else if (!unit || unit.nodeIds.length !== 1) issues.push(`logo experimental: ${lp.logoNodeId} debe ser el ancla y único nodo de su bloque (la escala parte de su esquina superior izquierda)`);
     else logo = { mode: 'experimental', nodeId: lp.logoNodeId, scale: lp.scale, x: unit.to.x, y: unit.to.y, authorization: lp.authorization };
   }
   const inLogo = (id: string, logoId: string) => id === logoId || ancestors(id).includes(logoId);
+
+  // Bloques de contenido con escala proporcional: raíz = ancla y único nodo de su unidad (la escala parte de su esquina
+  // superior izquierda); el factor se aplica a todo el bloque, así que cada texto interior debe poder cambiar de cuerpo.
+  const blockScales: DemoPlan['blockScales'] = [];
+  const blockOfNode = new Map<string, BlockScale>();
+  const blockSlack = new Map<string, number>();
+  for (const b of c.blockScales ?? []) {
+    const bn = byId.get(b.nodeId);
+    const unit = c.units.find((u) => u.anchorNodeId === b.nodeId);
+    if (!bn) { issues.push(`escala de bloque de nodo desconocido ${b.nodeId}`); continue; }
+    if (!unit || unit.nodeIds.length !== 1) { issues.push(`escala de bloque ${b.nodeId}: debe ser el ancla y único nodo de su unidad (la escala parte de su esquina superior izquierda)`); continue; }
+    if (bn.type !== 'FRAME' && bn.type !== 'GROUP') issues.push(`escala de bloque ${b.nodeId}: solo se escalan FRAME o GROUP (contenedores de contenido)`);
+    const lpe = c.logoPolicy?.mode === 'experimental' ? c.logoPolicy : null;
+    const lockedInside = [...locked].filter((l) => ancestors(l).includes(b.nodeId));
+    const hostsOk = lockedInside.every((l) => lpe && lpe.logoNodeId === l && Math.abs(lpe.scale - b.scale) < 1e-9);
+    if (underLocked(b.nodeId) || !hostsOk) issues.push(`escala de bloque ${b.nodeId}: contiene o está dentro del logo (solo se admite si el logo está en modo experimental con el mismo factor que el bloque)`);
+    if (c.imageScales.some((x) => x.nodeId === b.nodeId || ancestors(x.nodeId).includes(b.nodeId)) || c.effectResizes.some((x) => x.nodeId === b.nodeId || ancestors(x.nodeId).includes(b.nodeId))) issues.push(`escala de bloque ${b.nodeId}: contiene imágenes o efectos que ya se escalan/redimensionan por separado`);
+    if (blockScales.some((x) => x.nodeId === b.nodeId)) issues.push(`escala de bloque ${b.nodeId}: declarada dos veces`);
+    const inside = s.nodes.filter((n) => n.id !== b.nodeId && ancestors(n.id).includes(b.nodeId));
+    for (const n of inside) {
+      if (blockOfNode.has(n.id)) issues.push(`${n.id}: está en dos bloques escalados`);
+      blockOfNode.set(n.id, b);
+    }
+    blockOfNode.set(b.nodeId, b);
+    const texts = [bn, ...inside].filter((n) => n.text);
+    if (b.scale !== 1 && texts.length > 0) {
+      if (!policy.editable.includes('font_size')) issues.push(`escala de bloque ${b.nodeId}: el proyecto no permite cambiar el cuerpo del texto`);
+      if (policy.fontScale && (b.scale < policy.fontScale.min || b.scale > policy.fontScale.max)) issues.push(`escala de bloque ${b.nodeId}: factor ${b.scale} fuera del rango del proyecto ${policy.fontScale.min}–${policy.fontScale.max}`);
+      for (const t of texts) {
+        const sizes = t.text!.segments.map((g) => g.fontSize).filter((v): v is number => typeof v === 'number');
+        if (policy.minFontSizePx !== null && sizes.some((v) => v * b.scale < policy.minFontSizePx! - 1e-9)) issues.push(`${t.id}: el cuerpo resultante (${Math.min(...sizes) * b.scale} px) queda por debajo del mínimo del proyecto (${policy.minFontSizePx} px)`);
+        if (b.scale < 1 && (c.legalNodeIds ?? []).includes(t.id) && !b.authorization) issues.push(`${t.id}: reducir el cuerpo de un legal exige autorización explícita (no se reduce para que quepa)`);
+        if ((c.textEdits ?? []).some((e) => e.nodeId === t.id)) issues.push(`${t.id}: tiene una edición de texto y está dentro de un bloque escalado`);
+      }
+    }
+    // Figma redondea el interlineado a px enteros: una caja de texto con altura automática puede desviarse ≤ 0,5 px
+    // por línea de la medida lineal (y arrastra a los contenedores que la envuelven y a lo que va debajo).
+    const lines = texts.reduce((acc, t) => {
+      const seg = t.text!.segments[0];
+      const lh = seg?.lineHeight as { unit?: string; value?: number } | null;
+      const fs = typeof seg?.fontSize === 'number' ? seg.fontSize : null;
+      const per = fs && lh && typeof lh.value === 'number' ? (lh.unit === 'PERCENT' ? fs * lh.value / 100 : lh.value) : null;
+      return acc + (per && t.height ? Math.max(1, Math.round(t.height / per)) : 1);
+    }, 0);
+    blockSlack.set(b.nodeId, 0.5 * lines);
+    const ar = relRect(bn, root);
+    if (ar) blockScales.push({ nodeId: b.nodeId, scale: b.scale, x: unit.to.x, y: unit.to.y, authorization: b.authorization });
+  }
 
   // Texto: cada propiedad editada debe estar permitida por el proyecto; el copy y la tipografía no cambian.
   const textMoved = s.nodes.filter((n) => n.text && [n.id, ...ancestors(n.id)].some((a) => moved.has(a)));
@@ -193,7 +249,7 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition, opts: { tex
     edited.add(e.nodeId);
     if (!coordsRelativeToRoot(e.nodeId)) issues.push(`${e.nodeId}: dentro de un frame intermedio (p. ej. un botón con maquetación automática); editarlo cambiaría su contenedor`);
     if (underLocked(e.nodeId)) issues.push(`${e.nodeId}: está dentro del logo; el logo no se edita por dentro`);
-    if (n.rotation !== 0) issues.push(`${e.nodeId}: rotado`);
+    if (Math.abs(n.rotation ?? 0) > 1e-6) issues.push(`${e.nodeId}: rotado`); // ≈0: un espejo vertical se lee como rotación de ruido (~1e-15)
     const needs = textEditNeeds(e, n.width);
     const denied = needs.filter((k) => !policy.editable.includes(k));
     if (denied.length) issues.push(`${e.nodeId}: el proyecto no permite editar ${denied.join(', ')}`);
@@ -261,12 +317,26 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition, opts: { tex
       continue;
     }
     // Logo experimental: todo el bloque escala desde la esquina superior izquierda del ancla, que va a 'to'.
-    if (logo.mode === 'experimental' && inLogo(n.id, logo.nodeId)) {
+    if (logo.mode === 'experimental' && !logo.viaBlock && inLogo(n.id, logo.nodeId)) {
       const a = relRect(byId.get(logo.nodeId)!, root)!, rr = relRect(n, root);
       const k = logo.scale;
       expected[n.id] = {
         rect: rr ? { x: logo.x + (rr.x - a.x) * k, y: logo.y + (rr.y - a.y) * k, width: rr.width * k, height: rr.height * k } : null,
         dx: logo.x - a.x, dy: logo.y - a.y, resized: k !== 1, logoScale: k, derived: n.type === 'GROUP' ? true : undefined,
+      };
+      continue;
+    }
+    // Bloque escalado: todo el bloque escala desde la esquina superior izquierda de su raíz, que va a 'to'. Las
+    // dimensiones de un texto con caja automática dependen del render (se validan en text_fit).
+    const bsc = blockScales.find((b) => b.nodeId === n.id || ancestors(n.id).includes(b.nodeId));
+    if (bsc) {
+      const a = relRect(byId.get(bsc.nodeId)!, root)!, rr = relRect(n, root);
+      const k = bsc.scale;
+      const ar = n.text?.autoResize ?? 'NONE';
+      expected[n.id] = {
+        rect: rr ? { x: bsc.x + (rr.x - a.x) * k, y: bsc.y + (rr.y - a.y) * k, width: rr.width * k, height: rr.height * k } : null,
+        dx: bsc.x - a.x, dy: bsc.y - a.y, resized: k !== 1, blockScale: k, blockSlackPx: blockSlack.get(bsc.nodeId), derived: n.type === 'GROUP' ? true : undefined,
+        text: n.text ? true : undefined, free: n.text ? { width: ar === 'WIDTH_AND_HEIGHT', height: ar !== 'NONE' } : undefined,
       };
       continue;
     }
@@ -313,6 +383,7 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition, opts: { tex
       vectorEdits: c.vectorEdits,
       imageScales,
       logo,
+      blockScales,
       textEdits: c.textEdits ?? [],
       textPolicy: policy,
       expected,

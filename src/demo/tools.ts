@@ -93,7 +93,30 @@ export interface PrecheckFinding { code: string; nodeId: string; detail: string 
 const overlapArea = (p: Rect, q: Rect) =>
   Math.max(0, Math.min(p.x + p.width, q.x + q.width) - Math.max(p.x, q.x)) * Math.max(0, Math.min(p.y + p.height, q.y + q.height) - Math.max(p.y, q.y));
 
-export function precheckPlan(plan: DemoPlan, c: DemoComposition, textNodeIds: string[]): PrecheckFinding[] {
+/**
+ * Textos que definen la FORMA visible de una imagen (hijos de un grupo máscara, p. ej. la cifra «4» con la foto dentro):
+ * revelan la imagen, no la tapan, así que no cuentan como «texto encima» de una región protegida de esa imagen.
+ */
+export function maskShapeTextIds(s: MasterSnapshot): Set<string> {
+  const byId = new Map(s.nodes.map((n) => [n.id, n]));
+  const out = new Set<string>();
+  for (const n of s.nodes) {
+    if (!n.text) continue;
+    for (let p = n.parentId ? byId.get(n.parentId) : undefined; p; p = p.parentId ? byId.get(p.parentId) : undefined) {
+      if (p.isMask) { out.add(n.id); break; }
+    }
+  }
+  return out;
+}
+
+export interface PrecheckOptions {
+  /** Textos que son la forma de una máscara (no se cuentan sobre regiones protegidas). */
+  maskShapeTextIds?: Set<string>;
+  /** Cajas de la maestra: un solape de cajas que ya existe en la maestra (contenido que se mueve junto) no es un hallazgo. */
+  masterRect?: (id: string) => Rect | null;
+}
+
+export function precheckPlan(plan: DemoPlan, c: DemoComposition, textNodeIds: string[], opts: PrecheckOptions = {}): PrecheckFinding[] {
   const out: PrecheckFinding[] = [];
   const W = c.target.width, H = c.target.height, safe = safeRectOf(c);
   const inside = (r: Rect, o: Rect) => r.x >= o.x && r.y >= o.y && r.x + r.width <= o.x + o.width && r.y + r.height <= o.y + o.height;
@@ -124,6 +147,7 @@ export function precheckPlan(plan: DemoPlan, c: DemoComposition, textNodeIds: st
     const reg = { x: b.x + pr.rect.x * k, y: b.y + pr.rect.y * k, width: pr.rect.width * k, height: pr.rect.height * k };
     if (!inside(reg, { x: 0, y: 0, width: W, height: H })) out.push({ code: 'PROTECTED_REGION_CROPPED', nodeId: pr.nodeId, detail: pr.purpose });
     for (const t of textNodeIds) {
+      if (opts.maskShapeTextIds?.has(t)) continue;
       const r = rect(t);
       if (r && Math.min(reg.x + reg.width, r.x + r.width) > Math.max(reg.x, r.x) && Math.min(reg.y + reg.height, r.y + r.height) > Math.max(reg.y, r.y)) {
         out.push({ code: 'TEXT_OVER_PROTECTED_REGION', nodeId: t, detail: pr.purpose });
@@ -134,7 +158,9 @@ export function precheckPlan(plan: DemoPlan, c: DemoComposition, textNodeIds: st
   const texts = textNodeIds.filter((t) => c.importantNodeIds.includes(t));
   for (let i = 0; i < texts.length; i++) for (let j = i + 1; j < texts.length; j++) {
     const a = rect(texts[i]!), b = rect(texts[j]!);
-    if (a && b && Math.min(a.x + a.width, b.x + b.width) > Math.max(a.x, b.x) && Math.min(a.y + a.height, b.y + b.height) > Math.max(a.y, b.y)) {
+    const overlap = (p: Rect | null, q: Rect | null) => !!p && !!q && Math.min(p.x + p.width, q.x + q.width) > Math.max(p.x, q.x) && Math.min(p.y + p.height, q.y + q.height) > Math.max(p.y, q.y);
+    if (overlap(a ?? null, b ?? null)) {
+      if (opts.masterRect && overlap(opts.masterRect(texts[i]!), opts.masterRect(texts[j]!))) continue; // ya solapaban en la maestra (van juntos)
       out.push({ code: 'TEXT_BOXES_OVERLAP', nodeId: `${texts[i]}+${texts[j]}`, detail: 'cajas de texto solapadas' });
     }
   }

@@ -19,11 +19,11 @@ import { applyReview, approveManifest, buildDraftManifest, buildReviewTemplate, 
 import { renderManifestReview } from './report/review-md.ts';
 import { AdaptResultSchema, AgentProposalsSchema, DemoCompositionSchema } from './contracts/demo.ts';
 import { validateProposals } from './inventory/proposals.ts';
-import { buildDemoPlan, type DemoPlan } from './demo/plan.ts';
+import { buildDemoPlan, relRect, type DemoPlan } from './demo/plan.ts';
 import { buildAdaptScript, ADAPT_SCRIPT_VERSION } from './figma/adapt-script.ts';
 import { buildVectorProbeScript } from './figma/vector-probe.ts';
 import { AdaptJobSchema, DemoAcceptanceSchema } from './contracts/demo.ts';
-import { buildAcceptance, compareMasters, layoutSummary, precheckPlan, remapNodeIds, remapProposals } from './demo/tools.ts';
+import { buildAcceptance, compareMasters, layoutSummary, maskShapeTextIds, precheckPlan, remapNodeIds, remapProposals } from './demo/tools.ts';
 import { sha256Hex } from './hash/canonical.ts';
 import { extractEnvelope } from './figma/ingest-envelope.ts';
 import { checkDemo } from './demo/check.ts';
@@ -319,7 +319,7 @@ async function main(argv: string[]): Promise<number> {
     case 'demo-plan': {
       const snap = await loadSnapshot(need(a.snapshot, 'snapshot'));
       const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
-      if ((comp.textEdits.length > 0 || comp.logoPolicy.mode === 'experimental') && !a.config) throw new Error('Esta composición edita texto o escala el logo: indica --config (límites de texto del proyecto)');
+      if ((comp.textEdits.length > 0 || comp.blockScales.length > 0 || comp.logoPolicy.mode === 'experimental') && !a.config) throw new Error('Esta composición edita texto, escala bloques de contenido o escala el logo: indica --config (límites de texto del proyecto)');
       const r = buildDemoPlan(snap, comp, a.config ? { textPolicy: (await loadConfig(a.config)).textPolicy } : {});
       if (!r.ok) {
         console.error(`Composición rechazada:\n${r.issues.map((i) => `  ${i}`).join('\n')}`);
@@ -328,6 +328,7 @@ async function main(argv: string[]): Promise<number> {
       await writeJson(need(a.out, 'out'), r.plan);
       console.log(r.plan.moves.map((m) => `${m.unitId}: dx=${m.dx} dy=${m.dy}`).join('\n'));
       if (r.plan.logo.mode === 'experimental') console.log(`LOGO EXPERIMENTAL ×${r.plan.logo.scale} (${r.plan.logo.authorization})`);
+      for (const b of r.plan.blockScales) console.log(`BLOQUE ESCALADO ${b.nodeId} ×${b.scale}${b.authorization ? ` (${b.authorization})` : ''}`);
       for (const e of r.plan.textEdits) console.log(`texto ${e.nodeId}: ${[e.box && `caja ${e.box.width}×${e.box.height ?? 'auto'}`, e.align, e.lineBreaks && 'saltos de línea', e.fontScale !== null && `cuerpo ×${e.fontScale}`, e.lineHeight && `interlineado ${e.lineHeight.value}${e.lineHeight.unit === 'PIXELS' ? 'px' : '%'}`].filter(Boolean).join(', ')}`);
       const req = fontRequiredNodeIds(r.plan);
       if (req.length) console.log(`Fuentes que deben cargarse antes de escribir (comprobar con text-capabilities-request): ${req.join(', ')}`);
@@ -387,7 +388,9 @@ async function main(argv: string[]): Promise<number> {
       const plan = (await readJson(need(a.plan, 'plan'))) as DemoPlan;
       const comp = parseOrThrow(DemoCompositionSchema, await readJson(need(a.composition, 'composition')), 'composition');
       const snap = await loadSnapshot(need(a.snapshot, 'snapshot'));
-      const f = precheckPlan(plan, comp, snap.nodes.filter((n) => n.text).map((n) => n.id));
+      const mRoot = snap.nodes.find((n) => n.id === snap.rootNodeId)!;
+      const mById = new Map(snap.nodes.map((n) => [n.id, n]));
+      const f = precheckPlan(plan, comp, snap.nodes.filter((n) => n.text).map((n) => n.id), { maskShapeTextIds: maskShapeTextIds(snap), masterRect: (id) => { const n = mById.get(id); return n ? relRect(n, mRoot) : null; } });
       if (f.length === 0) console.log('Predicción sin incidencias (revisar igualmente la captura del clon).');
       for (const x of f) console.log(`${x.code.padEnd(28)} ${x.nodeId}  ${x.detail}`);
       return f.length ? 3 : 0;
@@ -510,8 +513,8 @@ async function main(argv: string[]): Promise<number> {
       if ('code' in ext) throw new Error(`${raws[0]}: ${ext.message}`);
       const caps = ext.value as TextCapabilities;
       const plan = a.plan ? ((await readJson(a.plan)) as DemoPlan) : null;
-      const apis = plan ? [...(plan.textEdits.length ? ['setRangeFontSize', 'setRangeLineHeight', 'resize', ...(plan.textEdits.some((e) => e.lineBreaks) ? ['insertCharacters', 'deleteCharacters'] : [])] : []), ...(plan.logo.mode === 'experimental' ? ['rescale'] : [])] : [];
-      const sum = summarizeTextCapabilities(caps, apis);
+      const apis = plan ? [...(plan.textEdits.length ? ['setRangeFontSize', 'setRangeLineHeight', 'resize', ...(plan.textEdits.some((e) => e.lineBreaks) ? ['insertCharacters', 'deleteCharacters'] : [])] : []), ...(plan.logo.mode === 'experimental' || (plan.blockScales ?? []).length > 0 ? ['rescale'] : [])] : [];
+      const sum = summarizeTextCapabilities(caps, apis, plan ? fontRequiredNodeIds(plan) : undefined);
       for (const l of sum.lines) console.log(l);
       console.log(sum.ok ? 'Se puede ejecutar.' : 'NO se puede ejecutar tal cual en este entorno (ver arriba); no se sustituye ninguna fuente.');
       return sum.ok ? 0 : 6;

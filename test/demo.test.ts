@@ -6,7 +6,7 @@ import { buildDraftManifest } from '../src/inventory/manifest.ts';
 import { validateProposals } from '../src/inventory/proposals.ts';
 import { buildDemoPlan, type DemoPlan } from '../src/demo/plan.ts';
 import { checkDemo } from '../src/demo/check.ts';
-import { precheckPlan } from '../src/demo/tools.ts';
+import { maskShapeTextIds, precheckPlan } from '../src/demo/tools.ts';
 import { buildAdaptScript, staticAdaptViolations, fontRequiredNodeIds } from '../src/figma/adapt-script.ts';
 import { summarizeTextCapabilities } from '../src/figma/text-capabilities.ts';
 import { readingFlow } from '../src/demo/attention.ts';
@@ -44,6 +44,7 @@ function composition(over: Partial<DemoComposition> = {}): DemoComposition {
     imageScales: [],
     logoPolicy: { mode: 'standard' },
     textEdits: [],
+    blockScales: [],
     legalNodeIds: [],
     messagePlan: null,
     layoutChecks: { readingOrder: [], cta: null, decorationMasks: [] },
@@ -453,6 +454,16 @@ test('logo ESTÁNDAR: el escalado se rechaza en el plan, no entra en el script y
   assert.ok(findings(scaled, 'logo_locked').includes('LOGO_SIZE_CHANGED'));
 });
 
+test('logo ESTÁNDAR: la caja derivada de un GROUP admite ruido de coma flotante (≤ tolerancia); un vector no', async () => {
+  const noise = (d: number, onGroup: boolean) => (c: MockNodeSpec) => {
+    const g = find(c, '90:3')!;
+    if (onGroup) g.width += d; else { const v = (g.children ?? [])[0]!; v.width += d; }
+  };
+  assert.equal(statusOf(run(await scenario(noise(5e-5, true))), 'logo_locked'), 'pass', 'GROUP: deriva de 5e-5 px');
+  assert.equal(statusOf(run(await scenario(noise(0.5, true))), 'logo_locked'), 'fail', 'GROUP: 0,5 px sí es un cambio');
+  assert.equal(statusOf(run(await scenario(noise(5e-5, false))), 'logo_locked'), 'fail', 'nodo con geometría propia: comparación exacta');
+});
+
 test('logo EXPERIMENTAL: escala proporcional de extremo a extremo (plan, script, validación e informe)', async () => {
   const s = await snap(baseMasterSpec());
   const r = buildDemoPlan(s, experimental());
@@ -586,6 +597,131 @@ test('fuentes: una fuente no disponible detiene la edición ANTES de escribir y 
   const sum = summarizeTextCapabilities({ schema: 'pcb.text-capabilities.v1', fonts: [{ family: 'Marca', style: 'Bold', loaded: false, error: 'not found', nodeIds: ['10:6'] }], nodes: [{ id: '10:6', type: 'TEXT', found: true, hasMissingFont: true, api: { setRangeFontSize: true } }] }, ['setRangeFontSize']);
   assert.equal(sum.ok, false);
   assert.match(sum.lines.join('\n'), /Marca Bold NO disponible.*Limitación técnica: no se sustituye/);
+});
+
+test('capacidades: las APIs de texto no se exigen al bloque del logo (solo rescale)', () => {
+  const caps = { schema: 'pcb.text-capabilities.v1' as const, fonts: [], nodes: [
+    { id: '10:6', type: 'TEXT', found: true, hasMissingFont: false, api: { setRangeFontSize: true, setRangeLineHeight: true, resize: true, rescale: true } },
+    { id: '10:1', type: 'FRAME', found: true, hasMissingFont: null, api: { setRangeFontSize: false, setRangeLineHeight: false, resize: true, rescale: true } },
+  ] };
+  assert.equal(summarizeTextCapabilities(caps, ['setRangeFontSize', 'setRangeLineHeight', 'resize', 'rescale']).ok, true);
+  const noRescale = { ...caps, nodes: [caps.nodes[0]!, { ...caps.nodes[1]!, api: { ...caps.nodes[1]!.api, rescale: false } }] };
+  assert.equal(summarizeTextCapabilities(noRescale, ['rescale']).ok, false, 'sin rescale en el logo sí falla');
+});
+
+// ---------- Bloques de contenido escalados (blockScales) ----------
+
+const blockComp = (scale = 0.8, over: Partial<DemoComposition> = {}) => composition({
+  blockScales: [{ nodeId: '10:8', scale, authorization: null, why: 'MOCK: cuerpo del bloque CTA' }], ...over,
+});
+/** Simula rescale() del bloque CTA (10:8): caja, hijos y cuerpo de texto con el mismo factor desde su esquina. */
+const scaleCta = (k: number, kx = k, ky = k) => (c: MockNodeSpec) => {
+  const f = find(c, '90:8')!;
+  f.width *= kx; f.height *= ky;
+  for (const ch of f.children ?? []) {
+    ch.x = (ch.x ?? 0) * kx; ch.y = (ch.y ?? 0) * ky; ch.width *= kx; ch.height *= ky;
+    ch.text = { ...(ch.text ?? { characters: '' }), fontSize: 32 * k };
+  }
+};
+
+test('capacidades: una fuente no cargable solo bloquea si el plan edita ese texto (un bloque que solo se reescala no la necesita)', () => {
+  const caps = { schema: 'pcb.text-capabilities.v1' as const, fonts: [{ family: 'Marca', style: 'Black', loaded: false, error: 'no existe', nodeIds: ['10:9'] }], nodes: [{ id: '10:8', type: 'FRAME', found: true, hasMissingFont: null, api: { rescale: true, resize: true } }] };
+  assert.equal(summarizeTextCapabilities(caps, ['rescale'], []).ok, true, 'solo se reescala: informa sin bloquear');
+  assert.equal(summarizeTextCapabilities(caps, ['rescale'], ['10:9']).ok, false, 'si se edita, bloquea');
+  assert.equal(summarizeTextCapabilities(caps, ['rescale']).ok, false, 'sin plan, el comportamiento anterior');
+});
+
+test('texto-máscara: la forma que revela una imagen no cuenta como texto encima de su región protegida; los solapes ya presentes en la maestra no son hallazgo', async () => {
+  const spec = baseMasterSpec();
+  find(spec, '10:8')!.isMask = true; // el contenedor 10:8 actúa como máscara: su texto 10:9 es la forma visible
+  const s = await snap(spec);
+  assert.deepEqual([...maskShapeTextIds(s)], ['10:9']);
+  const r = buildDemoPlan(s, composition({ protectedRegions: [{ nodeId: '10:8', rect: { x: 0, y: 0, width: 240, height: 80 }, purpose: 'MOCK rostro' }], importantNodeIds: ['10:8', '10:9', '10:10'] }));
+  assert.ok(r.ok, r.ok ? '' : r.issues.join('\n'));
+  const { plan } = r as { ok: true; plan: DemoPlan };
+  const ids = s.nodes.filter((n) => n.text).map((n) => n.id);
+  const comp = composition({ protectedRegions: [{ nodeId: '10:8', rect: { x: 0, y: 0, width: 240, height: 80 }, purpose: 'MOCK rostro' }], importantNodeIds: ['10:8', '10:9', '10:10'] });
+  assert.ok(precheckPlan(plan, comp, ids).some((f) => f.code === 'TEXT_OVER_PROTECTED_REGION' && f.nodeId === '10:9'), 'sin exención se marca');
+  assert.ok(!precheckPlan(plan, comp, ids, { maskShapeTextIds: maskShapeTextIds(s) }).some((f) => f.code === 'TEXT_OVER_PROTECTED_REGION' && f.nodeId === '10:9'), 'con la exención ya no');
+});
+
+test('bloque escalado: un GROUP también es un bloque de contenido válido (p. ej. cifra enmascarada con su texto)', async () => {
+  const spec = baseMasterSpec();
+  find(spec, '10:8')!.type = 'GROUP';
+  const r = buildDemoPlan(await snap(spec), blockComp());
+  assert.ok(r.ok, r.ok ? '' : r.issues.join('\n'));
+});
+
+test('bloque escalado: plan, script (única línea rescale), validación y rechazos', async () => {
+  const s = await snap(baseMasterSpec());
+  const r = buildDemoPlan(s, blockComp());
+  assert.ok(r.ok, r.ok ? '' : r.issues.join('\n'));
+  const plan = (r as { ok: true; plan: DemoPlan }).plan;
+  assert.deepEqual(plan.blockScales, [{ nodeId: '10:8', scale: 0.8, x: 60, y: 890, authorization: null }]);
+  assert.deepEqual(plan.expected['10:8']!.rect, { x: 60, y: 890, width: 240, height: 64 });
+  assert.deepEqual(plan.expected['10:9']!.rect, { x: 60 + 16, y: 890 + 16, width: 208, height: 32 }, 'hijo escalado desde la esquina del bloque');
+  assert.deepEqual(fontRequiredNodeIds(plan), [], 'un bloque solo se reescala: no escribe texto, no exige la fuente (rescale funciona con fuentes no cargables)');
+  const code = buildAdaptScript(plan, { sectionName: 'S', cloneName: 'C', gapFromContentPx: 0 });
+  assert.deepEqual(staticAdaptViolations(code), []);
+  assert.equal(code.split('rescale(').length - 1, 1);
+  assert.ok(code.includes('PCB_BLOCK_UNEXPECTED_SIZE') && code.includes("op: 'scale_block'"));
+  const AsyncFn = Object.getPrototypeOf(async function () {}).constructor as new (...a: string[]) => unknown;
+  assert.doesNotThrow(() => new AsyncFn('figma', code), 'el script generado es JavaScript válido');
+  assert.ok(!buildAdaptScript(buildDemoPlan(s, composition()).ok ? (buildDemoPlan(s, composition()) as { ok: true; plan: DemoPlan }).plan : plan, { sectionName: 'S', cloneName: 'C', gapFromContentPx: 0 }).includes('rescale('), 'sin blockScales no hay rescale');
+  // Validación sobre la relectura.
+  const rep = run(await scenario(scaleCta(0.8), blockComp()));
+  assert.equal(statusOf(rep, 'block_scale'), 'needs_review', 'correcto pero a revisión');
+  assert.deepEqual(findings(rep, 'block_scale'), ['BLOCK_SCALED']);
+  for (const id of ['content_preserved', 'allowed_operations', 'nodes_preserved', 'text_fit']) assert.equal(statusOf(rep, id), 'pass', `${id}: ${findings(rep, id)}`);
+  // Deformado, otro factor o cuerpo sin escalar: falla.
+  assert.ok(findings(run(await scenario(scaleCta(0.8, 0.8, 0.7), blockComp())), 'block_scale').includes('BLOCK_DEFORMED'));
+  assert.ok(findings(run(await scenario(scaleCta(0.9), blockComp())), 'block_scale').includes('BLOCK_SIZE_MISMATCH'));
+  const fontOnly = run(await scenario((c) => { scaleCta(0.8)(c); find(c, '90:9')!.text = { characters: 'Comprar ahora', fontSize: 32 }; }, blockComp()));
+  assert.ok(findings(fontOnly, 'content_preserved').includes('TEXT_STYLE_CHANGED'));
+  // Rechazos del plan: política del proyecto, legal, logo y ancla.
+  const denied = buildDemoPlan(s, blockComp(), { textPolicy: { editable: ['position'], fontScale: null, minFontSizePx: null } });
+  assert.ok(!denied.ok && denied.issues.some((i) => /no permite cambiar el cuerpo/.test(i)));
+  const tooSmall = buildDemoPlan(s, blockComp(0.5), { textPolicy: { editable: ['position', 'font_size'], fontScale: null, minFontSizePx: 24 } });
+  assert.ok(!tooSmall.ok && tooSmall.issues.some((i) => /mínimo del proyecto/.test(i)));
+  const legalInside = buildDemoPlan(s, blockComp(0.8, { legalNodeIds: ['10:9'] }));
+  assert.ok(!legalInside.ok && legalInside.issues.some((i) => /legal exige autorización/.test(i)));
+  const noAnchor = buildDemoPlan(s, composition({ blockScales: [{ nodeId: '10:12', scale: 0.8, authorization: null, why: 'MOCK' }] }));
+  assert.ok(!noAnchor.ok && noAnchor.issues.some((i) => /ancla y único nodo/.test(i)));
+  const logoBlock = buildDemoPlan(s, composition({ units: [...composition().units, logoUnit], blockScales: [{ nodeId: '10:3', scale: 0.8, authorization: null, why: 'MOCK' }] }));
+  assert.ok(!logoBlock.ok && logoBlock.issues.some((i) => /logo|FRAME/.test(i)));
+});
+
+test('bloque escalado: el redondeo del interlineado (≤ 0,5 px por línea) no es una deformación; una desviación mayor sí', async () => {
+  const withHeight = (dh: number) => (c: MockNodeSpec) => { scaleCta(0.8)(c); const f = find(c, '90:8')!; f.height += dh; for (const ch of f.children ?? []) ch.height += dh; };
+  const ok = run(await scenario(withHeight(0.4), blockComp()));
+  assert.equal(statusOf(ok, 'allowed_operations'), 'pass', findings(ok, 'allowed_operations').join());
+  assert.ok(!findings(ok, 'block_scale').includes('BLOCK_DEFORMED'));
+  const bad = run(await scenario(withHeight(3), blockComp()));
+  assert.equal(statusOf(bad, 'allowed_operations'), 'fail');
+});
+
+test('logo EXPERIMENTAL dentro de un bloque escalado (fila de marca): mismo factor que el bloque, sin rescale propio', async () => {
+  const spec = baseMasterSpec();
+  const frame = find(spec, '10:8')!, logo = find(spec, '10:3')!;
+  spec.children = spec.children!.filter((n) => n.id !== '10:3');
+  frame.children = [logo, ...(frame.children ?? [])];
+  const s = await snap(spec);
+  const mk = (blockScale: number, logoScale: number) => composition({
+    units: composition().units.filter((u) => u.unitId !== 'logo'), blockScales: [{ nodeId: '10:8', scale: blockScale, authorization: null, why: 'MOCK' }],
+    logoPolicy: { mode: 'experimental', logoNodeId: '10:3', scale: logoScale, authorization: 'MOCK persona (encargo E-2)', why: 'MOCK' },
+  });
+  const ok = buildDemoPlan(s, mk(0.8, 0.8));
+  assert.ok(ok.ok, ok.ok ? '' : ok.issues.join('\n'));
+  const plan = (ok as { ok: true; plan: DemoPlan }).plan;
+  assert.equal(plan.logo.mode === 'experimental' && plan.logo.viaBlock, true);
+  const code = buildAdaptScript(plan, { sectionName: 'S', cloneName: 'C', gapFromContentPx: 0 });
+  assert.deepEqual(staticAdaptViolations(code), []);
+  assert.equal(code.split('rescale(').length - 1, 1, 'solo el rescale del bloque; el logo escala con él');
+  assert.ok(!code.includes('PCB_LOGO_UNEXPECTED_SIZE'));
+  const bad = buildDemoPlan(s, mk(0.8, 0.9));
+  assert.ok(!bad.ok && bad.issues.some((i) => /debe ser el del bloque/.test(i)));
+  const std = buildDemoPlan(s, composition({ units: composition().units.filter((u) => u.unitId !== 'logo'), blockScales: [{ nodeId: '10:8', scale: 0.8, authorization: null, why: 'MOCK' }] }));
+  assert.ok(!std.ok && std.issues.some((i) => /modo experimental/.test(i)), 'en modo estándar el logo no puede escalar con un bloque');
 });
 
 // ---------- Mensaje y flujo de lectura ----------

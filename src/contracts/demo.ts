@@ -126,6 +126,23 @@ export const LogoPolicySchema = z.discriminatedUnion('mode', [
 export type LogoPolicy = z.infer<typeof LogoPolicySchema>;
 
 /**
+ * Escala PROPORCIONAL de un bloque de CONTENIDO con maquetación automática (titular + cinta + pastillas): el mismo
+ * factor en todo el bloque (cuerpos de texto, rellenos, huecos, radios y trazos), así se conserva la jerarquía y las
+ * proporciones internas. Es la forma de aplicar «cuerpo» (textPolicy.fontScale / font_size) a textos que viven dentro
+ * de contenedores automáticos, donde una edición de texto suelta cambiaría el contenedor. Nunca el logo (ese tiene su
+ * propia política) ni imágenes. `nodeId` es la raíz del bloque: ancla y único nodo de su unidad; `to` de la unidad es
+ * la esquina superior izquierda final.
+ */
+export const BlockScaleSchema = z.strictObject({
+  nodeId: z.string(),
+  scale: z.number().positive().max(4),
+  /** Obligatoria si el bloque contiene un legal y el factor es < 1 (nunca se reduce para que quepa). */
+  authorization: z.string().nullable().default(null),
+  why: z.string(),
+});
+export type BlockScale = z.infer<typeof BlockScaleSchema>;
+
+/**
  * Edición de un texto. El COPY no cambia: 'lineBreaks' solo puede sustituir caracteres de espacio por saltos de línea
  * (o al revés) en las mismas posiciones; la tipografía (familia/estilo) nunca cambia. La posición se da con 'units'.
  */
@@ -217,6 +234,8 @@ export const DemoCompositionSchema = z.strictObject({
   logoPolicy: LogoPolicySchema.default({ mode: 'standard' }),
   /** Ediciones de texto (caja, alineación, saltos, cuerpo, interlineado) dentro de los límites del proyecto. */
   textEdits: z.array(TextEditSchema).default([]),
+  /** Escalas proporcionales de bloques de contenido con maquetación automática (ver BlockScaleSchema). */
+  blockScales: z.array(BlockScaleSchema).default([]),
   /** Textos legales de la pieza (no se reduce su cuerpo sin autorización explícita). */
   legalNodeIds: z.array(z.string()).default([]),
   /** Jerarquía del mensaje, relación persona/producto–mensaje y recorrido de lectura previsto. */
@@ -327,7 +346,7 @@ export const AdaptResultSchema = z.strictObject({
   mode: z.enum(['create', 'patch', 'copy']).default('create'),
   /** Solo en 'copy': clon del que se partió (se copia tal cual, con cualquier cambio manual, y se adapta la copia). */
   sourceCloneId: z.string().nullable().default(null),
-  applied: z.array(z.strictObject({ op: z.enum(['resize_root', 'translate', 'resize_effect', 'vector_edit', 'scale_image', 'scale_logo', 'edit_text']), cloneNodeId: z.string(), masterNodeId: z.string(), detail: z.unknown() })),
+  applied: z.array(z.strictObject({ op: z.enum(['resize_root', 'translate', 'resize_effect', 'vector_edit', 'scale_image', 'scale_logo', 'scale_block', 'edit_text']), cloneNodeId: z.string(), masterNodeId: z.string(), detail: z.unknown() })),
   master: z.strictObject({ width: z.number(), height: z.number(), childCount: z.number(), name: z.string() }),
 });
 export type AdaptResult = z.infer<typeof AdaptResultSchema>;

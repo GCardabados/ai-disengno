@@ -20,7 +20,7 @@ for (var i = 0; i < IDS.length; i++) {
   var n = await figma.getNodeByIdAsync(IDS[i]);
   if (!n) { nodes.push({ id: IDS[i], type: null, found: false, hasMissingFont: null, api: {} }); continue; }
   var api = {};
-  for (var a = 0; a < API.length; a++) api[API[a]] = typeof n[API[a]] === 'function';
+  for (var a = 0; a < API.length; a++) api[API[a]] = (API[a] in n) && typeof n[API[a]] === 'function';
   var texts = n.type === 'TEXT' ? [n] : ('findAllWithCriteria' in n ? n.findAllWithCriteria({ types: ['TEXT'] }) : []);
   for (var t = 0; t < texts.length; t++) {
     var segs = texts[t].getStyledTextSegments(['fontName']);
@@ -43,17 +43,24 @@ return { schema: ${JSON.stringify(TEXT_CAPABILITIES_SCHEMA_ID)}, fonts: fonts, n
 `;
 }
 
+const TEXT_ONLY_APIS = new Set(['insertCharacters', 'deleteCharacters', 'setRangeFontSize', 'setRangeLineHeight', 'setRangeLetterSpacing']);
+
 /** Resumen legible: qué se puede ejecutar y qué no, y por qué (sin convertir el bloqueo en una regla). */
-export function summarizeTextCapabilities(c: TextCapabilities, requiredApis: string[]): { ok: boolean; lines: string[] } {
+export function summarizeTextCapabilities(c: TextCapabilities, requiredApis: string[], requiredFontNodeIds?: string[]): { ok: boolean; lines: string[] } {
   const lines: string[] = [];
   let ok = true;
   for (const f of c.fonts) {
     if (f.loaded) lines.push(`✓ fuente ${f.family} ${f.style} disponible (${f.nodeIds.join(', ')})`);
+    // Una fuente no cargable solo bloquea si el plan EDITA alguno de sus textos; si solo se trasladan o se reescalan
+    // con su bloque (rescale no escribe el texto), se informa sin bloquear.
+    else if (requiredFontNodeIds && !f.nodeIds.some((id) => requiredFontNodeIds.includes(id))) lines.push(`ℹ fuente ${f.family} ${f.style} no disponible en este entorno (${f.nodeIds.join(', ')}): el plan solo traslada o reescala esos textos con su bloque (no se editan ni se sustituye la fuente).`);
     else { ok = false; lines.push(`✗ fuente ${f.family} ${f.style} NO disponible en este entorno (${f.nodeIds.join(', ')}): ${f.error ?? 'sin detalle'}. Limitación técnica: no se sustituye; esos textos solo pueden trasladarse aquí.`); }
   }
   for (const n of c.nodes) {
     if (!n.found) { ok = false; lines.push(`✗ nodo ${n.id} no encontrado`); continue; }
-    const missing = requiredApis.filter((a) => n.api[a] === false);
+    // Las APIs de edición de texto solo se exigen a nodos de texto; al bloque del logo (FRAME) solo 'rescale'/'resize'.
+    const needed = n.type === 'TEXT' ? requiredApis : requiredApis.filter((a) => !TEXT_ONLY_APIS.has(a));
+    const missing = needed.filter((a) => n.api[a] === false);
     if (missing.length) { ok = false; lines.push(`✗ ${n.id} (${n.type}) sin API ${missing.join(', ')}`); }
   }
   return { ok, lines };

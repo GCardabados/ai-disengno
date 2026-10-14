@@ -10,6 +10,7 @@ import { maxNumericDelta } from '../geometry/tolerance.ts';
 import type { TextEdit } from '../contracts/demo.ts';
 import type { TextSegment } from '../contracts/snapshot.ts';
 import { relRect, type DemoPlan } from './plan.ts';
+import { maskShapeTextIds } from './tools.ts';
 
 /** Estilo canónico por carácter (sin rangos ni caracteres): permite comparar aunque los segmentos se fusionen. */
 function charStyles(segs: TextSegment[]): Array<Record<string, unknown>> {
@@ -96,12 +97,29 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
   const mById = new Map(master.nodes.map((n) => [n.id, n]));
   const cById = new Map(clone.nodes.map((n) => [n.id, n]));
   const toClone = new Map(inp.idMap);
+  const toMaster = new Map(inp.idMap.map(([m, cl]) => [cl, m] as [string, string]));
   const mRoot = mById.get(master.rootNodeId)!;
   const cRoot = cById.get(clone.rootNodeId);
   const results: ValidationResult[] = [];
   const pair = (mid: string): NodeSnapshot | undefined => {
     const cid = toClone.get(mid);
     return cid ? cById.get(cid) : undefined;
+  };
+  /** Visible de verdad: el nodo y todos sus antecesores (un texto visible dentro de un contenedor oculto no se renderiza). */
+  const effVisible = (n: NodeSnapshot): boolean => {
+    let p: NodeSnapshot | undefined = n;
+    while (p) { if (!p.visible) return false; p = p.parentId ? cById.get(p.parentId) : undefined; }
+    return true;
+  };
+  /** Factor de un bloque escalado que contiene al nodo (undefined si no está en ninguno o el factor es 1). */
+  const blockK = (id: string): number | undefined => {
+    const k = plan.expected[id]?.blockScale;
+    return k !== undefined && k !== 1 ? k : undefined;
+  };
+  /** Un texto dentro de un bloque escalado cambia de cuerpo como una edición de fontScale (sin otros cambios). */
+  const blockTextEdit = (id: string): TextEdit | undefined => {
+    const k = blockK(id);
+    return k === undefined ? undefined : { nodeId: id, box: null, align: null, lineBreaks: null, fontScale: k, lineHeight: null, authorization: null, why: 'bloque escalado' };
   };
 
   // 1. Dimensiones del destino.
@@ -151,13 +169,13 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       if (resized.has(m.id)) { a.vectorGeometryDigest = null; b.vectorGeometryDigest = null; }
       if (strokeEdited.has(m.id)) { a.strokeWeight = null; b.strokeWeight = null; }
       // Logo experimental: geometría, trazo y efectos escalan con el factor; los valida logo_locked.
-      if (plan.expected[m.id]?.logoScale !== undefined && plan.expected[m.id]!.logoScale !== 1) {
+      if ((plan.expected[m.id]?.logoScale !== undefined && plan.expected[m.id]!.logoScale !== 1) || blockK(m.id) !== undefined) {
         for (const k of ['vectorGeometryDigest', 'strokeWeight', 'effects'] as const) { a[k] = null; b[k] = null; }
       }
       // Texto: copy y estilo se comparan carácter a carácter contra la edición declarada (saltos y cuerpo incluidos).
       if (m.text && cn.text) {
-        const exp = expectedTextSegments(m.text.segments, textEdits.get(m.id));
-        const bad = textStyleMismatch(exp, cn.text.segments, textEdits.has(m.id) ? 1e-3 : 0);
+        const exp = expectedTextSegments(m.text.segments, textEdits.get(m.id) ?? blockTextEdit(m.id));
+        const bad = textStyleMismatch(exp, cn.text.segments, textEdits.has(m.id) || blockK(m.id) !== undefined ? 1e-3 : 0);
         if (bad === -1) f.push({ code: 'TEXT_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: textEdits.get(m.id)?.lineBreaks ? 'El texto no coincide con el declarado (solo se permiten saltos de línea)' : 'El texto no es idéntico' });
         else if (bad !== null) f.push({ code: 'TEXT_STYLE_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: bad, message: `Estilo distinto del esperado a partir del carácter ${bad} (familia, cuerpo, interlineado, color…)` });
         a.text = null; b.text = null;
@@ -192,7 +210,7 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       const got = relRect(cn, cRoot);
       if (!got || !exp.rect) { f.push({ code: 'NO_BOUNDS', severity: 'warning', nodeIds: [m.id], message: 'Sin caja para comparar' }); continue; }
       // Medidas escaladas: el ruido de coma flotante crece con el valor.
-      const t = exp.logoScale !== undefined ? tol + 1e-4 * Math.max(exp.rect.width, exp.rect.height) : tol;
+      const t = exp.logoScale !== undefined ? tol + 1e-4 * Math.max(exp.rect.width, exp.rect.height) : exp.blockScale !== undefined && exp.blockScale !== 1 ? tol + 2e-3 * Math.max(exp.rect.width, exp.rect.height) + (exp.blockSlackPx ?? 0) : tol;
       const d = Math.max(Math.abs(got.x - exp.rect.x), Math.abs(got.y - exp.rect.y),
         exp.free?.width ? 0 : Math.abs(got.width - exp.rect.width), exp.free?.height ? 0 : Math.abs(got.height - exp.rect.height));
       if (d > t) f.push({ code: 'UNEXPECTED_GEOMETRY', severity: 'blocking', nodeIds: [m.id, cn.id], measured: got, expected: exp.rect, message: `Desviación ${d} px` });
@@ -222,7 +240,10 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       if (!mA || !cA) { f.push({ code: 'LOCKED_MISSING', severity: 'blocking', nodeIds: [lr], message: 'Bloque bloqueado ausente' }); continue; }
       // Estándar: factor 1 y comparación EXACTA. Experimental: el factor declarado, igual en todo el bloque.
       const k = exp && exp.nodeId === lr ? exp.scale : 1;
-      const near = (got: number | null, want: number | null) => got !== null && want !== null && (k === 1 ? got === want : Math.abs(got - want) <= tol + 1e-4 * Math.abs(want));
+      // Un GROUP no tiene geometría propia: su caja se deriva de los hijos y, lejos del origen (coordenadas absolutas
+      // de decenas de miles de px), el redondeo de coma flotante la desvía unas milésimas sin que nada cambie.
+      // En modo estándar los nodos con geometría propia se comparan EXACTAMENTE y los GROUP dentro de ±tolerancia.
+      const near = (got: number | null, want: number | null, derived = false) => got !== null && want !== null && (k === 1 ? (got === want || (derived && Math.abs(got - want) <= tol)) : Math.abs(got - want) <= tol + 1e-4 * Math.abs(want));
       if (k !== 1) f.push({ code: 'LOGO_EXPERIMENTAL_SCALE', severity: 'warning', nodeIds: [lr, cA.id], measured: cA.width && mA.width ? cA.width / mA.width : null, expected: k, message: `Logo en modo EXPERIMENTAL: escala proporcional ×${k} (autorización: ${exp!.authorization}). Requiere revisión humana.` });
       for (const m of master.nodes.filter((n) => inLocked(n.id, lr))) {
         const cn = pair(m.id);
@@ -230,7 +251,7 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
         const offM = [(m.absoluteTransform[0][2] - mA.absoluteTransform[0][2]) * k, (m.absoluteTransform[1][2] - mA.absoluteTransform[1][2]) * k];
         const offC = [cn.absoluteTransform[0][2] - cA.absoluteTransform[0][2], cn.absoluteTransform[1][2] - cA.absoluteTransform[1][2]];
         const wM = m.width === null ? null : m.width * k, hM = m.height === null ? null : m.height * k;
-        if (!near(cn.width, wM) || !near(cn.height, hM)) {
+        if (!near(cn.width, wM, m.type === 'GROUP') || !near(cn.height, hM, m.type === 'GROUP')) {
           const sx = m.width && cn.width ? cn.width / m.width : null, sy = m.height && cn.height ? cn.height / m.height : null;
           const deformed = sx !== null && sy !== null && Math.abs(sx - sy) > 1e-4;
           f.push(deformed
@@ -252,6 +273,45 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
     results.push(r('logo_locked', statusOf(f), exp
       ? `Modo EXPERIMENTAL (×${exp.scale}): mismo factor en ancho y alto de cada nodo del logo, disposición interna escalada, transformaciones lineales y recorte idénticos, trazos proporcionales y mismos efectos. La forma interna de cada vector se infiere por su caja; el render lo confirma la captura.`
       : 'Modo estándar: ancho/alto exactos, transformaciones lineales exactas, recorte y posición de cada nodo respecto al bloque del logo. El render del logo lo confirma la captura.', f));
+  }
+
+  // 5b. Bloques de contenido escalados (blockScales): un único factor proporcional en todo el bloque.
+  if ((plan.blockScales ?? []).length > 0) {
+    const f: Finding[] = [];
+    const inBlock = (id: string, rootId: string): boolean => {
+      let p: string | null = id;
+      while (p) { if (p === rootId) return true; p = mById.get(p)?.parentId ?? null; }
+      return false;
+    };
+    for (const bs of plan.blockScales) {
+      const k = bs.scale;
+      const mA = mById.get(bs.nodeId), cA = pair(bs.nodeId);
+      if (!mA || !cA) { f.push({ code: 'BLOCK_MISSING', severity: 'blocking', nodeIds: [bs.nodeId], message: 'Bloque escalado ausente' }); continue; }
+      if (k !== 1) f.push({ code: 'BLOCK_SCALED', severity: 'warning', nodeIds: [bs.nodeId, cA.id], measured: cA.width && mA.width ? cA.width / mA.width : null, expected: k, message: `Bloque de contenido escalado ×${k} (cuerpos de texto, rellenos, huecos y trazos con el mismo factor). Revisar legibilidad y proporciones en la captura.` });
+      for (const m of master.nodes.filter((n) => inBlock(n.id, bs.nodeId))) {
+        const cn = pair(m.id), exp = plan.expected[m.id];
+        if (!cn || !exp || !m.absoluteTransform || !cn.absoluteTransform || !mA.absoluteTransform || !cA.absoluteTransform) continue;
+        const dims = Math.max(m.width ?? 0, m.height ?? 0) * k;
+        const t = tol + 2e-3 * dims + (exp.blockSlackPx ?? 0);
+        const near = (got: number | null, want: number | null) => got !== null && want !== null && Math.abs(got - want) <= t;
+        const free = exp.free ?? { width: false, height: false };
+        if (!exp.derived) {
+          const sx = m.width && cn.width ? cn.width / m.width : null, sy = m.height && cn.height ? cn.height / m.height : null;
+          const okW = free.width || near(cn.width, m.width === null ? null : m.width * k), okH = free.height || near(cn.height, m.height === null ? null : m.height * k);
+          if (!okW || !okH) {
+            const deformed = !free.width && !free.height && sx !== null && sy !== null && Math.abs(sx - sy) > 1e-3;
+            f.push(deformed
+              ? { code: 'BLOCK_DEFORMED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: [sx, sy], message: 'Escala distinta en ancho y alto (deformación)' }
+              : { code: 'BLOCK_SIZE_MISMATCH', severity: 'blocking', nodeIds: [m.id, cn.id], measured: [cn.width, cn.height], expected: [m.width === null ? null : m.width * k, m.height === null ? null : m.height * k], message: `Tamaño distinto del factor declarado ×${k}` });
+          }
+        }
+        if (canonicalize(m.relativeTransform?.map((row) => row.slice(0, 2))) !== canonicalize(cn.relativeTransform?.map((row) => row.slice(0, 2)))) f.push({ code: 'BLOCK_TRANSFORM_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Rotación, sesgo o espejo distintos' });
+        if (typeof m.strokeWeight === 'number' && !near(typeof cn.strokeWeight === 'number' ? cn.strokeWeight : null, m.strokeWeight * k)) f.push({ code: 'BLOCK_STROKE_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], measured: cn.strokeWeight, expected: m.strokeWeight * k, message: 'Grosor de trazo no proporcional' });
+        const eff = (n: NodeSnapshot) => canonicalize(n.effects.map((e) => [e.type, e.visible]));
+        if (eff(m) !== eff(cn)) f.push({ code: 'BLOCK_EFFECTS_CHANGED', severity: 'blocking', nodeIds: [m.id, cn.id], message: 'Efectos distintos' });
+      }
+    }
+    results.push(r('block_scale', statusOf(f), 'Bloques escalados: mismo factor en ancho y alto de cada nodo (salvo cajas de texto automáticas, validadas en text_fit), transformaciones lineales idénticas, trazos proporcionales y mismos efectos. El render lo confirma la captura; la legibilidad la revisión humana.', f));
   }
 
   // 6. Zona interna de prueba (regla de DEMO, no especificación oficial) y recortes por el borde del frame.
@@ -294,7 +354,9 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
         (e === 'right' && got.x + got.width < c.target.width - tol) || (e === 'bottom' && got.y + got.height < c.target.height - tol));
       if (miss.length > 0) f.push({ code: 'EDGE_UNCOVERED', severity: 'blocking', nodeIds: [ce.nodeId], measured: got, message: `No llega al borde: ${miss.join(', ')}` });
     }
-    const textRects = master.nodes.filter((n) => n.text).map((n) => ({ id: n.id, rect: pair(n.id) && cRoot ? relRect(pair(n.id)!, cRoot) : null }));
+    const maskShapes = maskShapeTextIds(master);
+    // Los textos que son la forma de una máscara revelan su imagen (p. ej. la cifra con la foto dentro): no la tapan.
+    const textRects = master.nodes.filter((n) => n.text && !maskShapes.has(n.id)).map((n) => ({ id: n.id, rect: pair(n.id) && cRoot ? relRect(pair(n.id)!, cRoot) : null }));
     for (const pr of c.protectedRegions) {
       const cn = pair(pr.nodeId);
       const got = cn && cRoot ? relRect(cn, cRoot) : null;
@@ -435,7 +497,16 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
         if (inside) continue;
         const ob = o.absoluteRenderBounds && cRoot?.absoluteBoundingBox ? { x: o.absoluteRenderBounds.x - cRoot.absoluteBoundingBox.x, y: o.absoluteRenderBounds.y - cRoot.absoluteBoundingBox.y, width: o.absoluteRenderBounds.width, height: o.absoluteRenderBounds.height } : null;
         if (ob && Math.min(own.x + own.width, ob.x + ob.width) - Math.max(own.x, ob.x) > tol && Math.min(own.y + own.height, ob.y + ob.height) - Math.max(own.y, ob.y) > tol) {
-          f.push({ code: 'COVERED_BY_OPAQUE_NODE', severity: 'blocking', nodeIds: [id, o.id], message: 'Una forma opaca pintada encima solapa su render' });
+          // Si la maestra ya tenía ese mismo solape (p. ej. capas duplicadas o un asterisco dentro de la caja del titular),
+          // la adaptación no lo introduce: se registra como informativo, no como bloqueo.
+          const mo = toMaster.get(o.id), mn = mById.get(id), mob = mo ? mById.get(mo) : undefined;
+          const mrb = (n: NodeSnapshot | undefined): Rect | null => n?.absoluteRenderBounds && mRoot.absoluteBoundingBox
+            ? { x: n.absoluteRenderBounds.x - mRoot.absoluteBoundingBox.x, y: n.absoluteRenderBounds.y - mRoot.absoluteBoundingBox.y, width: n.absoluteRenderBounds.width, height: n.absoluteRenderBounds.height } : null;
+          const a = mrb(mn), b = mrb(mob);
+          const inMaster = !!(mn && mob && a && b && mob.paintOrder > mn.paintOrder && opaque(mob) &&
+            Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x) > tol && Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y) > tol);
+          if (inMaster) f.push({ code: 'COVERED_IN_MASTER', severity: 'warning', nodeIds: [id, o.id], message: 'El solape ya existe en la maestra; la adaptación no lo introduce' });
+          else f.push({ code: 'COVERED_BY_OPAQUE_NODE', severity: 'blocking', nodeIds: [id, o.id], message: 'Una forma opaca pintada encima solapa su render' });
         }
       }
     }
@@ -456,7 +527,7 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
     for (const id of textIds) {
       const m = mById.get(id)!, cn = pair(id);
       if (!cn?.text || !m.text) continue;
-      const e = edits.get(id);
+      const e = edits.get(id) ?? blockTextEdit(id);
       const k = e?.fontScale ?? 1;
       // Desbordamiento: cuánto sale el render de la caja del clon, descontando lo que ya salía en la maestra (rasgos
       // de los glifos), escalado por el cuerpo. 1 px absorbe la rasterización.
@@ -464,7 +535,7 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       if (oc && om) {
         const excess = Math.max(...(['left', 'top', 'right', 'bottom'] as const).map((side) => oc[side] - Math.max(0, om[side]) * k));
         if (excess > 1) f.push({ code: 'TEXT_OVERFLOW', severity: 'blocking', nodeIds: [id, cn.id], measured: oc, message: `El texto se sale ${excess.toFixed(1)} px de su caja` });
-      } else if (oc === null && e && cn.visible) {
+      } else if (oc === null && e && effVisible(cn)) {
         f.push({ code: 'TEXT_NOT_RENDERED', severity: 'blocking', nodeIds: [id, cn.id], message: 'Sin render: no se puede comprobar el desbordamiento' });
       }
       if (cn.text.truncation !== null && cn.text.truncation !== 'DISABLED' && cn.text.truncation !== m.text.truncation) {
@@ -488,7 +559,7 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
     for (let i = 0; i < textIds.length; i++) for (let j = i + 1; j < textIds.length; j++) {
       const a = textIds[i]!, b = textIds[j]!;
       const ca = pair(a), cb = pair(b);
-      if (!ca || !cb || !cRoot || !(edits.has(a) || edits.has(b))) continue;
+      if (!ca || !cb || !cRoot || !(edits.has(a) || edits.has(b) || blockK(a) !== undefined || blockK(b) !== undefined)) continue;
       if (hit(box(ca, cRoot), box(cb, cRoot)) && !hit(box(mById.get(a)!, mRoot), box(mById.get(b)!, mRoot))) {
         f.push({ code: 'TEXT_RENDER_OVERLAP', severity: 'blocking', nodeIds: [a, b], message: 'Un texto editado se solapa con otro (no ocurría en la maestra)' });
       }
@@ -507,7 +578,10 @@ export function checkDemo(inp: DemoCheckInput): DemoCheckReport {
       const x0 = Math.min(...rs.map((q) => q.x)), y0 = Math.min(...rs.map((q) => q.y));
       return { x: x0, y: y0, width: Math.max(...rs.map((q) => q.x + q.width)) - x0, height: Math.max(...rs.map((q) => q.y + q.height)) - y0 };
     };
-    const msg = union(mp.main);
+    // Si el bloque principal ES el sujeto (la persona forma parte del bloque rígido de la maestra, p. ej. una cifra con
+    // foto recortada), ese solape es de diseño: solo se comprueba el resto del mensaje principal.
+    const subjectIsMessage = !!subj.nodeId && mp.main.includes(subj.nodeId);
+    const msg = union(subjectIsMessage ? mp.main.filter((id) => id !== subj.nodeId) : mp.main);
     let anchor: Rect | null = null;
     if (subj.nodeId && cRoot) {
       const cn = pair(subj.nodeId), mn = mById.get(subj.nodeId);

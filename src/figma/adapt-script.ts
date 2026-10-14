@@ -23,9 +23,13 @@
 //    y logo EXPERIMENTAL (escala proporcional del bloque completo). Ambas solo entran en el script si el plan las
 //    declara, en líneas exactas permitidas. Las fuentes de los textos que se editan (o que escalan con el logo) se
 //    cargan ANTES de clonar: si alguna no está disponible se detiene sin escribir y lo informa; nunca se sustituye.
+//  - v9: escala PROPORCIONAL de bloques de contenido con maquetación automática (blockScales): rescale de la raíz del
+//    bloque (cuerpos, rellenos, huecos, radios y trazos con el mismo factor). Solo entra en el script si el plan la declara.
+//  - v10: efectos e imágenes se colocan por su CAJA (esquina superior izquierda respecto al frame), no por x/y: en un nodo
+//    volteado (p. ej. una imagen con espejo vertical) x/y es el origen del giro y no la esquina visible.
 import type { DemoPlan } from '../demo/plan.ts';
 
-export const ADAPT_SCRIPT_VERSION = 'pcb.adapt-script.v8';
+export const ADAPT_SCRIPT_VERSION = 'pcb.adapt-script.v10';
 
 /** Única eliminación permitida: el clon creado por este mismo script, si falla algo después de crearlo. */
 export const ALLOWED_DISCARD_LINE = '  clone.remove(); // PCB_DISCARD_OWN_CLONE';
@@ -38,13 +42,15 @@ export const FORBIDDEN_IN_ADAPT_SCRIPT = [
 
 /** Únicas líneas con escala del logo o inserción/borrado de caracteres (solo se emiten si el plan las declara). */
 export const ALLOWED_LOGO_RESCALE_LINE = '    lnode.rescale(PLAN.logo.scale); // PCB_LOGO_EXPERIMENTAL';
+/** Única línea con escala de un bloque de contenido (solo se emite si el plan declara blockScales). */
+export const ALLOWED_BLOCK_RESCALE_LINE = '    bnode.rescale(bs.scale); // PCB_BLOCK_RESCALE';
 export const ALLOWED_LINEBREAK_LINES = [
   "      tn.insertCharacters(cj + 1, want.charAt(cj), 'BEFORE'); // PCB_TEXT_LINEBREAK (hereda el estilo del espacio sustituido)",
   '      tn.deleteCharacters(cj, cj + 1); // PCB_TEXT_LINEBREAK',
 ];
 
 export function staticAdaptViolations(code: string): string[] {
-  const allowed = new Set([ALLOWED_DISCARD_LINE, ALLOWED_LOGO_RESCALE_LINE, ...ALLOWED_LINEBREAK_LINES]);
+  const allowed = new Set([ALLOWED_DISCARD_LINE, ALLOWED_LOGO_RESCALE_LINE, ALLOWED_BLOCK_RESCALE_LINE, ...ALLOWED_LINEBREAK_LINES]);
   const scanned = code.split('\n').filter((l) => !allowed.has(l)).join('\n');
   return FORBIDDEN_IN_ADAPT_SCRIPT.filter((f) => scanned.includes(f));
 }
@@ -153,6 +159,13 @@ var idMap = [];
 var applied = [];
 
 function near(p, q, tol) { return Math.abs(p.x - q.x) <= tol && Math.abs(p.y - q.y) <= tol; }
+// Coloca un nodo sin rotar (posiblemente volteado) para que la esquina superior izquierda de su CAJA quede en (x, y)
+// respecto al frame raíz del clon. Absoluto e idempotente.
+function placeByBox(nd, x, y) {
+  var rb = clone.absoluteBoundingBox, nb = nd.absoluteBoundingBox;
+  nd.x = nd.x + (x - (nb.x - rb.x));
+  nd.y = nd.y + (y - (nb.y - rb.y));
+}
 
 try {
 if (MODE !== 'patch') {
@@ -237,8 +250,7 @@ for (var ri = 0; ri < PLAN.effectResizes.length; ri++) {
   var en = onClone(er.nodeId);
   var eb = { x: en.x, y: en.y, width: en.width, height: en.height };
   if (en.width !== er.width || en.height !== er.height) en.resize(er.width, er.height);
-  en.x = er.x;
-  en.y = er.y;
+  placeByBox(en, er.x, er.y);
   applied.push({ op: 'resize_effect', cloneNodeId: en.id, masterNodeId: er.nodeId, detail: { before: eb, after: { x: en.x, y: en.y, width: en.width, height: en.height } } });
 }
 // Escala PROPORCIONAL de imágenes: tamaño final = tamaño en la maestra × factor (absoluto, idempotente); las pinturas
@@ -250,11 +262,11 @@ for (var si = 0; si < PLAN.imageScales.length; si++) {
   var ib = { x: inode.x, y: inode.y, width: inode.width, height: inode.height };
   var tw = mIs.width * isc.scale, th = mIs.height * isc.scale;
   if (Math.abs(inode.width - tw) > 1e-6 || Math.abs(inode.height - th) > 1e-6) inode.resize(tw, th);
-  inode.x = isc.x;
-  inode.y = isc.y;
+  placeByBox(inode, isc.x, isc.y);
   applied.push({ op: 'scale_image', cloneNodeId: inode.id, masterNodeId: isc.nodeId, detail: { scale: isc.scale, before: ib, after: { x: inode.x, y: inode.y, width: inode.width, height: inode.height } } });
 }
 
+/*PCB_BLOCK_SCALE*/
 /*PCB_TEXT_BLOCK*/
 /*PCB_LOGO_BLOCK*/
 // Ediciones vectoriales de decoración (coordenadas del frame destino). Idempotentes: un vértice ya en su destino se
@@ -324,6 +336,25 @@ return {
 };
 `;
 
+// Bloques de contenido ESCALADOS: rescale proporcional de la raíz del bloque (auto-layout incluido) desde su esquina
+// superior izquierda y colocación en su destino. Idempotente; si el tamaño no es ni el de la maestra ni el destino, para.
+const BLOCK_SCALE_BLOCK = String.raw`
+for (var bi = 0; bi < PLAN.blockScales.length; bi++) {
+  var bs = PLAN.blockScales[bi];
+  var bnode = onClone(bs.nodeId);
+  var mB = await figma.getNodeByIdAsync(bs.nodeId);
+  var bBefore = { x: bnode.x, y: bnode.y, width: bnode.width, height: bnode.height };
+  var bTarget = mB.width * bs.scale, bTol = 1e-3 * Math.max(1, mB.width);
+  if (Math.abs(bnode.width - bTarget) > bTol) {
+    if (Math.abs(bnode.width - mB.width) > bTol) throw new Error('PCB_BLOCK_UNEXPECTED_SIZE ' + bs.nodeId + ' ' + bnode.width);
+    bnode.rescale(bs.scale); // PCB_BLOCK_RESCALE
+  }
+  bnode.x = bs.x;
+  bnode.y = bs.y;
+  applied.push({ op: 'scale_block', cloneNodeId: bnode.id, masterNodeId: bs.nodeId, detail: { scale: bs.scale, before: bBefore, after: { x: bnode.x, y: bnode.y, width: bnode.width, height: bnode.height } } });
+}
+`;
+
 // Ediciones de texto declaradas. Idempotentes (valores absolutos desde la maestra). El copy no cambia: solo se
 // sustituyen espacios por saltos de línea (o al revés) en las mismas posiciones, heredando el estilo del carácter
 // sustituido; la familia y el estilo de fuente nunca se tocan.
@@ -386,10 +417,12 @@ if (PLAN.logo.mode === 'experimental') {
 }
 `;
 
-/** Textos cuyas fuentes deben cargarse para ejecutar el plan: los editados y los que escalan con el logo. */
+/** Textos cuyas fuentes deben cargarse para ejecutar el plan: los que se EDITAN (no los que solo se reescalan con su bloque). */
 export function fontRequiredNodeIds(plan: DemoPlan): string[] {
   const ids = new Set((plan.textEdits ?? []).map((e) => e.nodeId));
-  if (plan.logo?.mode === 'experimental') for (const [id, e] of Object.entries(plan.expected)) if (e.logoScale !== undefined) ids.add(id);
+  if (plan.logo?.mode === 'experimental' && !plan.logo.viaBlock) for (const [id, e] of Object.entries(plan.expected)) if (e.logoScale !== undefined) ids.add(id);
+  // Un bloque escalado solo se reescala (rescale): no escribe el texto, así que no exige cargar la fuente (medido en Figma:
+  // rescale/resize/mover funcionan con fuentes no cargables; cambiar el contenido o el cuerpo por separado, no).
   return [...ids].sort();
 }
 
@@ -403,6 +436,7 @@ export function buildAdaptScript(plan: DemoPlan, out: AdaptOptions): string {
     effectResizes: plan.effectResizes,
     vectorEdits: plan.vectorEdits ?? [],
     imageScales: plan.imageScales ?? [],
+    blockScales: plan.blockScales ?? [],
     textEdits: plan.textEdits ?? [],
     logo: plan.logo ?? { mode: 'standard' },
   };
@@ -417,8 +451,9 @@ export function buildAdaptScript(plan: DemoPlan, out: AdaptOptions): string {
     // Solo se exige cargar las fuentes de los textos que se editan o escalan; trasladar un texto no las necesita.
     `var FONT_REQUIRED_NODE_IDS = ${JSON.stringify(fontRequiredNodeIds(plan))};`,
     BODY
+      .replace('/*PCB_BLOCK_SCALE*/', (plan.blockScales ?? []).length > 0 ? BLOCK_SCALE_BLOCK : '')
       .replace('/*PCB_TEXT_BLOCK*/', (plan.textEdits ?? []).length > 0 ? TEXT_BLOCK : '')
-      .replace('/*PCB_LOGO_BLOCK*/', plan.logo?.mode === 'experimental' ? LOGO_BLOCK : ''),
+      .replace('/*PCB_LOGO_BLOCK*/', plan.logo?.mode === 'experimental' && !plan.logo.viaBlock ? LOGO_BLOCK : ''),
   ].join('\n');
   const v = staticAdaptViolations(code);
   if (v.length > 0) throw new Error(`El script de adaptación contiene operaciones prohibidas: ${v.join(', ')}`);
