@@ -100,6 +100,57 @@ export function sectionEntrySpec(): MockNodeSpec {
   };
 }
 
+/**
+ * Maestra de campaña universitaria (1080×1080) para variantes por grado y ciudad. Casos incluidos:
+ *  - foto de fondo a sangre con degradado encima
+ *  - logo (grupo de 2 vectores)
+ *  - titular con estilos mixtos: «Estudia » regular + «Derecho en Madrid» bold
+ *  - cuerpo, botón con auto layout («Infórmate»), URL, legal que menciona la ciudad
+ *  - sello vectorizado (posible texto no editable)
+ *  - foto de otra variante en un frame «Fotos» FUERA de la maestra (catálogo de activos)
+ */
+export const UNI_MASTER_ID = '70:1';
+export function universityMasterSpec(): MockNodeSpec {
+  const t = (id: string, name: string, x: number, y: number, w: number, h: number, characters: string, extra: Partial<MockNodeSpec['text']> = {}, autoResize = 'HEIGHT'): MockNodeSpec =>
+    ({ id, type: 'TEXT', name, x, y, width: w, height: h, fills: [solid(1, 1, 1)], text: { characters, autoResize, ...extra } });
+  return {
+    id: UNI_MASTER_ID, type: 'FRAME', name: 'UNI_Grados_1080x1080', x: 0, y: 0, width: 1080, height: 1080, fills: [solid(1, 1, 1)], clipsContent: true,
+    children: [
+      { id: '70:2', type: 'RECTANGLE', name: 'Rectangle 12', x: 0, y: 0, width: 1080, height: 1080, fills: [image('img_derecho_madrid')] },
+      { id: '70:3', type: 'RECTANGLE', name: 'Rectangle 13', x: 0, y: 540, width: 1080, height: 540, fills: [{ type: 'GRADIENT_LINEAR', opacity: 0.8 }] },
+      {
+        id: '70:4', type: 'GROUP', name: 'Logo', x: 60, y: 60, width: 240, height: 70,
+        children: [
+          { id: '70:5', type: 'VECTOR', name: 'Logo/símbolo', x: 0, y: 0, width: 70, height: 70, fills: [solid(1, 1, 1)], geometry: 'M0 0 L70 0 L35 70 Z' },
+          { id: '70:6', type: 'VECTOR', name: 'Logo/texto', x: 80, y: 15, width: 160, height: 40, fills: [solid(1, 1, 1)], geometry: 'M0 0 L160 0 L160 40 L0 40 Z' },
+        ],
+      },
+      t('70:7', 'Text 1', 60, 620, 960, 160, 'Estudia Derecho en Madrid', { fontSize: 72, segments: [{ end: 8, fontStyle: 'Regular' }, { end: 25, fontStyle: 'Bold' }] }),
+      t('70:8', 'Text 2', 60, 800, 960, 60, 'Grado oficial con prácticas desde primer curso.', { fontSize: 32 }),
+      {
+        id: '70:9', type: 'FRAME', name: 'Frame 3', x: 60, y: 890, width: 260, height: 70, fills: [solid(0.95, 0.75, 0.1)], layoutMode: 'HORIZONTAL',
+        children: [t('70:10', 'Text 3', 30, 15, 200, 40, 'Infórmate', { fontSize: 28 }, 'WIDTH_AND_HEIGHT')],
+      },
+      t('70:11', 'Text 4', 360, 905, 400, 40, 'universidad.example/derecho', { fontSize: 24 }, 'WIDTH_AND_HEIGHT'),
+      t('70:12', 'Text 5', 60, 1000, 960, 40, 'Plazas limitadas en el campus de Madrid. Consulta condiciones.', { fontSize: 18 }),
+      {
+        id: '70:13', type: 'GROUP', name: 'Group 7', x: 880, y: 60, width: 140, height: 40,
+        children: [0, 1, 2, 3].map((i) => ({ id: `70:${14 + i}`, type: 'VECTOR', name: `Vector ${i + 1}`, x: i * 36, y: 0, width: 30, height: 40, fills: [solid(1, 1, 1)], geometry: `M${i} 0 L30 0 L30 40 Z` })),
+      },
+    ],
+  };
+}
+/** Catálogo de fotos aportado por la persona, en el mismo archivo y fuera de la maestra (MOCK). */
+export function universityAssetsSpec(): MockNodeSpec {
+  return {
+    id: '80:1', type: 'FRAME', name: 'Fotos variantes', x: 2000, y: 0, width: 1200, height: 400, fills: [],
+    children: [
+      { id: '80:2', type: 'RECTANGLE', name: 'medicina_sevilla', x: 0, y: 0, width: 400, height: 400, fills: [image('img_medicina_sevilla')] },
+      { id: '80:3', type: 'RECTANGLE', name: 'ade_valencia', x: 400, y: 0, width: 400, height: 400, fills: [image('img_ade_valencia')] },
+    ],
+  };
+}
+
 export function fakeOptions(root: MockNodeSpec): FakeFigmaOptions {
   return { fileKey: MOCK_FILE_KEY, page: MOCK_PAGE, roots: [root] };
 }
@@ -117,4 +168,5 @@ export const MOCK_FIXTURES: Record<string, () => MockNodeSpec> = {
   'missing-font': missingFontMasterSpec,
   'read-error': readErrorMasterSpec,
   section: sectionEntrySpec,
+  university: universityMasterSpec,
 };

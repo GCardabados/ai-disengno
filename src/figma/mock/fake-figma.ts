@@ -30,6 +30,8 @@ export interface MockTextSpec {
   align?: string;
   /** Simula un entorno que rechaza campos avanzados de getStyledTextSegments. */
   rejectAdvancedSegmentFields?: boolean;
+  /** Tramos con estilos distintos (fin exclusivo de cada tramo; el último debe ser characters.length). */
+  segments?: Array<{ end: number; fontStyle?: string; fontSize?: number }>;
 }
 
 export interface MockNodeSpec {
@@ -252,9 +254,14 @@ export function createFakeFigma(opts: FakeFigmaOptions): FakeFigma {
           textStyleId: '',
           fillStyleId: '',
         };
-        const seg: Record<string, unknown> = { start: 0, end: tx.characters.length, characters: tx.characters };
-        for (const f of fields) if (f in full) seg[f] = full[f];
-        return [deepFreeze(seg)];
+        const runs = tx.segments ?? [{ end: tx.characters.length }];
+        return runs.map((run, i) => {
+          const start = i === 0 ? 0 : runs[i - 1]!.end;
+          const style: Record<string, unknown> = { ...full, fontName: { family: tx.fontFamily ?? 'Inter', style: run.fontStyle ?? tx.fontStyle ?? 'Regular' }, fontSize: run.fontSize ?? tx.fontSize ?? 32 };
+          const seg: Record<string, unknown> = { start, end: run.end, characters: tx.characters.slice(start, run.end) };
+          for (const f of fields) if (f in style) seg[f] = style[f];
+          return deepFreeze(seg);
+        });
       };
     }
     if (spec.type === 'INSTANCE') {

@@ -36,6 +36,7 @@ import { fontRequiredNodeIds } from './figma/adapt-script.ts';
 import { assembleChunks } from './figma/chunks.ts';
 import { renderDemoReport, type DemoReportMeta } from './report/demo-md.ts';
 import type { CheckStatus, Finding } from './contracts/validation.ts';
+import { runVariantCommand, VARIANT_USAGE } from './variants/cli.ts';
 
 const USAGE = `pcb <comando> [opciones]
 
@@ -78,7 +79,8 @@ const USAGE = `pcb <comando> [opciones]
   safe-zone-template-request --file-key K --node-id N --out F   Lee (solo lectura) las plantillas de safe zone de Figma
   safe-zone-resolve --raw F --width W --height H --provenance client|internal|platform_official
                  [--template-hint TXT] [--layer-hint TXT] --out F
-                 Elige la plantilla SOLO por tamaño exacto; 'none' o 'ambiguous' ⇒ no se aplica y se pregunta`;
+                 Elige la plantilla SOLO por tamaño exacto; 'none' o 'ambiguous' ⇒ no se aplica y se pregunta
+${VARIANT_USAGE}`;
 
 const opts = {
   'file-key': { type: 'string' },
@@ -171,6 +173,7 @@ async function assembledPayload(paths: string[]): Promise<string> {
 
 async function main(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
+  if (cmd?.startsWith('variant-')) return runVariantCommand(cmd, rest);
   const { values: a } = parseArgs({ args: rest, options: opts, strict: true });
   const now = new Date().toISOString();
 
