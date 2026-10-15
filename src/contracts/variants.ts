@@ -15,6 +15,9 @@ export const DecisionSchema = z.strictObject({
 });
 export type Decision = z.infer<typeof DecisionSchema>;
 
+export const FontNameSchema = z.strictObject({ family: z.string().min(1), style: z.string().min(1) });
+export type FontName = z.infer<typeof FontNameSchema>;
+
 // ---------- Descubrimiento (propuesta del agente, nunca autorización) ----------
 
 export const VARIANT_DISCOVERY_SCHEMA_ID = 'pcb.variant-discovery.v1';
@@ -68,11 +71,16 @@ export const TextPolicySchema = z.discriminatedUnion('mode', [
 ]);
 export type VariantTextPolicy = z.infer<typeof TextPolicySchema>;
 
-/** keep_crop: conserva modo y recorte (solo si la proporción coincide). fill: cubre el contenedor centrado. focal_point: cubre centrando el punto (0..1). */
+/**
+ * keep_crop: conserva modo y recorte (solo si la proporción coincide). fill: cubre el contenedor centrado. focal_point: cubre
+ * centrando el punto (0..1). frame_window: cubre solo la parte del contenedor visible dentro del frame (punto focal 0..1
+ * dentro de esa ventana), sin mover ni redimensionar la capa; útil cuando la foto de la maestra desborda el frame.
+ */
 export const ImagePolicySchema = z.discriminatedUnion('mode', [
   z.strictObject({ mode: z.literal('keep_crop') }),
   z.strictObject({ mode: z.literal('fill') }),
   z.strictObject({ mode: z.literal('focal_point'), x: z.number().min(0).max(1), y: z.number().min(0).max(1) }),
+  z.strictObject({ mode: z.literal('frame_window'), x: z.number().min(0).max(1), y: z.number().min(0).max(1) }),
 ]);
 export type VariantImagePolicy = z.infer<typeof ImagePolicySchema>;
 
@@ -160,9 +168,20 @@ export const VariantJobSchema = z.strictObject({
   variants: z.array(VariantRowSchema),
   output: z.strictObject({
     sectionName: z.string().min(1),
-    /** {master} y {variant} se sustituyen; el nombre identifica la variante en reejecuciones. */
-    cloneNamePattern: z.string().includes('{variant}'),
+    /** {master} y {variant} ({VARIANT} en mayúsculas) se sustituyen; el nombre identifica la variante en reejecuciones. */
+    cloneNamePattern: z.string().refine((p) => p.includes('{variant}') || p.includes('{VARIANT}'), 'debe incluir {variant} o {VARIANT}'),
   }),
+  /**
+   * Solo encargos de traducción (translation-job): procedencia de la tabla confirmada y fuentes sustitutas AUTORIZADAS
+   * por la persona para cada variante (idioma). Un fallback solo se aplica en la copia traducida si la fuente original
+   * no carga, y la copia se marca _PENDIENTE-FUENTE.
+   */
+  translation: z.strictObject({
+    sourceLang: z.string(),
+    /** variantId → hash de la tabla de traducción confirmada. */
+    tableHashes: z.record(z.string(), z.string()),
+    fontFallbacks: z.record(z.string(), z.array(z.strictObject({ from: FontNameSchema, to: FontNameSchema, decision: DecisionSchema }))),
+  }).optional(),
   confirmations: z.strictObject({
     fields: z.strictObject({ decision: DecisionSchema, hash: z.string() }).nullable(),
     /** Hash de cada variante confirmada: cambiar su contenido después exige confirmarla de nuevo. */
@@ -199,6 +218,8 @@ export const VariantResultSchema = z.strictObject({
     cloneName: z.string(),
     applied: z.array(z.strictObject({ op: z.enum(['replace_text', 'fit_text', 'reflow_text', 'replace_image']), cloneNodeId: z.string(), masterNodeId: z.string(), detail: z.unknown() })),
     error: z.string().nullable(),
+    /** Solo traducciones: fuentes sustitutas autorizadas que se aplicaron porque la original no cargó. */
+    fontFallbacks: z.array(z.strictObject({ from: FontNameSchema, to: FontNameSchema })).optional(),
   })),
 });
 export type VariantResult = z.infer<typeof VariantResultSchema>;

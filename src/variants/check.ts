@@ -9,6 +9,36 @@ import { relRect } from '../demo/plan.ts';
 import { textStyleMismatch } from '../demo/check.ts';
 import { mentionsTerm } from './discover.ts';
 import type { ImageOp, TextOp, VariantPlan, VariantPlanEntry } from './plan.ts';
+import { PENDING_FONT_SUFFIX } from '../contracts/translation.ts';
+
+/**
+ * Traducciones: los tramos del clon con una fuente sustituta AUTORIZADA para ese texto se comparan como si tuvieran la
+ * original (el peso deriva de la fuente, así que tampoco se compara en esos tramos). Devuelve las sustituciones vistas.
+ */
+export function normalizeFontFallbacks(expected: TextSegment[], got: TextSegment[], fallbacks: TextOp['fontFallbacks']): { expected: TextSegment[]; got: TextSegment[]; used: string[] } {
+  if (!fallbacks?.length) return { expected, got, used: [] };
+  const used = new Set<string>();
+  const sub = (g: TextSegment) => fallbacks.find((x) => g.fontName && g.fontName.family === x.to.family && g.fontName.style === x.to.style);
+  const touched: Array<[number, number]> = [];
+  const got2 = got.map((g) => {
+    const fb = sub(g);
+    if (!fb) return g;
+    used.add(`${fb.to.family} ${fb.to.style} en lugar de ${fb.from.family} ${fb.from.style}`);
+    touched.push([g.start, g.end]);
+    return { ...g, fontName: { ...fb.from }, fontWeight: null };
+  });
+  // El tramo esperado correspondiente (misma posición) tampoco compara el peso. Se parte por los cortes del clon.
+  const cuts = [...new Set([...expected.flatMap((g) => [g.start, g.end]), ...touched.flat()])].sort((a, b) => a - b);
+  const exp2: TextSegment[] = [];
+  for (const g of expected) {
+    const inner = cuts.filter((c) => c > g.start && c < g.end);
+    for (const [a, b] of [g.start, ...inner].map((c, i, arr) => [c, i + 1 < arr.length ? arr[i + 1]! : g.end] as [number, number])) {
+      const fbHere = touched.some(([s, e]) => a >= s && b <= e) && fallbacks.some((x) => g.fontName && g.fontName.family === x.from.family && g.fontName.style === x.from.style);
+      exp2.push({ ...g, start: a, end: b, characters: g.characters.slice(a - g.start, b - g.start), ...(fbHere ? { fontWeight: null } : {}) });
+    }
+  }
+  return { expected: exp2, got: got2, used: [...used] };
+}
 
 export const VARIANT_CHECK_VERSION = '1';
 
@@ -52,6 +82,8 @@ export function expectedVariantSegments(master: TextSegment[], parts: string[], 
 function paintWithout(p: Paint, keys: string[]): unknown {
   const raw = { ...(p.raw as Record<string, unknown>) };
   for (const k of keys) delete raw[k];
+  // En modo CROP Figma omite `rotation`: ausente equivale a 0 (no es un cambio de la pintura).
+  if (raw.rotation === undefined || raw.rotation === 0) delete raw.rotation;
   const { raw: _r, ...rest } = p;
   const norm: Record<string, unknown> = { ...rest };
   for (const k of keys) delete norm[k];
@@ -127,7 +159,12 @@ export function checkVariant(inp: VariantCheckInput): VariantCheckReport {
         scaleOf.set(mid, k);
         if (t.policy.mode !== 'fit_text' && Math.abs(k - 1) > 1e-3) f.push({ code: 'FONT_SIZE_CHANGED', severity: 'blocking', nodeIds: [mid, c.id], measured: k, message: 'El cuerpo cambió sin política fit_text' });
         if (t.policy.mode === 'fit_text' && k < t.policy.minScale - 1e-3) f.push({ code: 'BELOW_AUTHORIZED_MIN', severity: 'blocking', nodeIds: [mid, c.id], measured: k, expected: t.policy.minScale, message: 'Cuerpo por debajo del mínimo autorizado' });
-        const bad = textStyleMismatch(expectedVariantSegments(m.text!.segments, t.parts, k), c.text.segments);
+        const nf = normalizeFontFallbacks(expectedVariantSegments(m.text!.segments, t.parts, k), c.text.segments, t.fontFallbacks);
+        if (nf.used.length) {
+          f.push({ code: 'FONT_FALLBACK_USED', severity: 'warning', nodeIds: [mid, c.id], measured: nf.used, message: `Fuente sustituta autorizada: ${nf.used.join(', ')}. Pieza pendiente de fuente: no se acepta hasta restituir la original` });
+          if (!cRoot.name.endsWith(PENDING_FONT_SUFFIX) && !f.some((x) => x.code === 'PENDING_FONT_NOT_MARKED')) f.push({ code: 'PENDING_FONT_NOT_MARKED', severity: 'blocking', nodeIds: [cRoot.id], message: `La copia usa una fuente sustituta pero su nombre no termina en ${PENDING_FONT_SUFFIX}` });
+        }
+        const bad = textStyleMismatch(nf.expected, nf.got);
         if (bad !== null) f.push({ code: 'TEXT_STYLE_CHANGED', severity: 'blocking', nodeIds: [mid, c.id], measured: bad, message: `El estilo no se conservó por tramos (primer carácter distinto: ${bad})` });
         const strip = (n: NodeSnapshot) => canonicalize({ ...contentProjection(n), text: null });
         if (strip(m) !== strip(c)) f.push({ code: 'UNAUTHORIZED_CHANGE', severity: 'blocking', nodeIds: [mid, c.id], message: 'Cambió algo del texto además del copy (relleno, efectos, opacidad…)' });
@@ -142,7 +179,7 @@ export function checkVariant(inp: VariantCheckInput): VariantCheckReport {
           const same = i === im.paintIndex ? canonicalize(paintWithout(mf[i]!, keys)) === canonicalize(paintWithout(cf[i]!, keys)) : canonicalize(mf[i]) === canonicalize(cf[i]);
           if (!same) f.push({ code: 'IMAGE_PAINT_CHANGED', severity: 'blocking', nodeIds: [mid, c.id], measured: i, message: i === im.paintIndex ? 'Cambió algo de la pintura además de la imagen y su encaje' : 'Cambió otra capa de relleno' });
         }
-        const want = im.policy.mode === 'fill' ? 'FILL' : im.policy.mode === 'focal_point' ? 'CROP' : mf[im.paintIndex]!.scaleMode;
+        const want = im.policy.mode === 'fill' ? 'FILL' : im.policy.mode === 'focal_point' || im.policy.mode === 'frame_window' ? 'CROP' : mf[im.paintIndex]!.scaleMode;
         if (tp.scaleMode !== want) f.push({ code: 'IMAGE_SCALEMODE', severity: 'blocking', nodeIds: [mid, c.id], measured: tp.scaleMode, expected: want, message: 'Encaje distinto de la política confirmada' });
         const strip = (n: NodeSnapshot) => canonicalize({ ...contentProjection(n), fills: null });
         if (strip(m) !== strip(c)) f.push({ code: 'UNAUTHORIZED_CHANGE', severity: 'blocking', nodeIds: [mid, c.id], message: 'Cambió algo de la imagen además del relleno (efectos, opacidad, máscara…)' });

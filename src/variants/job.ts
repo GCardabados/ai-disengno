@@ -25,7 +25,7 @@ export interface JobCheck {
 }
 
 export const fieldsHash = (j: VariantJob): string =>
-  hashOf('pcb.variant-fields', { master: j.master, fields: j.fields, kept: j.kept, protected: j.protected, params: j.params });
+  hashOf('pcb.variant-fields', { master: j.master, fields: j.fields, kept: j.kept, protected: j.protected, params: j.params, ...(j.translation ? { translation: j.translation } : {}) });
 export const variantHash = (v: VariantRow): string => hashOf('pcb.variant-content', v);
 
 /** Registra una confirmación de la persona (campos o contenido de las variantes indicadas). */
@@ -123,7 +123,19 @@ export function checkVariantJob(j: VariantJob, s: MasterSnapshot): JobCheck {
     if (f.kind === 'text') {
       if (!n.text) { add({ ...fi, code: 'FIELD_KIND_MISMATCH', severity: 'blocking', message: `${f.label}: no es un texto editable (¿vectorizado o incrustado en imagen? hace falta un activo editable)` }); continue; }
       if (n.text.characters !== f.masterValue) add({ ...fi, code: 'BINDING_STALE', severity: 'blocking', message: `${f.label}: la maestra ya no dice ${quote(f.masterValue, 50)}; hay que revincular` });
-      if (s.environment.nodesWithMissingFont.includes(n.id)) add({ ...fi, code: 'FONT_UNAVAILABLE', severity: 'blocking', message: `${f.label}: su fuente no está disponible en este entorno; no se sustituye (comprobar con text-capabilities)` });
+      if (s.environment.nodesWithMissingFont.includes(n.id)) {
+        if (!j.translation) add({ ...fi, code: 'FONT_UNAVAILABLE', severity: 'blocking', message: `${f.label}: su fuente no está disponible en este entorno; no se sustituye (comprobar con text-capabilities)` });
+        else {
+          // Traducción: solo con una fuente sustituta autorizada por la persona para esa variante (copia _PENDIENTE-FUENTE).
+          const fonts = n.text.segments.flatMap((g) => (g.fontName ? [`${g.fontName.family}|${g.fontName.style}`] : []));
+          for (const v of j.variants) {
+            const fb = (j.translation.fontFallbacks[v.variantId] ?? []).filter((x) => fonts.includes(`${x.from.family}|${x.from.style}`));
+            add(fb.length
+              ? { ...fi, variantId: v.variantId, code: 'FONT_FALLBACK_AUTHORIZED', severity: 'warning', message: `${v.label} · ${f.label}: si la fuente original no carga se usa ${fb.map((x) => `${x.to.family} ${x.to.style} en lugar de ${x.from.family} ${x.from.style}`).join(', ')} (autorizado); la copia queda marcada _PENDIENTE-FUENTE` }
+              : { ...fi, variantId: v.variantId, code: 'FONT_UNAVAILABLE', severity: 'blocking', message: `${v.label} · ${f.label}: su fuente no está disponible y no hay una sustituta autorizada (no se sustituye sin autorización)` });
+          }
+        }
+      }
       if (n.text.truncation && n.text.truncation !== 'DISABLED') add({ ...fi, code: 'TRUNCATION_IN_MASTER', severity: 'blocking', message: `${f.label}: la caja trunca el texto; un copy más largo quedaría cortado (decisión de diseño)` });
       if (n.text.segmentFields !== 'full') add({ ...fi, code: 'TEXT_SEGMENTS_INCOMPLETE', severity: 'blocking', message: `${f.label}: no se leyeron todos los estilos del texto; no se puede garantizar conservarlos` });
       const segs = n.text.segments;
@@ -212,7 +224,7 @@ export function checkVariantJob(j: VariantJob, s: MasterSnapshot): JobCheck {
 const POLICY_LABEL = (f: VariantField): string => {
   if (f.kind === 'image') {
     const p = f.imagePolicy;
-    return !p ? 'sin definir' : p.mode === 'keep_crop' ? 'mantener recorte' : p.mode === 'fill' ? 'cubrir el contenedor (centrado)' : `cubrir con punto focal (${p.x}, ${p.y})`;
+    return !p ? 'sin definir' : p.mode === 'keep_crop' ? 'mantener recorte' : p.mode === 'fill' ? 'cubrir el contenedor (centrado)' : p.mode === 'frame_window' ? `cubrir la parte visible del frame (punto focal ${p.x}, ${p.y})` : `cubrir con punto focal (${p.x}, ${p.y})`;
   }
   const p = f.textPolicy;
   return !p ? 'sin definir' : p.mode === 'strict' ? 'strict (misma caja; si no cabe, se avisa)' : p.mode === 'reflow' ? `reflow (mismas líneas de ancho${p.maxHeightPx ? `, alto máx. ${p.maxHeightPx}px` : ''})` : `fit_text (cuerpo hasta ×${p.minScale})`;

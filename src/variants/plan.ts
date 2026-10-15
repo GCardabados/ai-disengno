@@ -2,7 +2,7 @@
 // cuyos activos se comprobaron en Figma; el resto queda bloqueado con su motivo y no impide las demás.
 import type { MasterSnapshot } from '../contracts/snapshot.ts';
 import type { Rect } from '../contracts/geometry.ts';
-import type { AssetRef, VariantAssetsRead, VariantImagePolicy, VariantJob, VariantTextPolicy } from '../contracts/variants.ts';
+import type { AssetRef, FontName, VariantAssetsRead, VariantImagePolicy, VariantJob, VariantTextPolicy } from '../contracts/variants.ts';
 import { checkVariantJob, resolveTextValue, type JobCheck } from './job.ts';
 import { quote } from './discover.ts';
 
@@ -19,6 +19,8 @@ export interface TextOp {
   characters: string;
   policy: VariantTextPolicy;
   isLegal: boolean;
+  /** Solo traducciones: sustitutas autorizadas para fuentes de este texto (se aplican solo si la original no carga). */
+  fontFallbacks?: Array<{ from: FontName; to: FontName }>;
 }
 export interface ImageOp {
   kind: 'image';
@@ -30,6 +32,8 @@ export interface ImageOp {
   /** Hash de la imagen comprobado en Figma (variant-assets-request). */
   targetHash: string;
   policy: VariantImagePolicy;
+  /** Solo frame_window: parte visible del contenedor dentro del frame, en unidades del contenedor (0..1) y en px. */
+  window: { u0: number; v0: number; uw: number; vh: number; width: number; height: number } | null;
 }
 export type VariantOp = TextOp | ImageOp;
 
@@ -57,7 +61,7 @@ export interface VariantPlan {
 }
 
 export const cloneNameOf = (j: VariantJob, variantId: string): string =>
-  j.output.cloneNamePattern.replace('{master}', j.master.name).replace('{variant}', variantId);
+  j.output.cloneNamePattern.replace('{master}', j.master.name).replace('{variant}', variantId).replace('{VARIANT}', variantId.toUpperCase());
 
 const aspect = (w: number, h: number) => w / h;
 
@@ -84,7 +88,9 @@ export function buildVariantPlan(j: VariantJob, s: MasterSnapshot, assets: Varia
         if (f.kind === 'text' && val.kind === 'text') {
           const r = resolveTextValue(f, v, n);
           if ('error' in r) { blockers.push(`${r.code}: ${f.label}: ${r.error}`); continue; }
-          ops.push({ kind: 'text', fieldId: f.fieldId, nodeId: f.nodeId, masterCharacters: n.text!.characters, segments: n.text!.segments.map((g) => ({ start: g.start, end: g.end })), parts: r.parts, characters: r.characters, policy: f.textPolicy!, isLegal: f.isLegal });
+          const fonts = new Set(n.text!.segments.flatMap((g) => (g.fontName ? [`${g.fontName.family}|${g.fontName.style}`] : [])));
+          const fb = (j.translation?.fontFallbacks[v.variantId] ?? []).filter((x) => fonts.has(`${x.from.family}|${x.from.style}`)).map((x) => ({ from: x.from, to: x.to }));
+          ops.push({ kind: 'text', fieldId: f.fieldId, nodeId: f.nodeId, masterCharacters: n.text!.characters, segments: n.text!.segments.map((g) => ({ start: g.start, end: g.end })), parts: r.parts, characters: r.characters, policy: f.textPolicy!, isLegal: f.isLegal, ...(fb.length ? { fontFallbacks: fb } : {}) });
         } else if (f.kind === 'image' && val.kind === 'image' && val.asset) {
           const a = val.asset;
           if (!assets) { blockers.push(`ASSETS_NOT_VERIFIED: ${f.label}: falta comprobar en Figma el acceso y las dimensiones de ${quote(a.label)} (variant-assets-request)`); continue; }
@@ -108,12 +114,21 @@ export function buildVariantPlan(j: VariantJob, s: MasterSnapshot, assets: Varia
             const d = Math.abs(aspect(target.width, target.height) / aspect(masterImg.width, masterImg.height) - 1);
             if (d > 0.01) { blockers.push(`ASSET_ASPECT_MISMATCH: ${f.label}: ${quote(a.label)} tiene otra proporción (${target.width}×${target.height} frente a ${masterImg.width}×${masterImg.height}); mantener el recorte la deformaría o la cortaría distinto. Propuesta: «cubrir» o «punto focal»`); continue; }
           }
-          // Resolución: la imagen debe cubrir el contenedor sin ampliarse (aviso, no bloqueo).
-          const k = Math.max(nw / target.width, nh / target.height);
-          if (k > 1.001) warnings.push(`ASSET_LOW_RESOLUTION: ${f.label}: ${quote(a.label)} (${target.width}×${target.height}) se amplía ×${k.toFixed(2)} para cubrir ${Math.round(nw)}×${Math.round(nh)}`);
+          let window: ImageOp['window'] = null;
+          if (f.imagePolicy!.mode === 'frame_window') {
+            const nb = n.absoluteBoundingBox, fb = byId.get(j.master.nodeId)?.absoluteBoundingBox;
+            if (!nb || !fb || (n.rotation ?? 0) !== 0 || !nw || !nh) { blockers.push(`FRAME_WINDOW_UNAVAILABLE: ${f.label}: no se puede calcular la parte visible (caja desconocida o capa girada)`); continue; }
+            const x0 = Math.max(nb.x, fb.x), y0 = Math.max(nb.y, fb.y), x1 = Math.min(nb.x + nb.width, fb.x + fb.width), y1 = Math.min(nb.y + nb.height, fb.y + fb.height);
+            if (x1 - x0 < 1 || y1 - y0 < 1) { blockers.push(`FRAME_WINDOW_EMPTY: ${f.label}: la capa no se ve dentro del frame`); continue; }
+            window = { u0: (x0 - nb.x) / nb.width, v0: (y0 - nb.y) / nb.height, uw: (x1 - x0) / nb.width, vh: (y1 - y0) / nb.height, width: x1 - x0, height: y1 - y0 };
+          }
+          // Resolución: la imagen debe cubrir el contenedor (o su ventana visible) sin ampliarse (aviso, no bloqueo).
+          const cw = window ? window.width : nw, chh = window ? window.height : nh;
+          const k = Math.max(cw / target.width, chh / target.height);
+          if (k > 1.001) warnings.push(`ASSET_LOW_RESOLUTION: ${f.label}: ${quote(a.label)} (${target.width}×${target.height}) se amplía ×${k.toFixed(2)} para cubrir ${Math.round(cw)}×${Math.round(chh)}`);
           const key = target.hash!;
           usedAssets.set(key, [...(usedAssets.get(key) ?? []), v.variantId]);
-          ops.push({ kind: 'image', fieldId: f.fieldId, nodeId: f.nodeId, paintIndex: f.paintIndex!, masterHash: f.masterValue, asset: a, targetHash: key, policy: f.imagePolicy! });
+          ops.push({ kind: 'image', fieldId: f.fieldId, nodeId: f.nodeId, paintIndex: f.paintIndex!, masterHash: f.masterValue, asset: a, targetHash: key, policy: f.imagePolicy!, window });
         }
       }
     }

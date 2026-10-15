@@ -17,6 +17,8 @@ import { checkVariantJob, confirm, renderJobSummary } from './job.ts';
 import { buildVariantPlan, type VariantPlan } from './plan.ts';
 import { checkVariant, type VariantCheckReport } from './check.ts';
 import { renderVariantBatchReport } from '../report/variants-md.ts';
+import { TranslationSchema } from '../contracts/translation.ts';
+import { renderTranslationReport } from './translation.ts';
 
 export const VARIANT_USAGE = `
   VARIANTES DE CONTENIDO (skill .claude/skills/creative-content-variants; mismo tamaño que la maestra):
@@ -30,7 +32,8 @@ export const VARIANT_USAGE = `
   variant-request --plan F [--variant ID ...] [--mode patch --existing ID=CLONE ...] --out F   Script de ESCRITURA
   variant-check  --snapshot F --clone-snapshot F --plan F --variant ID --config F [--result F]
                  [--master-raw F ... --digests F] [--visual F] --out DIR   Validación sobre la relectura del clon
-  variant-report --plan F [--result F] [--check F ...] [--screenshot ID=RUTA ...] --out F   Entrega de la tanda`;
+  variant-report --plan F [--result F] [--check F ...] [--screenshot ID=RUTA ...] [--translation F] --out F
+                 Entrega de la tanda (con --translation: normas del idioma, legales y piezas pendientes de fuente)`;
 
 const opts = {
   snapshot: { type: 'string' }, config: { type: 'string' }, term: { type: 'string', multiple: true }, out: { type: 'string' },
@@ -38,7 +41,7 @@ const opts = {
   by: { type: 'string' }, 'assets-raw': { type: 'string' }, plan: { type: 'string' }, mode: { type: 'string' },
   existing: { type: 'string', multiple: true }, 'clone-snapshot': { type: 'string' }, result: { type: 'string' },
   'master-raw': { type: 'string', multiple: true }, digests: { type: 'string' }, visual: { type: 'string' },
-  check: { type: 'string', multiple: true }, screenshot: { type: 'string', multiple: true },
+  check: { type: 'string', multiple: true }, screenshot: { type: 'string', multiple: true }, translation: { type: 'string' },
 } as const;
 
 const readJson = async (p: string): Promise<unknown> => JSON.parse(await readFile(p, 'utf8'));
@@ -174,7 +177,9 @@ export async function runVariantCommand(cmd: string, rest: string[]): Promise<nu
       const plan = (await readJson(need(a.plan, 'plan'))) as VariantPlan;
       const result = a.result ? await loadResult(a.result) : null;
       const checks = await Promise.all((a.check ?? []).map(async (p) => (await readJson(p)) as VariantCheckReport));
-      await writeFile(need(a.out, 'out'), renderVariantBatchReport(plan, result, checks, pairs(a.screenshot)), 'utf8');
+      let md = renderVariantBatchReport(plan, result, checks, pairs(a.screenshot));
+      if (a.translation) md += `\n${renderTranslationReport(parseOrThrow(TranslationSchema, await readJson(a.translation), 'translation'), plan.variants.map((v) => v.variantId))}`;
+      await writeFile(need(a.out, 'out'), md, 'utf8');
       const st = (s: string) => result?.variants.filter((v) => v.status === s).length ?? 0;
       console.log(`${st('created') + st('patched')} creada(s)/actualizada(s), ${st('exists')} ya existente(s), ${st('failed')} fallida(s), ${plan.variants.filter((v) => v.status === 'blocked').length} bloqueada(s) → ${a.out}`);
       return 0;

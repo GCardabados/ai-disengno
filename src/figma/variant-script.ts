@@ -7,7 +7,9 @@
 //    Todas las mutaciones pasan por onClone(id de la maestra), que rechaza nodos de la maestra o fuera del clon.
 //  - Solo escribe en los nodos vinculados del plan: texto (por tramos, heredando el estilo de cada tramo; nunca asigna
 //    fontName) e imagen (solo el imageHash y, según la política, el encaje). Ninguna otra operación.
-//  - Fuentes: carga las de los textos que edita ANTES de clonar; si falta alguna, se detiene sin escribir.
+//  - Fuentes: carga las de los textos que edita ANTES de clonar; si falta alguna, se detiene sin escribir. Única
+//    excepción (traducciones): una sustituta AUTORIZADA en el plan para esa variante, aplicada solo en su copia, que se
+//    nombra con el sufijo _PENDIENTE-FUENTE.
 //  - No cabe ⇒ la variante falla (strict/reflow), o fit_text reduce el cuerpo de todos los tramos con el mismo factor
 //    hasta el mínimo AUTORIZADO; nunca trunca ni usa elipsis.
 //  - Si algo distinto de los nodos editados cambia de caja (auto layout, constraints), la variante falla
@@ -18,6 +20,7 @@
 //    en el destino (si no, hay un cambio manual y no se escribe nada de esa variante).
 import type { VariantPlan } from '../variants/plan.ts';
 import { VARIANT_ASSETS_SCHEMA_ID, VARIANT_RESULT_SCHEMA_ID } from '../contracts/variants.ts';
+import { PENDING_FONT_SUFFIX } from '../contracts/translation.ts';
 
 export const VARIANT_SCRIPT_VERSION = 'pcb.variant-script.v1';
 
@@ -32,12 +35,13 @@ export const VARIANT_ALLOWED_LINES = [
   "    if (st.lh && st.lh.unit === 'PIXELS') tn.setRangeLineHeight(r.s, r.e, { unit: 'PIXELS', value: st.lh.value * k }); // PCB_TEXT_FIT",
   "    if (st.ls && st.ls.unit === 'PIXELS') tn.setRangeLetterSpacing(r.s, r.e, { unit: 'PIXELS', value: st.ls.value * k }); // PCB_TEXT_FIT",
   '  cn.fills = fills; // PCB_VARIANT_IMAGE',
+  '      tn.setRangeFontName(fs[q].start, fs[q].end, fb); // PCB_FONT_FALLBACK (solo en la copia traducida, autorizado)',
 ];
 
 export const FORBIDDEN_IN_VARIANT_SCRIPT = [
   '.remove(', 'setPluginData', 'setSharedPluginData', 'createImage', 'exportAsync', 'loadAllPagesAsync', 'setCurrentPageAsync',
   'detachInstance', 'flatten(', 'rescale(', 'insertCharacters', 'deleteCharacters', 'setRangeFontSize', 'setRangeLineHeight',
-  'setRangeLetterSpacing', '.resize(', 'createText', 'createRectangle', 'createFrame', 'createComponent', 'swapComponent', 'setProperties',
+  'setRangeLetterSpacing', 'setRangeFontName', '.resize(', 'createText', 'createRectangle', 'createFrame', 'createComponent', 'swapComponent', 'setProperties',
 ];
 /** Asignaciones prohibidas fuera de las líneas permitidas (una comparación `===` no cuenta). */
 const FORBIDDEN_ASSIGNMENTS: Array<[string, RegExp]> = [
@@ -107,17 +111,32 @@ for (var v0 = 0; v0 < VARIANTS.length; v0++) for (var o0 = 0; o0 < VARIANTS[v0].
   if (op0.kind === 'image' && (!mn0.fills[op0.paintIndex] || mn0.fills[op0.paintIndex].imageHash !== op0.masterHash)) throw new Error('PCB_MASTER_IMAGE_CHANGED ' + op0.nodeId);
 }
 
-// Fuentes de los textos que se editan: se cargan ANTES de clonar; nunca se sustituye ninguna.
-var fonts = [], fontKeys = {}, missing = [];
+// Fuentes de los textos que se editan: se cargan ANTES de clonar; nunca se sustituye ninguna salvo una sustituta
+// autorizada en el plan para esa variante (traducciones), que solo se usa si la original no carga.
+var usersOf = {};
+for (var u0 = 0; u0 < VARIANTS.length; u0++) for (var u1 = 0; u1 < VARIANTS[u0].ops.length; u1++) {
+  var uo = VARIANTS[u0].ops[u1];
+  if (uo.kind === 'text') (usersOf[uo.nodeId] = usersOf[uo.nodeId] || []).push(VARIANTS[u0].variantId);
+}
+var fonts = [], fontState = {}, missing = [], FAILED = {};
 for (var f0 = 0; f0 < FONT_NODE_IDS.length; f0++) {
   var ft = await figma.getNodeByIdAsync(FONT_NODE_IDS[f0]);
   var fsg = ft.getStyledTextSegments(['fontName']);
   for (var f1 = 0; f1 < fsg.length; f1++) {
-    var key = fsg[f1].fontName.family + '\u0000' + fsg[f1].fontName.style;
-    if (fontKeys[key]) continue;
-    fontKeys[key] = true;
-    try { await figma.loadFontAsync(fsg[f1].fontName); fonts.push({ family: fsg[f1].fontName.family, style: fsg[f1].fontName.style, loaded: true, error: null }); }
-    catch (e) { var em = String(e && e.message ? e.message : e).split('\n')[0]; fonts.push({ family: fsg[f1].fontName.family, style: fsg[f1].fontName.style, loaded: false, error: em }); missing.push({ nodeId: ft.id, family: fsg[f1].fontName.family, style: fsg[f1].fontName.style, error: em }); }
+    var fnm = fsg[f1].fontName, key = fnm.family + '\u0000' + fnm.style;
+    if (!(key in fontState)) {
+      try { await figma.loadFontAsync(fnm); fontState[key] = true; fonts.push({ family: fnm.family, style: fnm.style, loaded: true, error: null }); }
+      catch (e) { fontState[key] = String(e && e.message ? e.message : e).split('\n')[0]; fonts.push({ family: fnm.family, style: fnm.style, loaded: false, error: fontState[key] }); }
+    }
+    if (fontState[key] === true) continue;
+    var us = usersOf[ft.id] || [];
+    for (var f2 = 0; f2 < us.length; f2++) {
+      var fbk = FALLBACKS[us[f2]] && FALLBACKS[us[f2]][key];
+      if (!fbk) { missing.push({ nodeId: ft.id, variantId: us[f2], family: fnm.family, style: fnm.style, error: fontState[key] }); continue; }
+      try { await figma.loadFontAsync(fbk); }
+      catch (e2) { missing.push({ nodeId: ft.id, variantId: us[f2], family: fnm.family, style: fnm.style, error: 'la sustituta autorizada ' + fbk.family + ' ' + fbk.style + ' tampoco carga: ' + String(e2 && e2.message ? e2.message : e2).split('\n')[0] }); continue; }
+      (FAILED[us[f2]] = FAILED[us[f2]] || {})[key] = fbk;
+    }
   }
 }
 if (missing.length > 0) throw new Error('PCB_FONT_UNAVAILABLE ' + JSON.stringify(missing));
@@ -155,8 +174,9 @@ function focal(nw, nh, iw, ih, fx, fy) {
 var results = [];
 for (var vi = 0; vi < VARIANTS.length; vi++) {
   var V = VARIANTS[vi];
+  var pendingName = V.cloneName + PENDING_SUFFIX, usesFallback = !!FAILED[V.variantId];
   var existing = null;
-  for (var j = 0; j < section.children.length; j++) if (section.children[j].name === V.cloneName) existing = section.children[j];
+  for (var j = 0; j < section.children.length; j++) if (section.children[j].name === V.cloneName || section.children[j].name === pendingName) existing = section.children[j];
   if (MODE === 'create' && existing) { results.push({ variantId: V.variantId, status: 'exists', cloneId: existing.id, cloneName: V.cloneName, applied: [], error: null }); continue; }
   var clone = null;
   if (MODE === 'patch') {
@@ -171,7 +191,7 @@ for (var vi = 0; vi < VARIANTS.length; vi++) {
       var nextX = 100;
       for (var sc = 0; sc < section.children.length; sc++) { var sib = section.children[sc]; if (sib !== clone && sib.x + sib.width + 100 > nextX) nextX = sib.x + sib.width + 100; }
       section.appendChild(clone);
-      clone.x = nextX; clone.y = 100; clone.name = V.cloneName;
+      clone.x = nextX; clone.y = 100; clone.name = usesFallback ? pendingName : V.cloneName;
       var needW = clone.x + PLAN.width + 100, needH = clone.y + PLAN.height + 100;
       if (section.width < needW || section.height < needH) section.resizeWithoutConstraints(Math.max(section.width, needW), Math.max(section.height, needH));
     }
@@ -200,9 +220,10 @@ for (var vi = 0; vi < VARIANTS.length; vi++) {
       if (og.kind === 'image') { var hg = ng.fills[og.paintIndex] && ng.fills[og.paintIndex].imageHash; if (hg !== og.masterHash && hg !== og.targetHash) throw new Error('PCB_IMAGE_UNEXPECTED ' + og.nodeId); }
     }
     wrote = true;
+    if (usesFallback && clone.name !== pendingName) clone.name = pendingName;
     for (var oi = 0; oi < V.ops.length; oi++) {
       var op = V.ops[oi];
-      if (op.kind === 'text') applied.push(await applyText(op, onClone(op.nodeId), masterNode[op.nodeId], clone));
+      if (op.kind === 'text') applied.push(await applyText(op, onClone(op.nodeId), masterNode[op.nodeId], clone, FAILED[V.variantId]));
       else applied.push(await applyImage(op, onClone(op.nodeId)));
     }
     // Nada más puede haber cambiado de caja (auto layout, constraints): si no, requiere adaptación de diseño.
@@ -220,7 +241,11 @@ for (var vi = 0; vi < VARIANTS.length; vi++) {
       if (!cb || Math.abs(cb.x - mb.x) > 0.01 || Math.abs(cb.y - mb.y) > 0.01 || Math.abs(cb.w - mb.w) > 0.01 || Math.abs(cb.h - mb.h) > 0.01) shifted.push(id);
     }
     if (shifted.length) throw new Error('PCB_LAYOUT_SHIFT requiere adaptación de diseño: ' + shifted.slice(0, 12).join(','));
-    results.push({ variantId: V.variantId, status: MODE === 'patch' ? 'patched' : 'created', cloneId: clone.id, cloneName: clone.name, applied: applied, error: null });
+    var vfb = [], vfk = {};
+    applied.forEach(function (a) { (a.detail.fontFallbacks || []).forEach(function (x) { var k = x.from.family + '\u0000' + x.from.style; if (!vfk[k]) { vfk[k] = true; vfb.push(x); } }); });
+    var okRes = { variantId: V.variantId, status: MODE === 'patch' ? 'patched' : 'created', cloneId: clone.id, cloneName: clone.name, applied: applied, error: null };
+    if (vfb.length) okRes.fontFallbacks = vfb;
+    results.push(okRes);
   } catch (e) {
     var msg = String(e && e.message ? e.message : e);
     if (MODE === 'create' && clone) {
@@ -232,7 +257,19 @@ for (var vi = 0; vi < VARIANTS.length; vi++) {
   }
 }
 
-async function applyText(op, tn, mT, clone) {
+async function applyText(op, tn, mT, clone, failed) {
+  // Sustituta autorizada (solo traducciones y solo si la original no cargó): antes de escribir, porque un texto con
+  // una fuente sin cargar no admite cambios de caracteres. Solo en la copia; nunca en la maestra.
+  var used = [];
+  if (failed) {
+    var fs = tn.getStyledTextSegments(['fontName']);
+    for (var q = 0; q < fs.length; q++) {
+      var fb = failed[fs[q].fontName.family + '\u0000' + fs[q].fontName.style];
+      if (!fb) continue;
+      tn.setRangeFontName(fs[q].start, fs[q].end, fb); // PCB_FONT_FALLBACK (solo en la copia traducida, autorizado)
+      used.push({ from: { family: fs[q].fontName.family, style: fs[q].fontName.style }, to: { family: fb.family, style: fb.style } });
+    }
+  }
   if (tn.characters !== op.characters) {
     for (var i = op.segments.length - 1; i >= 0; i--) {
     var sg = op.segments[i];
@@ -284,7 +321,7 @@ async function applyText(op, tn, mT, clone) {
     var want = mT.textAlignHorizontal === 'CENTER' ? mb.x + mb.w / 2 - cb.w / 2 : mT.textAlignHorizontal === 'RIGHT' ? mb.x + mb.w - cb.w : mb.x;
     if (Math.abs(want - cb.x) > 0.001) tn.x = tn.x + (want - cb.x);
   }
-  return { op: op.policy.mode === 'fit_text' && k < 1 ? 'fit_text' : op.policy.mode === 'reflow' ? 'reflow_text' : 'replace_text', cloneNodeId: tn.id, masterNodeId: op.nodeId, detail: { fieldId: op.fieldId, scale: k, width: tn.width, height: tn.height, autoResize: tn.textAutoResize } };
+  return { op: op.policy.mode === 'fit_text' && k < 1 ? 'fit_text' : op.policy.mode === 'reflow' ? 'reflow_text' : 'replace_text', cloneNodeId: tn.id, masterNodeId: op.nodeId, detail: { fieldId: op.fieldId, scale: k, width: tn.width, height: tn.height, autoResize: tn.textAutoResize, fontFallbacks: used } };
 }
 
 async function applyImage(op, cn) {
@@ -298,6 +335,12 @@ async function applyImage(op, cn) {
   pt.imageHash = op.targetHash;
   if (op.policy.mode === 'fill') { pt.scaleMode = 'FILL'; delete pt.imageTransform; delete pt.scalingFactor; }
   if (op.policy.mode === 'focal_point') { pt.scaleMode = 'CROP'; delete pt.scalingFactor; pt.imageTransform = focal(cn.width, cn.height, size.width, size.height, op.policy.x, op.policy.y); }
+  if (op.policy.mode === 'frame_window') {
+    // Recorte que cubre la ventana visible y, fuera de ella, queda recortado por el frame (la capa no se mueve).
+    var w = op.window, c = focal(w.width, w.height, size.width, size.height, op.policy.x, op.policy.y);
+    pt.scaleMode = 'CROP'; delete pt.scalingFactor;
+    pt.imageTransform = [[c[0][0] / w.uw, 0, c[0][2] - c[0][0] * w.u0 / w.uw], [0, c[1][1] / w.vh, c[1][2] - c[1][1] * w.v0 / w.vh]];
+  }
   cn.fills = fills; // PCB_VARIANT_IMAGE
   return { op: 'replace_image', cloneNodeId: cn.id, masterNodeId: op.nodeId, detail: { fieldId: op.fieldId, before: before, after: { imageHash: pt.imageHash, scaleMode: pt.scaleMode }, imageSize: size, policy: op.policy.mode } };
 }
@@ -317,6 +360,10 @@ export function buildVariantScript(plan: VariantPlan, o: VariantScriptOptions = 
     if (miss.length) throw new Error(`patch requiere el clon existente de: ${miss.join(', ')}`);
   }
   const fontNodeIds = [...new Set(chosen.flatMap((v) => v.ops.filter((x) => x.kind === 'text').map((x) => x.nodeId)))].sort();
+  const fallbacks = Object.fromEntries(chosen.flatMap((v) => {
+    const m = Object.fromEntries(v.ops.flatMap((x) => (x.kind === 'text' ? x.fontFallbacks ?? [] : [])).map((x) => [`${x.from.family}\u0000${x.from.style}`, x.to]));
+    return Object.keys(m).length ? [[v.variantId, m]] : [];
+  }));
   const code = [
     `var PLAN = ${JSON.stringify({ masterNodeId: plan.master.nodeId, masterName: plan.master.name, width: plan.master.width, height: plan.master.height })};`,
     `var VARIANTS = ${JSON.stringify(chosen.map((v) => ({ variantId: v.variantId, cloneName: v.cloneName, ops: v.ops })))};`,
@@ -324,6 +371,8 @@ export function buildVariantScript(plan: VariantPlan, o: VariantScriptOptions = 
     `var MODE = ${JSON.stringify(mode)};`,
     `var EXISTING = ${JSON.stringify(o.existingCloneIds ?? {})};`,
     `var FONT_NODE_IDS = ${JSON.stringify(fontNodeIds)};`,
+    `var FALLBACKS = ${JSON.stringify(fallbacks)};`,
+    `var PENDING_SUFFIX = ${JSON.stringify(PENDING_FONT_SUFFIX)};`,
     `var SCRIPT_VERSION = ${JSON.stringify(VARIANT_SCRIPT_VERSION)};`,
     `var SCHEMA = ${JSON.stringify(VARIANT_RESULT_SCHEMA_ID)};`,
     BODY,

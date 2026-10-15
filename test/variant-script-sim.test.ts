@@ -7,12 +7,14 @@ import assert from 'node:assert/strict';
 import { buildVariantPlan, type VariantPlan } from '../src/variants/plan.ts';
 import { checkVariantJob, confirm } from '../src/variants/job.ts';
 import { buildVariantScript } from '../src/figma/variant-script.ts';
-import { universityMasterSpec } from '../src/figma/mock/fixtures.ts';
+import { mapSpec, universityMasterSpec } from '../src/figma/mock/fixtures.ts';
+import { authorizeFontFallback, buildTranslationJob, confirmTranslation } from '../src/variants/translation.ts';
+import type { Translation } from '../src/contracts/translation.ts';
 import type { MockNodeSpec } from '../src/figma/mock/fake-figma.ts';
 import type { VariantAssetsRead, VariantJob, VariantResult } from '../src/contracts/variants.ts';
 import { snap } from './helpers.ts';
 
-interface Seg { end: number; style: string; size: number }
+interface Seg { end: number; style: string; size: number; family?: string }
 interface SimNode {
   id: string; type: string; name: string; x: number; y: number; width: number; height: number; parent: SimNode | null;
   children: SimNode[]; fills: unknown[]; layoutMode: string; characters?: string; segs?: Seg[]; textAutoResize?: string; textAlignHorizontal?: string;
@@ -62,7 +64,11 @@ function sim(root: MockNodeSpec, opts: { missingFont?: string; hug?: boolean } =
     };
     if (n.type === 'TEXT') {
       const segOf = (i: number) => n.segs!.find((s, k) => i < s.end && i >= (k ? n.segs![k - 1]!.end : 0))!;
-      n.getStyledTextSegments = () => n.segs!.map((s, k) => ({ start: k ? n.segs![k - 1]!.end : 0, end: s.end, fontName: { family: 'Inter', style: s.style } }));
+      n.getStyledTextSegments = () => n.segs!.map((s, k) => ({ start: k ? n.segs![k - 1]!.end : 0, end: s.end, fontName: { family: s.family ?? 'Inter', style: s.style } }));
+      n.setRangeFontName = (a: number, b: number, f: { family: string; style: string }) => {
+        writes.push(`fontName ${n.id}`);
+        n.segs = n.segs!.map((s, k) => ((k ? n.segs![k - 1]!.end : 0) >= a && s.end <= b ? { ...s, family: f.family, style: f.style } : s));
+      };
       n.insertCharacters = (pos: number, t: string, use: string) => {
         writes.push(`insert ${n.id}`);
         assert.equal(use, 'BEFORE');
@@ -107,7 +113,7 @@ function sim(root: MockNodeSpec, opts: { missingFont?: string; hug?: boolean } =
   page.children = [build(root, page)];
   const figma = {
     getNodeByIdAsync: async (id: string) => all.get(id) ?? null,
-    loadFontAsync: async (f: { style: string }) => { if (opts.missingFont === f.style) throw new Error(`MOCK: font ${f.style} not available`); },
+    loadFontAsync: async (f: { family: string; style: string }) => { if (opts.missingFont === f.style || opts.missingFont === `${f.family}|${f.style}`) throw new Error(`MOCK: font ${f.style} not available`); },
     createSection: () => { const s = mk({ id: `${800 + next++}:1`, type: 'SECTION', name: '' }, null); methods(s); return s; },
     getImageByHash: (h: string) => (h.startsWith('img_') ? { getSizeAsync: async () => ({ width: 2000, height: 2000 }) } : null),
   };
@@ -231,4 +237,52 @@ test('MOCK [simulación]: una fuente que no carga detiene todo ANTES de clonar',
   const f = sim(universityMasterSpec(), { missingFont: 'Bold' });
   await assert.rejects(f.run(buildVariantScript(p)), /PCB_FONT_UNAVAILABLE .*Bold/);
   assert.ok(!f.page.children.some((n) => n.type === 'SECTION'), 'ni sección ni clones');
+});
+
+// ---------- Traducciones: fuente sustituta autorizada ----------
+
+async function translationPlan(fallback: boolean): Promise<VariantPlan> {
+  const s = await snap(mapSpec(universityMasterSpec(), '70:7', (n) => ({ ...n, text: { ...n.text!, hasMissingFont: true } })));
+  const tr0: Translation = {
+    schema: 'pcb.translation.v1', fileKey: s.fileKey, sourceLang: 'ES', master: { nodeId: '70:1', name: 'UNI_Grados_1080x1080' },
+    frames: [{ nodeId: '70:1', name: 'UNI_Grados_1080x1080', width: 1080, height: 1080 }],
+    entries: [
+      { id: 't1', n: 1, layer: 'Text 1', text: 'Estudia Derecho en Madrid', segments: ['Estudia ', 'Derecho en Madrid'], isLegal: false, occurrences: [{ frameId: '70:1', nodeId: '70:7', segmentCount: 2 }], extra: false },
+      { id: 't2', n: 2, layer: 'Text 3', text: 'Infórmate', segments: ['Infórmate'], isLegal: false, occurrences: [{ frameId: '70:1', nodeId: '70:10', segmentCount: 1 }], extra: false },
+    ],
+    fonts: [{ family: 'Inter', style: 'Regular', loadable: true, usedIn: ['t1', 't2'] }, { family: 'Inter', style: 'Bold', loadable: false, usedIn: ['t1'] }],
+    targets: [{ lang: 'EN', locale: null, typography: [], fontFallbacks: [], confirmation: null, values: {
+      t1: { text: null, parts: ['Study ', 'Law in Madrid'], keep: false, note: null },
+      t2: { text: 'Learn more', parts: null, keep: false, note: null },
+    } }],
+  };
+  let tr = confirmTranslation(tr0, 'EN', USER);
+  if (fallback) tr = authorizeFontFallback(tr, 'EN', { family: 'Inter', style: 'Bold' }, { family: 'Montserrat', style: 'Bold' }, USER);
+  const job = buildTranslationJob(tr, s, ['EN'], { textPolicy: { mode: 'strict' } });
+  return buildVariantPlan(job, s, null).plan;
+}
+
+test('MOCK [simulación]: traducción con la fuente ausente y sustituta autorizada → solo la copia usa la sustituta y se marca _PENDIENTE-FUENTE', async () => {
+  const p = await translationPlan(true);
+  const f = sim(universityMasterSpec(), { missingFont: 'Inter|Bold' });
+  const res = await f.run(buildVariantScript(p));
+  assert.equal(res.variants[0]!.status, 'created', res.variants[0]!.error ?? '');
+  assert.equal(res.variants[0]!.cloneName, 'UNI_Grados_1080x1080_EN_PENDIENTE-FUENTE');
+  assert.deepEqual(res.variants[0]!.fontFallbacks, [{ from: { family: 'Inter', style: 'Bold' }, to: { family: 'Montserrat', style: 'Bold' } }]);
+  const t = f.page.children.find((n) => n.type === 'SECTION')!.children[0]!.children.find((c) => c.name === 'Text 1')!;
+  assert.equal(t.characters, 'Study Law in Madrid');
+  assert.deepEqual(t.segs!.map((g) => [g.family ?? 'Inter', g.style]), [['Inter', 'Regular'], ['Montserrat', 'Bold']]);
+  assert.deepEqual(f.all.get('70:7')!.segs!.map((g) => g.family ?? 'Inter'), ['Inter', 'Inter'], 'la maestra conserva su fuente');
+  assert.ok(!f.writes.some((w) => /^fontName 70:/.test(w)));
+  // Reejecución: reconoce la copia por su nombre con sufijo y no la duplica.
+  assert.deepEqual((await f.run(buildVariantScript(p))).variants.map((v) => v.status), ['exists']);
+});
+
+test('MOCK [simulación]: si la fuente sí carga, no se sustituye aunque haya sustituta autorizada', async () => {
+  const p = await translationPlan(true);
+  const f = sim(universityMasterSpec());
+  const res = await f.run(buildVariantScript(p));
+  assert.equal(res.variants[0]!.cloneName, 'UNI_Grados_1080x1080_EN');
+  assert.equal(res.variants[0]!.fontFallbacks, undefined);
+  assert.ok(!f.writes.some((w) => w.startsWith('fontName')));
 });

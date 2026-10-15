@@ -12,7 +12,7 @@ Esta skill es genérica a propósito: no asume cliente, cuenta de Figma, sistema
 ## Elegir el modo de trabajo
 
 - **Crear / adaptar tamaños** (por defecto): sigue el resto de este documento.
-- **Traducir piezas existentes**: si el usuario pide traducir, localizar o sacar la versión en otro idioma de piezas que ya están en Figma, lee [references/translation.md](references/translation.md) y sigue ese flujo. No hace falta el flujo de inicio completo ni las tablas de especificaciones, porque los tamaños ya existen. Ese flujo extrae los textos de la pieza maestra etiquetados (Texto 1, Texto 2…), muestra la traducción con las mismas etiquetas y espera la confirmación del usuario antes de escribir nada en Figma.
+- **Traducir piezas existentes**: si el usuario pide traducir, localizar o sacar la versión en otro idioma de piezas que ya están en Figma, lee [translation.md](../../.claude/skills/creative-content-variants/references/translation.md) (skill `creative-content-variants`) y sigue ese flujo. No hace falta el flujo de inicio completo ni las tablas de especificaciones, porque los tamaños ya existen. Ese flujo extrae los textos de la pieza maestra etiquetados (Texto 1, Texto 2…), muestra la traducción con las mismas etiquetas y espera la confirmación del usuario antes de escribir nada en Figma.
 - **Ambos** (p. ej. "adapta a todos los tamaños y sácalo también en inglés"): primero adapta y valida los tamaños en el idioma original, y después traduce el set completo con el modo traducción. Así el copy se traduce una sola vez y no por cada tamaño.
 
 ## Flujo de inicio (obligatorio, siempre antes de tocar Figma)
@@ -55,4 +55,4 @@ Esta skill decide **qué** hay que crear (tamaños, formatos, cantidad) y **con 
 - No asumas un único cliente, cuenta de Figma o paleta de marca: cada vez que se invoque la skill en un proyecto nuevo, vuelve a preguntar los datos del flujo de inicio.
 - No exportes ni publiques nada fuera de Figma sin que el usuario confirme la convención de nombres y el destino.
 - No sobrescribas las piezas originales al traducir salvo que el usuario lo pida: duplica y añade el sufijo de idioma.
-- No sustituyas en silencio una fuente que no se puede cargar, ni al traducir ni al adaptar. Para, avisa de qué fuente falla y a qué textos afecta, y propón opciones. Si el usuario aprueba un fallback, marca la pieza como pendiente de fuente (ver [references/translation.md](references/translation.md), paso 4).
+- No sustituyas en silencio una fuente que no se puede cargar, ni al traducir ni al adaptar. Para, avisa de qué fuente falla y a qué textos afecta, y propón opciones. Si el usuario aprueba un fallback, marca la pieza como pendiente de fuente (ver [translation.md](../../.claude/skills/creative-content-variants/references/translation.md) (skill `creative-content-variants`), paso 4).
