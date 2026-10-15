@@ -8,3 +8,8 @@ node_modules/
 # Resultados y capturas de ejecuciones: fuera de Git por defecto (versionar solo con git add -f si se decide).
 runs/
 references/CONVERSACION-ASTRA.md
+# Material del cliente que no se versiona: manuales de marca y archivos de fuentes (Figma debe tenerlas instaladas).
+brands/**/*.pdf
+brands/**/*.zip
+brands/**/*.ttf
+brands/**/*.otf

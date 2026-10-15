@@ -1,0 +1,548 @@
+{
+  "schema": "pcb.brand.v1",
+  "slug": "mutualidad",
+  "name": "Mutualidad",
+  "status": "draft",
+  "validation": null,
+  "sources": [
+    {
+      "kind": "manual_pdf",
+      "label": "Brand guidelines Mutualidad (mayo 2023, versión 01, 114 p.)",
+      "location": "MGA-MAN-Manual marca 1.pdf (no versionado; lo aporta el cliente)",
+      "version": "2023-05 v01",
+      "retrievedAt": "2026-10-15"
+    }
+  ],
+  "colors": [
+    {
+      "id": "verde-bosque",
+      "name": "Verde bosque",
+      "hex": "#004136",
+      "rgb": [
+        0,
+        65,
+        54
+      ],
+      "cmyk": [
+        92,
+        44,
+        71,
+        56
+      ],
+      "pantone": "3305",
+      "role": "primary",
+      "usage": "Color principal y corporativo; logo preferente",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual Mutualidad 2023 p. 65-66"
+    },
+    {
+      "id": "rosa-palo",
+      "name": "Rosa palo",
+      "hex": "#D1A4C4",
+      "rgb": [
+        209,
+        164,
+        196
+      ],
+      "cmyk": [
+        19,
+        42,
+        6,
+        0
+      ],
+      "pantone": null,
+      "role": "primary",
+      "usage": "Color principal; logo rosa sobre verde bosque",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual Mutualidad 2023 p. 65-66"
+    },
+    {
+      "id": "verde-lima",
+      "name": "Verde lima",
+      "hex": "#B9EDAA",
+      "rgb": [
+        185,
+        237,
+        170
+      ],
+      "cmyk": [
+        33,
+        0,
+        45,
+        0
+      ],
+      "pantone": "358",
+      "role": "accent",
+      "usage": "Color de acento",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual Mutualidad 2023 p. 66"
+    },
+    {
+      "id": "blanco-hueso",
+      "name": "Blanco hueso",
+      "hex": "#F7F7F7",
+      "rgb": [
+        247,
+        247,
+        247
+      ],
+      "cmyk": [
+        4,
+        3,
+        3,
+        0
+      ],
+      "pantone": null,
+      "role": "neutral",
+      "usage": "Apoyo para textos, fondos y elementos web",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual Mutualidad 2023 p. 66"
+    },
+    {
+      "id": "gris-neutro",
+      "name": "Gris neutro",
+      "hex": "#CFCFCF",
+      "rgb": [
+        207,
+        207,
+        207
+      ],
+      "cmyk": [
+        10,
+        8,
+        11,
+        0
+      ],
+      "pantone": null,
+      "role": "neutral",
+      "usage": "Apoyo para textos y elementos web",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual Mutualidad 2023 p. 66"
+    }
+  ],
+  "typography": {
+    "families": [
+      {
+        "family": "Rufina",
+        "styles": [
+          "Regular",
+          "Bold"
+        ],
+        "license": "ofl",
+        "figma": "google_fonts",
+        "usage": "Titulares (Regular) y etiquetas/subtítulos en MAYÚSCULAS (Bold)",
+        "source": "manual Mutualidad 2023 p. 70-71"
+      },
+      {
+        "family": "Mutualidad",
+        "styles": [
+          "Regular",
+          "Bold",
+          "Italic"
+        ],
+        "license": "proprietary",
+        "figma": "custom",
+        "usage": "Cuerpos de texto; tipografía propia (hay que pedirla a la marca e instalarla)",
+        "source": "manual Mutualidad 2023 p. 70"
+      },
+      {
+        "family": "Poppins",
+        "styles": [
+          "Regular"
+        ],
+        "license": "ofl",
+        "figma": "google_fonts",
+        "usage": "Solo en el wordmark del logotipo; no es tipografía de texto",
+        "source": "manual Mutualidad 2023 p. 63"
+      }
+    ],
+    "fallback": null,
+    "roles": {
+      "headline": {
+        "family": "Rufina",
+        "style": "Regular",
+        "source": "manual Mutualidad 2023 p. 71"
+      },
+      "subheadline": {
+        "family": "Rufina",
+        "style": "Bold",
+        "upper": true,
+        "source": "manual Mutualidad 2023 p. 71"
+      },
+      "body": {
+        "family": "Mutualidad",
+        "style": "Regular",
+        "source": "manual Mutualidad 2023 p. 70"
+      },
+      "cta": null,
+      "legal": null,
+      "claim": null
+    },
+    "rules": [
+      {
+        "text": "Titulares en caja baja/frase; subtítulos y etiquetas de producto en MAYÚSCULAS",
+        "source": "manual Mutualidad 2023 p. 71"
+      },
+      {
+        "text": "Rufina Bold para destacar palabras dentro de un titular o párrafo en Rufina Regular",
+        "source": "manual Mutualidad 2023 p. 12, 25"
+      },
+      {
+        "text": "Cuatro tipos de titular: composición verbal («bien | estar»), palabra a medias («fut|uro»), frase a medias («con tigo / y pa ra ti»), frase completa; las partes en dos colores de la paleta",
+        "source": "manual Mutualidad 2023 p. 83"
+      }
+    ]
+  },
+  "logos": [
+    {
+      "id": "principal-verde",
+      "label": "Principal (símbolo + wordmark) en verde bosque",
+      "version": "primary",
+      "colorway": "positive_one_ink",
+      "inks": [
+        "verde-bosque"
+      ],
+      "file": null,
+      "minWidthPx": 43,
+      "externalUse": true,
+      "usage": "Versión preferente; sobre blanco hueso, rosa palo, verde lima o gris neutro",
+      "source": "manual Mutualidad 2023 p. 42-45"
+    },
+    {
+      "id": "principal-rosa",
+      "label": "Principal en rosa palo",
+      "version": "primary",
+      "colorway": "other",
+      "inks": [
+        "rosa-palo"
+      ],
+      "file": null,
+      "minWidthPx": 43,
+      "externalUse": true,
+      "usage": "Sobre fondo verde bosque",
+      "source": "manual Mutualidad 2023 p. 42, 45"
+    },
+    {
+      "id": "principal-blanco",
+      "label": "Principal en blanco",
+      "version": "primary",
+      "colorway": "negative_one_ink",
+      "inks": [
+        "white"
+      ],
+      "file": null,
+      "minWidthPx": 43,
+      "externalUse": true,
+      "usage": "Sobre negro o sobre fotografía",
+      "source": "manual Mutualidad 2023 p. 43, 45"
+    },
+    {
+      "id": "principal-negro",
+      "label": "Principal en negro",
+      "version": "primary",
+      "colorway": "positive_one_ink",
+      "inks": [
+        "black"
+      ],
+      "file": null,
+      "minWidthPx": 43,
+      "externalUse": true,
+      "usage": "Sobre blanco hueso, cuando no se puedan usar otras tintas",
+      "source": "manual Mutualidad 2023 p. 42-43"
+    },
+    {
+      "id": "simbolo",
+      "label": "Símbolo «M» independiente",
+      "version": "other",
+      "colorway": "other",
+      "inks": [
+        "verde-bosque"
+      ],
+      "file": null,
+      "minWidthPx": null,
+      "externalUse": true,
+      "usage": "Solo si el logo completo o el wordmark aparece en otro lugar de la pieza, en una de las otras 3 esquinas",
+      "source": "manual Mutualidad 2023 p. 41"
+    }
+  ],
+  "logoRules": {
+    "clearSpace": {
+      "rule": "Margen exterior definido por la altura de la «M» (el manual no aclara si es el símbolo o la M del wordmark ni da cota)",
+      "ratioOfLogoHeight": null,
+      "source": "manual Mutualidad 2023 p. 44"
+    },
+    "idealWidthRatio": null,
+    "minContrast": null,
+    "backgrounds": [
+      {
+        "colorway": "positive_one_ink",
+        "rule": "Verde bosque sobre blanco hueso, rosa palo, verde lima o gris neutro; negro solo sobre blanco hueso",
+        "darkestBg": null,
+        "lightestBg": null,
+        "source": "manual Mutualidad 2023 p. 42-45"
+      },
+      {
+        "colorway": "other",
+        "rule": "Rosa palo sobre verde bosque",
+        "darkestBg": null,
+        "lightestBg": null,
+        "source": "manual Mutualidad 2023 p. 42, 45"
+      },
+      {
+        "colorway": "negative_one_ink",
+        "rule": "Blanco sobre negro o sobre fotografía",
+        "darkestBg": null,
+        "lightestBg": null,
+        "source": "manual Mutualidad 2023 p. 45"
+      }
+    ],
+    "overPhoto": {
+      "rule": "Sobre fotografía, logo en blanco",
+      "allowedColorways": [
+        "negative_one_ink"
+      ],
+      "source": "manual Mutualidad 2023 p. 45"
+    },
+    "prohibitions": [
+      {
+        "text": "Cambiar el color del logotipo fuera de la paleta",
+        "source": "manual Mutualidad 2023 p. 46"
+      },
+      {
+        "text": "Cambiar de ubicación el símbolo (p. ej. apilarlo sobre el wordmark)",
+        "source": "manual Mutualidad 2023 p. 46"
+      },
+      {
+        "text": "Cambiar la tipografía del logotipo",
+        "source": "manual Mutualidad 2023 p. 46"
+      },
+      {
+        "text": "Distorsionar el logotipo",
+        "source": "manual Mutualidad 2023 p. 46"
+      },
+      {
+        "text": "Cambiar la orientación del símbolo",
+        "source": "manual Mutualidad 2023 p. 46"
+      },
+      {
+        "text": "Colorear el símbolo de forma independiente del wordmark",
+        "source": "manual Mutualidad 2023 p. 46"
+      }
+    ]
+  },
+  "graphicDevices": [
+    {
+      "id": "particion",
+      "name": "Partición en dos colores",
+      "rule": "El formato se parte en dos mitades de color (rosa palo | verde bosque), en vertical u horizontal",
+      "colorIds": [
+        "rosa-palo",
+        "verde-bosque"
+      ],
+      "source": "manual Mutualidad 2023 p. 76"
+    },
+    {
+      "id": "circulo-complementario",
+      "name": "Círculo / semicírculo complementario",
+      "rule": "Círculo de diámetro igual al ancho (o alto) del formato, centrado en la línea de partición, con los colores invertidos respecto al fondo; la foto va «contenida» dentro de la forma",
+      "colorIds": [
+        "rosa-palo",
+        "verde-bosque"
+      ],
+      "source": "manual Mutualidad 2023 p. 77-78"
+    },
+    {
+      "id": "aro",
+      "name": "Aro en trazo",
+      "rule": "Aro de grosor medio en rosa palo o verde lima que rodea parcialmente un círculo con foto, desplazado a modo de eco",
+      "colorIds": [
+        "rosa-palo",
+        "verde-lima"
+      ],
+      "source": "manual Mutualidad 2023 p. 80-83 (observado en ejemplos, no es norma escrita)"
+    },
+    {
+      "id": "pildora-lateral",
+      "name": "Píldora lateral con etiqueta",
+      "rule": "Medio círculo verde lima pegado a un borde con la etiqueta en vertical (Rufina Bold, mayúsculas)",
+      "colorIds": [
+        "verde-lima"
+      ],
+      "source": "manual Mutualidad 2023 p. 80-82, 100 (observado en ejemplos, no es norma escrita)"
+    },
+    {
+      "id": "iconos",
+      "name": "Iconos lineales",
+      "rule": "Trazo fino, rosa palo sobre verde bosque o verde bosque sobre blanco",
+      "colorIds": [
+        "rosa-palo",
+        "verde-bosque"
+      ],
+      "source": "manual Mutualidad 2023 p. 95, 105"
+    }
+  ],
+  "photography": {
+    "rules": [
+      {
+        "text": "Plano muy humano relacionado con el mundo laboral; colores vivos, cálidos y enfoques especiales",
+        "source": "manual Mutualidad 2023 p. 73"
+      },
+      {
+        "text": "Personas reales de edades y orígenes diversos, sonrientes, luz natural, fondos desenfocados; foto a color natural contenida en círculos o semicírculos",
+        "source": "manual Mutualidad 2023 p. 73, 79-82 (observado en ejemplos, no es norma escrita)"
+      }
+    ],
+    "avoid": [
+      {
+        "text": "Estereotipos o imágenes paternalistas de personas mayores (deducido del tono verbal)",
+        "source": "manual Mutualidad 2023 p. 23, 36 (observado en ejemplos, no es norma escrita)"
+      }
+    ]
+  },
+  "layout": {
+    "rules": [
+      {
+        "text": "Proporción cromática Mutualidad: 35 % verde bosque, 35 % rosa palo, 20 % verde lima, 10 % blanco hueso (Avanza Previsión y Fundación tienen otra proporción y su propio logo: kit aparte)",
+        "source": "manual Mutualidad 2023 p. 68"
+      },
+      {
+        "text": "Construir con el sistema complementario: partición en dos colores + círculo o semicírculo; un solo gran gesto geométrico por pieza",
+        "source": "manual Mutualidad 2023 p. 76-78"
+      },
+      {
+        "text": "Titulares alineados a la izquierda; logo en una esquina (arriba o abajo a la izquierda); 2–3 colores por pieza; margen interior ≈ 4–6 % del lado corto",
+        "source": "manual Mutualidad 2023 p. 79-83, 100-101 (observado en ejemplos, no es norma escrita)"
+      }
+    ]
+  },
+  "copy": {
+    "claims": [
+      {
+        "text": "Mutualistas contigo y para ti. Por un futuro próspero.",
+        "rule": null,
+        "source": "manual Mutualidad 2023 p. 6-7"
+      },
+      {
+        "text": "#somosmutualismo",
+        "rule": "Hashtag de marca",
+        "source": "manual Mutualidad 2023 p. 17"
+      }
+    ],
+    "mandatoryTexts": [],
+    "tone": [
+      {
+        "text": "Cercana, humilde, optimista, previsora, realista, sencilla, precisa, veraz; nunca coloquial, invasiva, rimbombante, ambigua",
+        "source": "manual Mutualidad 2023 p. 33-34"
+      },
+      {
+        "text": "Tú respetuoso, segunda persona, frases cortas, desde el «sí» y nunca desde lo prohibido; verbos de acción; gerundio para dar movimiento",
+        "source": "manual Mutualidad 2023 p. 36-37"
+      },
+      {
+        "text": "Lenguaje inclusivo: desdoblar o colectivos; «persona con discapacidad»; «personas mayores» (nunca «ancianos», «nuestros mayores»)",
+        "source": "manual Mutualidad 2023 p. 21-23"
+      }
+    ]
+  },
+  "rules": {
+    "must": [
+      {
+        "text": "Solo colores de la paleta; rosa palo y verde bosque protagonistas, lima como acento",
+        "source": "manual Mutualidad 2023 p. 66-68"
+      },
+      {
+        "text": "Titular en Rufina; cuerpo en «Mutualidad»; etiquetas en Rufina Bold en mayúsculas",
+        "source": "manual Mutualidad 2023 p. 70-71"
+      },
+      {
+        "text": "Incluir el logotipo completo o al menos el wordmark; el símbolo suelto solo en otra esquina",
+        "source": "manual Mutualidad 2023 p. 41, 78"
+      },
+      {
+        "text": "Logo preferente en verde bosque; rosa sobre verde bosque; blanco sobre foto",
+        "source": "manual Mutualidad 2023 p. 42-45"
+      },
+      {
+        "text": "Zona de protección = altura de la «M»; ancho mínimo 15 mm / 42,52 px",
+        "source": "manual Mutualidad 2023 p. 44"
+      }
+    ],
+    "never": [
+      {
+        "text": "Cambiar color, tipografía, orientación o posición del símbolo; distorsionar; colorear el símbolo aparte",
+        "source": "manual Mutualidad 2023 p. 46"
+      },
+      {
+        "text": "Símbolo suelto sin logo completo ni wordmark en la pieza",
+        "source": "manual Mutualidad 2023 p. 41"
+      },
+      {
+        "text": "Tono coloquial, invasivo, negativo o rimbombante; términos excluyentes",
+        "source": "manual Mutualidad 2023 p. 21-23, 33-36"
+      }
+    ]
+  },
+  "gaps": [
+    "No hay formatos paid/display ni safe zones",
+    "Valor numérico del área de reserva (solo «altura de la M») y tamaño recomendado del logo respecto al formato",
+    "Retícula y márgenes de las piezas",
+    "Escala tipográfica, interlineado, tracking y número máximo de líneas",
+    "Fuente sustituta para «Mutualidad» (propietaria; no carga en el plugin de Figma en este entorno)",
+    "Estilo del CTA (en web/app: píldora verde con texto blanco, rosa o lima con texto verde)",
+    "Textos legales/regulatorios obligatorios (indicador de riesgo, entidad, nº registro DGSFP, rentabilidades)",
+    "Reglas de contraste texto/fondo",
+    "Usos incorrectos del sistema visual (anunciados en el índice, no incluidos)",
+    "Archivos de logo (no se han aportado)",
+    "Logos y tratamiento de productos (Plan Universal, Plan de Ahorro 5, SVA, PAM…)"
+  ],
+  "openQuestions": [
+    {
+      "id": "mut-clear-space",
+      "question": "Área de reserva: ¿la «altura de la M» es la del símbolo o la de la M del wordmark? ¿Cuál es la cota en proporción a la altura del logo?",
+      "status": "open",
+      "answer": null,
+      "source": "manual Mutualidad 2023 p. 44"
+    },
+    {
+      "id": "mut-verde-base",
+      "question": "Verde bosque: #004136 en la ficha (p. 66) frente a #003828 como base de la matriz de matices (p. 67). Se toma #004136; ¿es correcto?",
+      "status": "open",
+      "answer": null,
+      "source": "manual Mutualidad 2023 p. 66-67"
+    },
+    {
+      "id": "mut-pantone-rosa",
+      "question": "El Pantone del Rosa palo aparece como 3305 (el del verde). ¿Cuál es el Pantone real?",
+      "status": "open",
+      "answer": null,
+      "source": "manual Mutualidad 2023 p. 66"
+    },
+    {
+      "id": "mut-logo-lima",
+      "question": "El logo en verde lima sobre verde bosque aparece en ejemplos (pp. 79–80) pero no en los usos permitidos (p. 45). ¿Está permitido?",
+      "status": "open",
+      "answer": null,
+      "source": "manual Mutualidad 2023 p. 45, 79-80"
+    },
+    {
+      "id": "mut-fuente-texto",
+      "question": "La fuente «Mutualidad» es propietaria y el plugin de Figma no la carga en este entorno. ¿Nos facilitáis la fuente o una sustituta aprobada?",
+      "status": "open",
+      "answer": null,
+      "source": "manual Mutualidad 2023 p. 70"
+    },
+    {
+      "id": "mut-legales",
+      "question": "¿Qué textos legales/regulatorios son obligatorios en publicidad de productos de ahorro/previsión (indicador de riesgo, entidad, registro DGSFP…)?",
+      "status": "open",
+      "answer": null,
+      "source": "manual Mutualidad 2023 p. 105"
+    }
+  ],
+  "templates": []
+}

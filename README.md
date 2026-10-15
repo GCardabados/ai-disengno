@@ -27,6 +27,11 @@ Diseño y decisiones: [docs/00-auditoria-y-diseno.md](docs/00-auditoria-y-diseno
   con MOCK (`test/variants.test.ts`, `test/variant-script-sim.test.ts`), pendiente de la primera prueba con una
   maestra real.
 
+- **Maestras desde el brief (2026-10-15):** skill `create-master-creative` (brief + brand kit → maestra nueva en Figma,
+  desde una composición tipo o una plantilla del cliente; comandos `master-*`) y skill `brand-kit-generator` (manual
+  PDF + logos + fuentes → `brands/<marca>/brand.json` y `guidelines.md`; comandos `brand-*`). Kits en borrador de
+  `uax` y `mutualidad` (esta sin logos). Probado solo con MOCK.
+
 Ningún comando del CLI escribe en Figma. `adapt-request` solo genera el script de escritura (DEMO) que actúa sobre un clon; lo ejecuta `use_figma` y requiere asiento Full.
 
 ## Requisitos
