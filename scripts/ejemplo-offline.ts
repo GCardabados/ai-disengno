@@ -1,11 +1,11 @@
 // Ejemplo SIN Figma: recorre el flujo con la maestra sintética del repositorio y el encargo de ejemplos/mock-4x5-a-1x1.
-// Escribe solo en runs/ejemplo-offline/ (ignorado por Git). No contacta con Figma ni con ningún servicio externo.
+// Escribe solo en runs/ejemplo-offline/ de la carpeta de trabajo (cwd; en el repositorio, ignorada por Git). No contacta con Figma ni con ningún servicio externo.
 import { spawnSync } from 'node:child_process';
 import { readdirSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
-const out = join(root, 'runs', 'ejemplo-offline');
+const out = join(process.cwd(), 'runs', 'ejemplo-offline');
 const ex = join(root, 'ejemplos', 'mock-4x5-a-1x1');
 rmSync(out, { recursive: true, force: true });
 

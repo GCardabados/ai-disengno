@@ -20,8 +20,8 @@ No uses `get_design_context` ni `get_screenshot` para esto: devuelven código, e
 Genera el script de solo lectura y ejecútalo con `use_figma` (una sola llamada; guarda la respuesta original):
 
 ```
-node src/cli.ts translation-extract-request --file-key K --node-id <maestra> [--frames <adaptaciones, sección o página> ...] --out R/translation-extract-request.json
-node src/cli.ts translation-table --raw R/translation-extract-raw.json --file-key K --lang EN [--lang FR] [--source-lang ES] [--locale EN=en-GB] --out R
+node <PCB>/src/cli.ts translation-extract-request --file-key K --node-id <maestra> [--frames <adaptaciones, sección o página> ...] --out R/translation-extract-request.json
+node <PCB>/src/cli.ts translation-table --raw R/translation-extract-raw.json --file-key K --lang EN [--lang FR] [--source-lang ES] [--locale EN=en-GB] --out R
 ```
 
 `translation-table` escribe `R/translation.json` y `R/tabla.md` con:

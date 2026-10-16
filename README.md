@@ -9,8 +9,8 @@ Diseño y decisiones: [docs/00-auditoria-y-diseno.md](docs/00-auditoria-y-diseno
 - **DEMO 1080×1080: creada en una copia del archivo** (clon `2009:122`), pendiente de revisión humana. En el archivo original la escritura vía MCP requiere asiento Full (ver §5.6 de la documentación).
 - **T1 resuelto (2026-10-01):** `npm ci` y `npm run check` validados en Node 24.21.0 (binario oficial de nodejs.org,
   SHA-256 verificado; npm 11.19.0) y en 25.6.1.
-- **Piloto compartible:** guía de inicio en [docs/03-guia-inicio.md](docs/03-guia-inicio.md), encargo en
-  [plantillas/encargo.md](plantillas/encargo.md), `npm run doctor` (entorno) y `npm run ejemplo` (flujo sin Figma).
+- **Piloto compartible:** guía de inicio en [guía de inicio](.claude/skills/adapt-master-creative/references/guia-inicio.md), encargo en
+  [encargo](.claude/skills/adapt-master-creative/references/encargo.md), `npm run doctor` (entorno) y `npm run ejemplo` (flujo sin Figma).
   Los resultados de `runs/` quedan fuera de Git por defecto.
 - **Criterios 2026-10:** texto flexible dentro de los límites del proyecto (`textPolicy`), logo en modo estándar o
   experimental por encargo (`logoPolicy`), relación persona–mensaje y recorrido de lectura (`messagePlan`), con
@@ -26,6 +26,11 @@ Diseño y decisiones: [docs/00-auditoria-y-diseno.md](docs/00-auditoria-y-diseno
   tamaño (p. ej. por grado y ciudad) cambiando solo copies e imágenes confirmados. Comandos `variant-*`; probada solo
   con MOCK (`test/variants.test.ts`, `test/variant-script-sim.test.ts`), pendiente de la primera prueba con una
   maestra real.
+
+- **Skills portables (2026-10-16):** `npm run build-skills` (`-- --zip` para zips) genera en `dist/skills/` una carpeta
+  autosuficiente por skill (`SKILL.md` + `references/` + `cli/` con el código, scripts, config y `zod`), lista para pasar a
+  otra persona sin el resto del proyecto ni `npm install`. En los `SKILL.md`, `<PCB>` es esa carpeta `cli/` (o la raíz del
+  repo). Probado en `test/skill-bundle.test.ts`. Instalación: `references/instalacion.md` de cada skill.
 
 Ningún comando del CLI escribe en Figma. `adapt-request` solo genera el script de escritura (DEMO) que actúa sobre un clon; lo ejecuta `use_figma` y requiere asiento Full.
 

@@ -31,7 +31,7 @@ export function satisfiesRange(version: string, range: string): boolean {
 
 const readText = (p: string) => (existsSync(p) ? readFileSync(p, 'utf8') : null);
 
-export function runDoctor(root: string, nodeVersion = process.version): DoctorItem[] {
+export function runDoctor(root: string, nodeVersion = process.version, cwd = process.cwd()): DoctorItem[] {
   const out: DoctorItem[] = [];
   const pkg = JSON.parse(readText(join(root, 'package.json')) ?? '{}') as { engines?: { node?: string }; dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
   const pinned = readText(join(root, '.nvmrc'))?.trim() ?? null;
@@ -60,10 +60,13 @@ export function runDoctor(root: string, nodeVersion = process.version): DoctorIt
     out.push({ id: 'python', level: 'warn', message: `${(base.stdout || base.stderr).trim()} sin numpy/Pillow: extract-tool-calls funciona; measure-layout y las superposiciones no (pip install numpy pillow).` });
   } else out.push({ id: 'python', level: 'ok', message: `python3 con numpy/Pillow (${py.stdout.trim()})` });
 
-  const gi = readText(join(root, '.gitignore')) ?? '';
-  out.push(/^\/?runs\/?\s*$/m.test(gi)
-    ? { id: 'git', level: 'ok', message: 'runs/ está ignorado: resultados y capturas nuevos quedan fuera de Git (versiónalos con «git add -f» solo si se decide).' }
-    : { id: 'git', level: 'warn', message: 'runs/ no está en .gitignore: los resultados y capturas se versionarían por defecto.' });
+  // runs/ se crea en la carpeta de trabajo (cwd), que puede no ser el repositorio (paquete portable de la skill).
+  if (existsSync(join(cwd, '.git'))) {
+    const gi = readText(join(cwd, '.gitignore')) ?? '';
+    out.push(/^\/?runs\/?\s*$/m.test(gi)
+      ? { id: 'git', level: 'ok', message: 'runs/ está ignorado: resultados y capturas nuevos quedan fuera de Git (versiónalos con «git add -f» solo si se decide).' }
+      : { id: 'git', level: 'warn', message: 'runs/ no está en .gitignore: los resultados y capturas se versionarían por defecto.' });
+  } else out.push({ id: 'git', level: 'info', message: `La carpeta de trabajo (${cwd}) no es un repositorio Git; los resultados irán a ${join(cwd, 'runs')}.` });
 
   out.push({ id: 'figma', level: 'info', message: 'Figma no se comprueba desde aquí: en Claude Code el agente verifica el conector (whoami) y hace una lectura de solo lectura. Escribir clones exige asiento Full en el archivo (con View/Dev el MCP rechaza la escritura).' });
   return out;

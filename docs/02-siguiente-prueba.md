@@ -2,7 +2,7 @@
 
 ## Cómo invocar
 En Claude Code, dentro de este repo: *"Adapta esta pieza de Figma a estos tamaños: <enlace con node-id> → 1200×628, …"*.
-Se usa la skill `.claude/skills/adapt-master-creative/SKILL.md` (procedimiento: `docs/01-demo-1080-procedimiento.md`).
+Se usa la skill `.claude/skills/adapt-master-creative/SKILL.md` (procedimiento: `.claude/skills/adapt-master-creative/references/procedimiento-ejemplo.md`).
 
 ## Qué datos necesita
 - Enlace de Figma con `node-id` (entrada) y nombre del FRAME maestro si hay varios candidatos.
@@ -28,8 +28,8 @@ Se usa la skill `.claude/skills/adapt-master-creative/SKILL.md` (procedimiento: 
 - Los activos recortados limitan el encuadre (p. ej. un recorte que termina en la cintura).
 - Las decoraciones que pasan por detrás de una persona exigen trazar máscaras sobre la silueta; se simulan antes.
 - Validado en Node 24.21.0 (versión fijada) y 25.6.1. Márgenes de prueba de 54 px no son especificación.
-- Para compañeros: empezar por `docs/03-guia-inicio.md` y `plantillas/encargo.md`.
+- Para compañeros: empezar por `.claude/skills/adapt-master-creative/references/guia-inicio.md` y `encargo.md` (misma carpeta).
 
 ## Qué registrar en la siguiente ejecución
-Rellenar `docs/02-registro-prueba.template.json` (copiarlo a la carpeta de la ejecución):
+Rellenar `.claude/skills/adapt-master-creative/references/registro-prueba.template.json` (copiarlo a la carpeta de la ejecución):
 tiempo, llamadas a Figma (lectura/escritura/capturas), intervenciones humanas, cambios de código y valoración.

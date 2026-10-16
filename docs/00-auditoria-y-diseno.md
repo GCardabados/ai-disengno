@@ -413,7 +413,7 @@ Necesarias antes de H2 y siguientes:
 - **Actualización sin duplicar:** script v4 con modo `patch` sobre el clon existente, precedido de comprobación de hashes por nodo del clon (sin cambios manuales). Guarda `from` por vértice (idempotente; se detiene ante cambios ajenos).
 - **Validador de GROUP:** su caja se deriva siempre de los hijos; rotación/escala, opacidad, fusión, máscara, efectos, recorte y modo de maquetación del contenedor se siguen comprobando. Nueva comprobación `vector_edits` con sondas antes/después.
 - **Taxonomía:** rol propuesto `supplementary_info` («Más información…»); no hay evidencia de que sea texto legal.
-- **Resultado:** deterministas 9/9 superadas; revisión visual `needs_review`. Procedimiento: `docs/01-demo-1080-procedimiento.md`.
+- **Resultado:** deterministas 9/9 superadas; revisión visual `needs_review`. Procedimiento: `.claude/skills/adapt-master-creative/references/procedimiento-ejemplo.md`.
 - **Aceptación humana (2026-09-30):** registrada en `runs/2026-09-30-copy-UZgE/fix-ribbon/human-acceptance.json` (`pcb.demo-acceptance.v1`), ligada por hashes al clon `2009:122`, su composición, plan y comprobaciones. Alcance: esta pieza y versión; no implica aprobación general ni publicación.
 
 #### 5.6.3 Flujo reutilizable y prueba 1200×628 (2026-09-30)

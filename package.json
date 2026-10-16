@@ -13,7 +13,8 @@
     "check": "npm run typecheck && npm test",
     "pcb": "node src/cli.ts",
     "doctor": "node src/cli.ts doctor",
-    "ejemplo": "node scripts/ejemplo-offline.ts"
+    "ejemplo": "node scripts/ejemplo-offline.ts",
+    "build-skills": "node scripts/build-skills.ts"
   },
   "dependencies": {
     "zod": "4.6.5"

@@ -1,7 +1,8 @@
 # DEMO 1080×1080 — procedimiento para repetir la adaptación
 
 Estado del resultado: **DEMO pendiente de revisión humana** (no es aprobación de producción).
-Las rutas `runs/…` contienen evidencia y datos de la pieza; el código está en `src/`.
+Las rutas `runs/…` contienen evidencia y datos de la pieza (en tu carpeta de trabajo). **`src/…`, `scripts/…` y `config/…` son relativos a `<PCB>`** (la carpeta `cli/` de la skill, o la raíz del repositorio): escribe `node <PCB>/src/cli.ts …`.
+Es un ejemplo histórico: las rutas `runs/2026-…` que cita no se incluyen en el paquete.
 
 Cada llamada a Figma se hace con `use_figma` enviando **exactamente** el `code` del JSON que genera el CLI, y cada
 respuesta original se guarda sin transcribir: `python3 scripts/extract-tool-calls.py --out DIR --prefix "<description>"
@@ -9,11 +10,11 @@ respuesta original se guarda sin transcribir: `python3 scripts/extract-tool-call
 DIR/calls-L.json` comprueba que el SHA-256 del script enviado coincide con el generado. (Las copias antiguas
 `runs/2026-09-30-copy-UZgE/extract.py` y `compare.ts` se conservan solo como evidencia; no se usan.)
 
-Flujo general e invocación como skill: `.claude/skills/adapt-master-creative/SKILL.md`.
+Flujo general e invocación como skill: [SKILL.md](../SKILL.md).
 
 ## 0. Requisitos
 
-- Node 24.21.0 (T1 pendiente: validado solo en 25.6.1), `npm ci`, `npm run check`.
+- Node ≥ 24.21 (fijada en `<PCB>/.nvmrc`) y `node <PCB>/src/cli.ts doctor` sin errores (en el repositorio completo, además `npm ci`).
 - Asiento **Full** en el archivo de Figma donde se escribe (con View/Dev el MCP rechaza la escritura).
 
 ## 1. Localizar la maestra (solo lectura)

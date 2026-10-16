@@ -6,17 +6,15 @@ El agente crea **clones** en una sección de salida y nunca modifica la maestra.
 
 ## 1. Preparar el entorno (una vez)
 
-1. **Clona el repositorio** y abre la carpeta en Claude Code.
-2. **Instala Node 24.21.0.** Es la versión fijada en `.nvmrc`; con nvm basta `nvm install && nvm use`.
-3. **Instala las dependencias y comprueba el entorno:**
+Detalle de instalación en [instalacion.md](instalacion.md). En resumen:
+
+1. **Copia la carpeta de la skill** a `~/.claude/skills/` (todos tus proyectos) o a `.claude/skills/` de tu carpeta de
+   trabajo, y abre esa carpeta en Claude Code. `<PCB>` es la subcarpeta `cli/` de la skill (en el repositorio completo,
+   la raíz): lleva el código y `zod`, así que **no hay `npm install`**.
+2. **Instala Node ≥ 24.21** (versión fijada en `<PCB>/.nvmrc`; con nvm, `nvm install 24.21.0`).
+3. **Comprueba el entorno:**
    ```bash
-   npm ci
-   ```
-   ```bash
-   npm run doctor
-   ```
-   ```bash
-   npm run check
+   node <PCB>/src/cli.ts doctor
    ```
    `doctor` revisa Node, dependencias, Python, configuración y `.gitignore`, y explica qué falta. No instala nada.
    Python 3 es necesario para extraer las evidencias del registro de la sesión. Las mediciones y superposiciones
@@ -26,15 +24,15 @@ El agente crea **clones** en una sección de salida y nunca modifica la maestra.
    una copia del archivo.
 5. **Prueba sin Figma:**
    ```bash
-   npm run ejemplo
+   node <PCB>/scripts/ejemplo-offline.ts
    ```
    Recorre lectura simulada, inventario, plan, predicción y script de escritura con una maestra sintética. El
-   resultado queda en `runs/ejemplo-offline/`, que está fuera de Git.
+   resultado queda en `runs/ejemplo-offline/` de tu carpeta de trabajo.
 
 ## 2. Preparar tu prueba
 
 1. Crea la carpeta `runs/<AAAA-MM-DD>-<nombre-corto>/` y copia ahí
-   [`plantillas/encargo.md`](../plantillas/encargo.md).
+   [`encargo.md`](encargo.md).
 2. Rellena el encargo: maestra, destinos, safe zone y reglas de texto (ver §4).
 3. En Claude Code escribe:
    ```text
@@ -68,10 +66,10 @@ Ninguna de estas cosas requiere editar código.
 
 | Qué | Dónde | Quién lo escribe |
 |---|---|---|
-| Maestra (archivo, nodo, nombre) y destinos | `runs/<prueba>/job.json` (`pcb.adapt-job.v1`; se valida con `node src/cli.ts job-check --job …`) | El agente, a partir del encargo |
+| Maestra (archivo, nodo, nombre) y destinos | `runs/<prueba>/job.json` (`pcb.adapt-job.v1`; se valida con `node <PCB>/src/cli.ts job-check --job …`) | El agente, a partir del encargo |
 | Safe zone de un destino | `composition.json` → `safeArea`. Hay tres tipos (ver la lista bajo la tabla) | El agente, con tu decisión del encargo |
 | Composición del destino | `runs/<prueba>/<destino>/composition.json`: bloques que se mueven, imágenes que se escalan, decoración que se edita, orden de lectura | El agente; tú la revisas |
-| Límites de texto del proyecto | `config/<proyecto>.project.json` → `textPolicy`: qué es editable (`editable`), rango de cuerpo (`fontScale`) y cuerpo mínimo (`minFontSizePx`). Sin límites configurados no se inventan mínimos. Parte de `config/example.project.json` | Una persona del proyecto |
+| Límites de texto del proyecto | `config/<proyecto>.project.json` → `textPolicy`: qué es editable (`editable`), rango de cuerpo (`fontScale`) y cuerpo mínimo (`minFontSizePx`). Sin límites configurados no se inventan mínimos. Parte de `<PCB>/config/example.project.json` | Una persona del proyecto |
 | Ediciones de texto de un destino | `composition.json` → `textEdits` (caja, alineación, saltos, cuerpo, interlineado) y `legalNodeIds` | El agente, dentro de los límites |
 | Modo del logo en el encargo | `composition.json` → `logoPolicy`: `standard` (por defecto) o `experimental` con `scale` y `authorization` | Tú, en el encargo |
 | Mensaje, persona y recorrido | `composition.json` → `messagePlan` (principal, secundarios, oferta, CTA, persona/producto y su señal, recorrido previsto) | El agente; tú lo revisas |
@@ -99,8 +97,7 @@ Las invariantes están en el código y ningún encargo puede relajarlas:
 
 ## 6. Limitaciones del piloto
 
-[Plantilla de encargo](../plantillas/encargo.md) · [Skill](../.claude/skills/adapt-master-creative/SKILL.md) ·
-[Procedimiento detallado](01-demo-1080-procedimiento.md)
+[Plantilla de encargo](encargo.md) · [Skill](../SKILL.md) · [Procedimiento detallado](procedimiento-ejemplo.md)
 
 - **Texto:** se ejecutan caja, alineación, saltos de línea, cuerpo e interlineado, pero no en textos dentro de
   contenedores con maquetación automática (p. ej. el texto de un botón), porque cambiaría el contenedor. Requiere que

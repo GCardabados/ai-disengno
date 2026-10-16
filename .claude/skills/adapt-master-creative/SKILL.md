@@ -5,11 +5,22 @@ description: Adapta una pieza maestra estática de Figma (un FRAME aprobado) a o
 
 # Adaptar una maestra de Figma a otros tamaños
 
-Todo el código está en `src/` y se invoca con `node src/cli.ts <comando>` (lista: `node src/cli.ts`).
-Cada ejecución guarda **datos y evidencia** en `runs/<fecha>-<archivo>-<destino>/`; no se copia código a `runs/`.
-Procedimiento detallado con ejemplos: `docs/01-demo-1080-procedimiento.md`. Guía para compañeros: `docs/03-guia-inicio.md`;
-encargo: `plantillas/encargo.md` (si la persona pasa un encargo rellenado, es la fuente de maestra, destinos, safe zones y
-reglas de texto; lo que falte se pregunta).
+## Rutas y entorno (leer primero)
+
+- **`<PCB>`** = la carpeta `cli/` que va dentro de esta skill (paquete portable), o la raíz del repositorio si no existe
+  `cli/` (checkout completo). Resuélvela una vez a ruta absoluta y úsala en cada comando: `node <PCB>/src/cli.ts <comando>`
+  (lista: sin comando), `python3 <PCB>/scripts/<script>.py`. Ahí están el código, los scripts de Python, `config/` y `zod`
+  ya incluido: **no hace falta `npm install`**. Requiere Node ≥ 24.21 (`<PCB>/.nvmrc`); numpy y Pillow solo para
+  mediciones y superposiciones.
+- Los datos y la evidencia de cada ejecución van a `runs/<fecha>-<archivo>-<destino>/` en la **carpeta de trabajo de la
+  persona** (cwd), nunca dentro de la skill. El código no se copia a `runs/`.
+- Documentos de esta skill (en `references/`): [procedimiento-ejemplo.md](references/procedimiento-ejemplo.md) (comandos con
+  ejemplos; sus rutas `src/…`, `scripts/…` y `config/…` son relativas a `<PCB>`), [guia-inicio.md](references/guia-inicio.md)
+  (guía para compañeros), [encargo.md](references/encargo.md) (plantilla de encargo: si la persona pasa un encargo
+  rellenado, es la fuente de maestra, destinos, safe zones y reglas de texto; lo que falte se pregunta) y
+  [registro-prueba.template.json](references/registro-prueba.template.json). Instalación:
+  [instalacion.md](references/instalacion.md).
+- Se necesita además el MCP de Figma conectado y la skill `figma-use` (para `use_figma`); escribir clones exige asiento Full.
 
 ## Invariantes del producto (no configurables)
 
@@ -57,7 +68,7 @@ reglas de texto; lo que falte se pregunta).
   persona o el producto y el recorrido previsto (`messagePlan`). La distribución se adapta al espacio útil y a la safe
   zone; no se imponen patrones F o Z ni una composición única por orientación. Tras el render se revisa si tamaños,
   contraste, posición y espacios sostienen el recorrido; se puede entregar, **separada de la creatividad**, una
-  superposición de atención estimada con flechas y numeración (`attention-flow` + `scripts/attention-overlay.py`). No hay
+  superposición de atención estimada con flechas y numeración (`attention-flow` + `<PCB>/scripts/attention-overlay.py`). No hay
   saliencia ni eye tracking integrados: se declara como **estimación heurística del agente**, sin porcentajes.
 - **Imposibilidad:** "no se ha encontrado una composición mejor bajo estas restricciones" no demuestra que no exista.
   Informar qué restricciones limitan y qué se probó; no presentarlo como imposible.
@@ -77,7 +88,7 @@ reglas de texto; lo que falte se pregunta).
 | Qué | Dónde | Nota |
 |---|---|---|
 | Maestra y destinos | `runs/…/job.json` (`pcb.adapt-job.v1`): `fileKey`, `entryNodeId`, `targetName`, `destinations[]` | `job-check --job` lo valida |
-| Taxonomía de roles y restricciones por elemento | `config/*.project.json` + propuestas del agente (`agent-proposals.json`) | `proposals-check` |
+| Taxonomía de roles y restricciones por elemento | `config/*.project.json` (partir de `<PCB>/config/example.project.json`) + propuestas del agente (`agent-proposals.json`) | `proposals-check` |
 | Zona segura y su procedencia | `composition.json → safeArea`: `internal_demo_rule {marginPx, note}` o `safe_zone_rule {ruleId, version, provenance, allowed, exclusions, source}` | De una plantilla de Figma: `safe-zone-template-request` → `use_figma` → `safe-zone-resolve` (da el `safeArea` listo). Sin especificación ⇒ `internal_demo_rule` declarada como tal |
 | Composición del destino | `composition.json`: `units` (bloques rígidos con ancla y destino), `effectResizes`, `vectorEdits` (solo decoración/máscara de decoración, con guardas `from` y `strokeWeight` opcional), `imageScales` (escala proporcional de imágenes; nunca logo ni texto), `textEdits`, `legalNodeIds`, `logoPolicy`, `messagePlan` | Una composición por destino |
 | Límites de texto del proyecto | `config/*.project.json → textPolicy {editable, fontScale, minFontSizePx}` | `demo-plan --config` obligatorio si hay `textEdits` o logo experimental |
@@ -93,13 +104,13 @@ de 54 px de otra demo solo se reutilizan si se declaran explícitamente para el 
 Variables: `K` = fileKey, `E` = nodo de entrada del enlace (`node-id=1-536` → `1:536`), `M` = maestra resuelta,
 `R` = carpeta de la ejecución, `C` = clon. Cada `*-request.json` contiene un `code` que se envía **tal cual** con
 `use_figma` (skill `figma-use` cargada); la respuesta original se extrae del registro de la sesión con
-`python3 scripts/extract-tool-calls.py --out DIR --prefix "<inicio de la description>" --label L [--set-id S] [--last N]`
+`python3 <PCB>/scripts/extract-tool-calls.py --out DIR --prefix "<inicio de la description>" --label L [--set-id S] [--last N]`
 y se comprueba con `verify-sent --request … --calls DIR/calls-L.json`.
 
-0. **Entorno y carpeta**: `node src/cli.ts doctor` (si hay errores, parar y explicarlos) y `whoami` del MCP de Figma.
+0. **Entorno y carpeta**: `node <PCB>/src/cli.ts doctor` (si hay errores, parar y explicarlos) y `whoami` del MCP de Figma.
    Todo se guarda en la carpeta del encargo `R = runs/<fecha>-<nombre>/` (ignorada por Git); no se leen ni se escriben
    rutas de otras ejecuciones salvo el inventario de la **misma** maestra comprobado con `digests-compare`.
-   Copiar `docs/02-registro-prueba.template.json` a `R/registro-prueba.json` y anotar la hora de inicio.
+   Copiar `references/registro-prueba.template.json` a `R/registro-prueba.json` y anotar la hora de inicio.
 1. **Resolver la maestra desde el enlace** (solo lectura): `discover-request` → `use_figma` → `resolve` → `discovery.json`.
    Si hay varias candidatas o ninguna, preguntar.
 2. **Inventario**: `read-request --chunk-index i` (el fragmento 0 da `chunkCount`) → `use_figma` × N → `ingest` →
@@ -129,9 +140,9 @@ y se comprueba con `verify-sent --request … --calls DIR/calls-L.json`.
    `demo-check … --out R/check` (añadir `--vector-before/--vector-after` con `vector-probe-request` si hay `vectorEdits`).
    `text_fit` detecta desbordamientos y truncados tras editar texto; `message_relation` registra la relación con la
    persona. Revisión del recorrido tras el render: `attention-flow --clone-snapshot … --adapt-result … --composition …
-   --out R/flow.json` y `python3 scripts/attention-overlay.py --screenshot … --flow R/flow.json --out R/evidence/atencion.png`.
+   --out R/flow.json` y `python3 <PCB>/scripts/attention-overlay.py --screenshot … --flow R/flow.json --out R/evidence/atencion.png`.
    Mediciones geométricas adicionales (separación titular–persona, codos, cinta–texto, cara–oferta):
-   `python3 scripts/measure-layout.py …` con el canal alfa de la foto (`get_screenshot` del nodo de la maestra).
+   `python3 <PCB>/scripts/measure-layout.py …` con el canal alfa de la foto (`get_screenshot` del nodo de la maestra).
    Antes de escribir decoraciones que pasan por detrás de una persona, simular máscaras y trazo sobre la silueta: ningún
    tramo puede quedar oculto sobre fondo (sería un corte).
 7. **Entregar**: enlace `https://www.figma.com/design/K/?node-id=C` (con `-`), captura limpia **y** captura con la safe

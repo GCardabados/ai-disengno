@@ -5,11 +5,19 @@ description: Genera variantes de CONTENIDO de una pieza maestra estática de Fig
 
 # Variantes de contenido de una maestra de Figma
 
-Código en `src/` (comandos `node src/cli.ts variant-*`; lista: `node src/cli.ts`). Reutiliza la lectura, el
-inventario, las capturas, la detección de cambios manuales y las comprobaciones de fuentes de
-`adapt-master-creative`, **sin alterar su flujo**. Cada ejecución guarda datos y evidencia en
-`runs/<fecha>-<nombre>-variantes/` (fuera de Git). Ningún comando del CLI escribe en Figma: los `*-request.json`
-contienen un `code` que se envía **tal cual** con `use_figma` (skill `figma-use` cargada).
+## Rutas y entorno (leer primero)
+
+- **`<PCB>`** = la carpeta `cli/` que va dentro de esta skill (paquete portable), o la raíz del repositorio si no existe
+  `cli/` (checkout completo). Resuélvela una vez a ruta absoluta y úsala en cada comando: `node <PCB>/src/cli.ts variant-*`
+  (lista: sin comando), `python3 <PCB>/scripts/<script>.py`. Ahí están el código, los scripts de Python, `config/` y `zod`
+  ya incluido: **no hace falta `npm install`**. Requiere Node ≥ 24.21 (`<PCB>/.nvmrc`); Pillow solo para la hoja de contacto.
+- Reutiliza la lectura, el inventario, las capturas, la detección de cambios manuales y las comprobaciones de fuentes de
+  `adapt-master-creative`, **sin alterar su flujo** (sus comandos están en el mismo CLI; no hace falta tener esa skill).
+- Cada ejecución guarda datos y evidencia en `runs/<fecha>-<nombre>-variantes/` en la **carpeta de trabajo de la persona**
+  (cwd), nunca dentro de la skill. Ningún comando del CLI escribe en Figma: los `*-request.json` contienen un `code` que se
+  envía **tal cual** con `use_figma` (MCP de Figma conectado y skill `figma-use` cargada; escribir clones exige asiento Full).
+- Instalación: [instalacion.md](references/instalacion.md). Como punto de partida de la configuración del proyecto:
+  `<PCB>/config/example.project.json` (cópialo a la carpeta de trabajo y ajústalo).
 
 ## Invariantes (no configurables)
 
@@ -44,12 +52,12 @@ contienen un `code` que se envía **tal cual** con `use_figma` (skill `figma-use
 ## Flujo
 
 Variables: `K` fileKey, `E` nodo del enlace (`node-id=1-536` → `1:536`), `M` maestra, `R` carpeta de la ejecución.
-Respuestas originales de `use_figma`: `python3 scripts/extract-tool-calls.py --out DIR --prefix "<inicio de la
+Respuestas originales de `use_figma`: `python3 <PCB>/scripts/extract-tool-calls.py --out DIR --prefix "<inicio de la
 description>" --label L` y `verify-sent --request … --calls DIR/calls-L.json` (igual que en adapt-master-creative).
 
 ### 1. Analizar la maestra (antes de preguntar nada)
 
-0. `node src/cli.ts doctor` y `whoami` del MCP de Figma. Crear `R`.
+0. `node <PCB>/src/cli.ts doctor` y `whoami` del MCP de Figma. Crear `R`.
 1. Resolver la maestra desde el enlace: `discover-request` → `use_figma` → `resolve` (si hay varias candidatas o
    ninguna, preguntar). Inventario: `read-request --chunk-index i` → `use_figma` × N → `ingest` → `snapshot.json`.
    Si la misma maestra ya tiene un `variant-job.json` de otra ejecución, basta `read-request --mode node-digests` +
@@ -57,7 +65,7 @@ description>" --label L` y `verify-sent --request … --calls DIR/calls-L.json` 
    `variant-job-check`).
 2. `get_screenshot` de la maestra (guardar en `R/evidence/maestra.png`) y **mirarla**: función real de cada texto,
    logo, texto incrustado en imágenes, rostros/sujeto, máscaras, superposiciones y dependencias visuales.
-3. `variant-discover --snapshot … --config config/example.project.json --term grado=Derecho --term ciudad=Madrid
+3. `variant-discover --snapshot … --config <PCB>/config/example.project.json --term grado=Derecho --term ciudad=Madrid
    --out R` (los `--term` son los valores que la intención de la persona permite reconocer en la pieza). Da
    `variant-discovery.json` y `propuesta.md`: variar / mantener / aclarar, riesgos (estilos mixtos, auto layout, caja
    fija, truncado, fuente ausente, máscara con forma, posible texto incrustado, texto vectorizado). Es heurístico:
@@ -86,7 +94,7 @@ Puede responder en lenguaje natural; CSV o JSON son opcionales. No repetir pregu
 
 ### 3. Convertir las respuestas en el encargo y confirmar
 
-Escribir `R/variant-job.json` (`pcb.variant-job.v1`, ver `src/contracts/variants.ts`):
+Escribir `R/variant-job.json` (`pcb.variant-job.v1`, ver `<PCB>/src/contracts/variants.ts`):
 - `master` (`fileKey`, `nodeId`, nombre, tamaño, `fingerprint` = `snapshot.fingerprints.master`, `params` que ya
   muestra la maestra, p. ej. `{grado: "Derecho", ciudad: "Madrid"}`); `params` (ids y etiquetas).
 - `fields`: un campo por elemento que puede cambiar → **un** `nodeId`, `masterValue` (texto o `imageHash` actual),
@@ -143,7 +151,7 @@ Comprueba: dimensiones, misma estructura, **solo** cambiaron los elementos autor
 desbordamiento/truncado/elipsis/mínimo, zona segura (si se declaró), **sin mezcla de datos entre variantes**, maestra
 intacta.
 
-Entrega: `python3 scripts/contact-sheet.py --image "Maestra=…" --image "<variante>=…" --out R/evidence/hoja-contacto.png`
+Entrega: `python3 <PCB>/scripts/contact-sheet.py --image "Maestra=…" --image "<variante>=…" --out R/evidence/hoja-contacto.png`
 y `variant-report --plan … --result … --check R/check/check-<id>.json … --screenshot <id>=evidence/<id>.png --out
 R/informe.md`. Decir: creadas, bloqueadas, fallidas y pendientes; enlaces `https://www.figma.com/design/K/?node-id=<clon
 con ->`; cambios aplicados; validaciones; decisiones pendientes. Recordar que queda la **revisión humana del diseño**.
@@ -198,6 +206,7 @@ Reglas propias del modo traducción:
 
 ## Pruebas sin Figma
 
-`node --test test/variants.test.ts test/variant-script-sim.test.ts test/translation.test.ts` (maestra MOCK de universidad en
-`src/figma/mock/fixtures.ts`; todo lo MOCK queda etiquetado). La simulación del script de escritura usa una medida de
-texto aproximada: prueba el control de flujo, no la tipografía real.
+Los comandos con MOCK (`mock-read`, maestra de universidad en `<PCB>/src/figma/mock/fixtures.ts`) funcionan en el paquete
+portable; todo lo MOCK queda etiquetado. Las pruebas automáticas (`node --test test/variants.test.ts
+test/variant-script-sim.test.ts test/translation.test.ts`) solo existen en el repositorio completo; su simulación del script
+de escritura usa una medida de texto aproximada: prueba el control de flujo, no la tipografía real.
