@@ -31,6 +31,10 @@ Diseño y decisiones: [docs/00-auditoria-y-diseno.md](docs/00-auditoria-y-diseno
   autosuficiente por skill (`SKILL.md` + `references/` + `cli/` con el código, scripts, config y `zod`), lista para pasar a
   otra persona sin el resto del proyecto ni `npm install`. En los `SKILL.md`, `<PCB>` es esa carpeta `cli/` (o la raíz del
   repo). Probado en `test/skill-bundle.test.ts`. Instalación: `references/instalacion.md` de cada skill.
+- **Maestras desde el brief (2026-10-15):** skill `create-master-creative` (brief + brand kit → maestra nueva en Figma,
+  desde una composición tipo o una plantilla del cliente; comandos `master-*`) y skill `brand-kit-generator` (manual
+  PDF + logos + fuentes → `brands/<marca>/brand.json` y `guidelines.md`; comandos `brand-*`). Kits en borrador de
+  `uax` y `mutualidad` (esta sin logos). Probado solo con MOCK.
 
 Ningún comando del CLI escribe en Figma. `adapt-request` solo genera el script de escritura (DEMO) que actúa sobre un clon; lo ejecuta `use_figma` y requiere asiento Full.
 

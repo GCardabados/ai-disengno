@@ -38,6 +38,8 @@ import { renderDemoReport, type DemoReportMeta } from './report/demo-md.ts';
 import type { CheckStatus, Finding } from './contracts/validation.ts';
 import { runVariantCommand, VARIANT_USAGE } from './variants/cli.ts';
 import { runTranslationCommand, TRANSLATION_USAGE } from './variants/translation-cli.ts';
+import { runBrandCommand, BRAND_USAGE } from './brand/cli.ts';
+import { runMasterCommand, MASTER_USAGE } from './master/cli.ts';
 
 const USAGE = `pcb <comando> [opciones]
 
@@ -82,7 +84,9 @@ const USAGE = `pcb <comando> [opciones]
                  [--template-hint TXT] [--layer-hint TXT] --out F
                  Elige la plantilla SOLO por tamaño exacto; 'none' o 'ambiguous' ⇒ no se aplica y se pregunta
 ${VARIANT_USAGE}
-${TRANSLATION_USAGE}`;
+${TRANSLATION_USAGE}
+${BRAND_USAGE}
+${MASTER_USAGE}`;
 
 const opts = {
   'file-key': { type: 'string' },
@@ -177,6 +181,8 @@ async function main(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
   if (cmd?.startsWith('variant-')) return runVariantCommand(cmd, rest);
   if (cmd?.startsWith('translation-')) return runTranslationCommand(cmd, rest);
+  if (cmd?.startsWith('brand-')) return runBrandCommand(cmd, rest);
+  if (cmd?.startsWith('master-')) return runMasterCommand(cmd, rest);
   const { values: a } = parseArgs({ args: rest, options: opts, strict: true });
   const now = new Date().toISOString();
 
