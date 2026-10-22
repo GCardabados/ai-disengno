@@ -36,6 +36,14 @@ Diseño y decisiones: [docs/00-auditoria-y-diseno.md](docs/00-auditoria-y-diseno
   PDF + logos + fuentes → `brands/<marca>/brand.json` y `guidelines.md`; comandos `brand-*`). Kits en borrador de
   `uax` y `mutualidad` (esta sin logos). Probado solo con MOCK.
 
+- **Emails en Figma (2026-10-22):** skill [`create-email-design`](.claude/skills/create-email-design/SKILL.md): brief +
+  conocimiento del cliente → email editable desktop/mobile en Figma (componentes, auto layout, anotaciones, notas de
+  desarrollo), con copys propuestos y placeholders identificados. Comandos `email-*`. Probada con MOCK y en Figma real
+  (archivo de pruebas). Diseño y pruebas: [docs/04](docs/04-skill-email-y-conocimiento-compartido.md).
+- **Conocimiento compartido de clientes (2026-10-22):** [`client-knowledge/`](client-knowledge/README.md), pensado para su
+  propio repositorio: índice por cliente con estado/versión/fuente, marca (`pcb.brand.v1`), reglas por canal
+  (`ck.email.v1`), cuarentena de propuestas y plantilla mínima. Comandos `knowledge-*` (raíz: `CLIENT_KNOWLEDGE_ROOT`).
+
 Ningún comando del CLI escribe en Figma. `adapt-request` solo genera el script de escritura (DEMO) que actúa sobre un clon; lo ejecuta `use_figma` y requiere asiento Full.
 
 ## Requisitos

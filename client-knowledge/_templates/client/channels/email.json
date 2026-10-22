@@ -1,0 +1,28 @@
+{
+  "schema": "ck.email.v1",
+  "client": "cliente-ejemplo",
+  "status": "draft",
+  "approval": null,
+  "version": "2026-10-22.1",
+  "updatedAt": "2026-10-22",
+  "platform": null,
+  "layout": {
+    "desktopWidthPx": null, "mobileWidthPx": null, "sidePaddingDesktopPx": null, "sidePaddingMobilePx": null,
+    "moduleSpacingDesktopPx": null, "moduleSpacingMobilePx": null, "spacingScalePx": null
+  },
+  "colors": [],
+  "typography": { "policy": null, "roles": {} },
+  "cta": null,
+  "links": null,
+  "logo": null,
+  "header": null,
+  "footer": null,
+  "legal": { "mandatoryTexts": [], "forbiddenClaims": [] },
+  "darkMode": null,
+  "modules": [],
+  "templates": [],
+  "examples": [],
+  "constraints": [],
+  "gaps": ["Todo: el cliente aún no tiene reglas de email; la skill usará sus valores por defecto, declarados"],
+  "openQuestions": []
+}

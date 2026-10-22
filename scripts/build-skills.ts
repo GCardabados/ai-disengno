@@ -20,6 +20,7 @@ const SKILLS: SkillPlan[] = [
     extras: ['ejemplos'],
   },
   { name: 'creative-content-variants', scripts: ['extract-tool-calls.py', 'contact-sheet.py'], extras: [] },
+  { name: 'create-email-design', scripts: ['extract-tool-calls.py'], extras: [] },
 ];
 
 /** zod sin tipos, CJS ni mapas: el CLI solo lo importa como ESM (`import { z } from 'zod'`). */

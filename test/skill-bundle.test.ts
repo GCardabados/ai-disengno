@@ -10,7 +10,7 @@ import { after, before, test } from 'node:test';
 const root = resolve(import.meta.dirname, '..');
 const tmp = mkdtempSync(join(tmpdir(), 'pcb-bundle-'));
 const work = join(tmp, 'work');
-const skills = ['adapt-master-creative', 'creative-content-variants'];
+const skills = ['adapt-master-creative', 'creative-content-variants', 'create-email-design'];
 
 const run = (script: string, args: string[]) =>
   spawnSync(process.execPath, [script, ...args], { cwd: work, encoding: 'utf8', env: { ...process.env, NODE_PATH: '' } });

@@ -1,0 +1,95 @@
+{
+  "schema": "ck.email.v1",
+  "client": "mutualidad",
+  "status": "draft",
+  "approval": null,
+  "version": "2026-10-22.1",
+  "updatedAt": "2026-10-22",
+  "platform": {
+    "esp": "Salesforce Marketing Cloud (entrega aún no automatizada: sfmc=false)",
+    "htmlPipeline": "ai-mkt-automation (email-builder → Email on Acid)",
+    "notes": "El pipeline maqueta desde frames hermanos Email_<Nombre>_Desktop / _Mobile; breakpoint @media (max-width:660px)",
+    "source": "ai-mkt-automation clients/mutualidad/client.json y reference/email/responsive.md"
+  },
+  "layout": {
+    "desktopWidthPx": { "value": 600, "status": "observed", "source": "Figma Emails-Mutualidad 4539:3756 y design-system.md (contenedor 600)" },
+    "mobileWidthPx": { "value": 393, "status": "observed", "source": "ai-mkt-automation clients/mutualidad/CLAUDE.md (frames Email_*_Mobile a 393)" },
+    "sidePaddingDesktopPx": { "value": 32, "status": "observed", "source": "Figma Emails-Mutualidad 4539:3775 (x=32, ancho útil 536)" },
+    "sidePaddingMobilePx": null,
+    "moduleSpacingDesktopPx": null,
+    "moduleSpacingMobilePx": null,
+    "spacingScalePx": { "value": [8, 12, 16, 24, 32, 40], "status": "observed", "source": "design-system.md (email-brand-kit)" }
+  },
+  "colors": [
+    { "id": "brand-primary", "hex": "#004136", "roles": ["fondo cabecera", "texto principal", "texto CTA"], "brandColorId": "verde-bosque", "status": "observed", "source": "design-system.md (email-brand-kit, tokens de Figma)" },
+    { "id": "brand-cta", "hex": "#B9EDAA", "roles": ["fondo CTA", "navegación"], "brandColorId": "verde-lima", "status": "observed", "source": "design-system.md" },
+    { "id": "logo-accent", "hex": "#D1A4C4", "roles": ["acento del logotipo"], "brandColorId": "rosa-palo", "status": "observed", "source": "design-system.md" },
+    { "id": "brand-dark", "hex": "#0C3B2E", "roles": ["cifras destacadas"], "brandColorId": null, "status": "observed", "source": "design-system.md (no está en el manual)" },
+    { "id": "legales-bg", "hex": "#E3F8DD", "roles": ["fondo legales"], "brandColorId": null, "status": "observed", "source": "design-system.md (no está en el manual)" },
+    { "id": "blanco", "hex": "#FFFFFF", "roles": ["fondo", "texto sobre oscuro"], "brandColorId": null, "status": "observed", "source": "design-system.md (gutter y fondos de email)" },
+    { "id": "footer-legal-bg", "hex": "#EEEEEE", "roles": ["fondo legal del pie"], "brandColorId": null, "status": "observed", "source": "design-system.md" },
+    { "id": "text-dark", "hex": "#001C14", "roles": ["texto legal del pie", "texto"], "brandColorId": null, "status": "observed", "source": "design-system.md" },
+    { "id": "brand-darker", "hex": "#002A1E", "roles": ["banda «¿Por qué Mutualidad?»"], "brandColorId": null, "status": "needs_confirmation", "source": "design-system.md: PROVISIONAL, visto en «Email Leads-V2» nodo 9060:1532" }
+  ],
+  "typography": {
+    "policy": { "value": "web_safe", "status": "confirmed", "source": "Pipeline HTML ai-mkt-automation: reference/email/email-safe-rules.md (linter W4, solo fuentes de sistema)" },
+    "roles": {
+      "h1": { "stack": "Arial, Helvetica, sans-serif", "figma": { "family": "Arimo", "style": "Bold" }, "desktop": { "sizePx": 40, "lineHeightPx": 48 }, "mobile": null, "upper": false, "status": "observed", "source": "design-system.md (H1 40; Arial por ser la marca no web-safe). Figma sin Arial: Arimo, métricamente compatible" },
+      "h2": { "stack": "Arial, Helvetica, sans-serif", "figma": { "family": "Arimo", "style": "Bold" }, "desktop": { "sizePx": 20, "lineHeightPx": 28 }, "mobile": null, "upper": false, "status": "observed", "source": "design-system.md (H2 20)" },
+      "body": { "stack": "Arial, Helvetica, sans-serif", "figma": { "family": "Arimo", "style": "Regular" }, "desktop": { "sizePx": 16, "lineHeightPx": 24 }, "mobile": { "sizePx": 16, "lineHeightPx": 24 }, "upper": false, "status": "observed", "source": "design-system.md (BODY 16, line-height 24)" },
+      "small": { "stack": "Arial, Helvetica, sans-serif", "figma": { "family": "Arimo", "style": "Regular" }, "desktop": { "sizePx": 12, "lineHeightPx": 18 }, "mobile": null, "upper": false, "status": "observed", "source": "design-system.md (SMALL 12)" },
+      "legal": { "stack": "Arial, Helvetica, sans-serif", "figma": { "family": "Arimo", "style": "Regular" }, "desktop": { "sizePx": 12, "lineHeightPx": 18 }, "mobile": null, "upper": false, "status": "observed", "source": "design-system.md (LEGAL 12)" }
+    }
+  },
+  "cta": { "fill": "brand-cta", "text": "brand-primary", "heightPx": 56, "radius": null, "fullWidthMobile": null, "status": "observed", "source": "design-system.md (CTA lima con texto verde) y Figma 4539:3796 (WP&AP_Button 56 px)" },
+  "links": null,
+  "logo": null,
+  "header": { "viewOnline": true, "background": "brand-primary", "status": "observed", "source": "Figma 4539:3759 («Si no ves correctamente este email pulsa aquí») y design-system.md (cabecera brand-primary)" },
+  "footer": {
+    "required": [
+      { "id": "baja", "label": "Enlace de baja / gestión de preferencias", "text": null, "source": "obligación general de comunicaciones comerciales" },
+      { "id": "remitente", "label": "Identificación legal del remitente", "text": null, "source": "obligación general de comunicaciones comerciales" },
+      { "id": "buzon-no-atendido", "label": "Aviso de buzón no atendido", "text": null, "source": "Figma: componente «Footer_Comunicaciones comerciales desde un buzón no atendido» (4539:3827)" }
+    ],
+    "background": "footer-legal-bg",
+    "moduleId": "footer-mutualidad",
+    "status": "observed",
+    "source": "ai-mkt-automation modules/footer-mutualidad + Figma 4539:3827"
+  },
+  "legal": {
+    "mandatoryTexts": [
+      { "id": "rentabilidades-pasadas", "text": "Rentabilidades pasadas no implican rentabilidades futuras.", "when": "se mencione una rentabilidad", "status": "observed", "source": "Figma Emails-Mutualidad 4539:3826 (banda LEGALES)" }
+    ],
+    "forbiddenClaims": []
+  },
+  "darkMode": { "strategy": "undefined", "rules": [], "source": "Sin reglas del cliente; el pipeline aplica su doctrina genérica de capas" },
+  "modules": [
+    { "id": "footer-mutualidad", "type": "footer", "description": "Banda de contacto #004136 + redes + legal #EEEEEE", "figma": { "fileKey": "iSokYkIKrVvMEVU6kolXPL", "nodeId": "4373:3750", "componentKey": null }, "htmlModuleId": "footer-mutualidad", "status": "observed", "source": "ai-mkt-automation modules/registry.json (validated:false)" },
+    { "id": "header-logo", "type": "header", "description": "Barra con logo centrado", "figma": null, "htmlModuleId": "header-logo", "status": "observed", "source": "ai-mkt-automation modules/registry.json (validated:false)" },
+    { "id": "ventajas-2x2", "type": "columns", "description": "Rejilla 2×2 de ventajas con icono, título y texto", "figma": { "fileKey": "iSokYkIKrVvMEVU6kolXPL", "nodeId": "4539:3799", "componentKey": null }, "htmlModuleId": "ventajas-2x2", "status": "observed", "source": "ai-mkt-automation modules/registry.json + Figma 4539:3799" },
+    { "id": "legales-notas", "type": "legal", "description": "Banda de notas legales", "figma": { "fileKey": "iSokYkIKrVvMEVU6kolXPL", "nodeId": "4539:3825", "componentKey": null }, "htmlModuleId": "legales-notas", "status": "observed", "source": "ai-mkt-automation modules/registry.json + Figma 4539:3825" }
+  ],
+  "templates": [],
+  "examples": [
+    { "id": "ppa-upselling-1a", "label": "Email_1A PPA_JRN Upselling (propuesta de footer)", "fileKey": "iSokYkIKrVvMEVU6kolXPL", "nodeId": "4539:3756", "date": null, "notes": "Ver online + logo centrado, bloque de cifra, 2×2 ventajas con CTA, legales y footer como instancia", "source": "Figma Emails-Mutualidad, página Footer" }
+  ],
+  "constraints": [
+    { "text": "Texto vivo solo en fuentes de sistema (Arial; Georgia para cifras de display)", "status": "confirmed", "source": "ai-mkt-automation reference/email/email-safe-rules.md y design-system.md" },
+    { "text": "Sin background-image CSS; VML solo si es imprescindible", "status": "confirmed", "source": "ai-mkt-automation reference/email/email-safe-rules.md (E5)" },
+    { "text": "Imágenes exportadas @2x desde un nodo de Figma y alojadas en el CDN del pipeline (nunca URLs de Figma)", "status": "confirmed", "source": "ai-mkt-automation reference/email (E4)" }
+  ],
+  "gaps": [
+    "Margen lateral mobile y separaciones entre módulos",
+    "Radio del botón y comportamiento mobile (ancho completo o no)",
+    "Estilo de los enlaces en texto",
+    "Tamaño mobile de titulares",
+    "Dark mode",
+    "Textos del pie (baja, remitente) y legales por producto",
+    "Versión del logo en la cabecera verde y archivos del logo"
+  ],
+  "openQuestions": [
+    { "id": "mutualidad-email-logo", "question": "¿Qué versión del logo va en la cabecera verde del email (blanca o rosa)? El kit no tiene archivos de logo.", "status": "open", "answer": null, "source": "consolidación 2026-10-22" },
+    { "id": "mutualidad-email-titulares", "question": "Los emails usan Arial en titulares y la marca define Rufina (Google Fonts). ¿Se mantiene Arial o se admite Rufina como web font con fallback?", "status": "open", "answer": null, "source": "manual p. 71 vs design-system.md" },
+    { "id": "mutualidad-brand-darker", "question": "#002A1E (visto en «Email Leads-V2») ¿es un color de email estable?", "status": "open", "answer": null, "source": "design-system.md (PROVISIONAL)" }
+  ]
+}

@@ -1,0 +1,237 @@
+{
+  "schema": "pcb.email-brief.v1",
+  "slug": "mutualidad-area-privada",
+  "name": "AreaPrivadaDemo",
+  "client": "mutualidad",
+  "request": "PRUEBA DE LA SKILL (brief ficticio): email para que los mutualistas activen y usen el Área Privada. Ver brief.md.",
+  "objective": "Activar el uso del Área Privada",
+  "audience": "Mutualistas que aún no han entrado en el Área Privada",
+  "mainMessage": "En el Área Privada tienes tus productos, certificados y datos siempre a mano",
+  "language": "es",
+  "subject": {
+    "text": "Tu Área Privada te está esperando",
+    "source": "agent_draft",
+    "note": "33 caracteres: cabe en mobile"
+  },
+  "preheader": {
+    "text": "Consulta tus productos y descarga tus certificados cuando quieras, desde cualquier dispositivo.",
+    "source": "agent_draft",
+    "note": null
+  },
+  "figma": {
+    "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+    "pageId": "0:1",
+    "sectionName": "EMAIL · mutualidad · AreaPrivadaDemo (prueba skill)"
+  },
+  "canvas": {
+    "background": "blanco",
+    "text": "brand-primary"
+  },
+  "modules": [
+    {
+      "id": "header",
+      "type": "header",
+      "purpose": "Identificar al remitente de un vistazo (logo) y ofrecer la versión web, como en los emails actuales del cliente",
+      "background": "brand-primary",
+      "textColor": "blanco",
+      "align": "center",
+      "eyebrow": {
+        "text": "Si no ves correctamente este email, pulsa aquí",
+        "source": "client_approved",
+        "note": "texto visto en Figma 4539:3759"
+      },
+      "headline": null,
+      "headlineLevel": null,
+      "body": [],
+      "cta": null,
+      "image": null,
+      "imageSide": null,
+      "items": [],
+      "columns": null
+    },
+    {
+      "id": "hero",
+      "type": "hero",
+      "purpose": "Mensaje principal y acción principal: lo primero que se ve y lo único imprescindible",
+      "background": "blanco",
+      "textColor": "brand-primary",
+      "align": "center",
+      "eyebrow": null,
+      "headline": {
+        "text": "Tu Mutualidad, siempre a mano",
+        "source": "brief",
+        "note": null
+      },
+      "headlineLevel": "h1",
+      "body": [
+        {
+          "text": "Consulta tus productos, descarga tus certificados y gestiona tus datos desde el Área Privada, cuando quieras y desde cualquier dispositivo.",
+          "source": "brief",
+          "note": null
+        }
+      ],
+      "cta": {
+        "label": {
+          "text": "Accede a tu Área Privada",
+          "source": "brief",
+          "note": null
+        },
+        "url": null,
+        "variant": "primary"
+      },
+      "image": {
+        "label": "Persona usando el Área Privada en el móvil (foto de marca, luz natural)",
+        "alt": {
+          "text": "Mutualista consultando el Área Privada desde su móvil",
+          "source": "agent_draft",
+          "note": null
+        },
+        "decorative": false,
+        "ratio": [
+          15,
+          7
+        ],
+        "figmaNodeId": null,
+        "mobileCrop": false
+      },
+      "imageSide": null,
+      "items": [],
+      "columns": null
+    },
+    {
+      "id": "ventajas",
+      "type": "columns",
+      "purpose": "Razones para entrar: refuerzan el mensaje principal sin competir con el CTA",
+      "background": "blanco",
+      "textColor": "brand-primary",
+      "align": "left",
+      "eyebrow": null,
+      "headline": {
+        "text": "Todo lo que puedes hacer",
+        "source": "agent_draft",
+        "note": "titular de bloque propuesto"
+      },
+      "headlineLevel": "h2",
+      "body": [],
+      "cta": null,
+      "image": null,
+      "imageSide": null,
+      "items": [
+        {
+          "title": {
+            "text": "Tus productos de un vistazo",
+            "source": "brief",
+            "note": null
+          },
+          "body": {
+            "text": "Consulta el estado de tus planes y seguros en un solo lugar.",
+            "source": "brief",
+            "note": null
+          },
+          "image": null,
+          "link": null
+        },
+        {
+          "title": {
+            "text": "Certificados al momento",
+            "source": "brief",
+            "note": null
+          },
+          "body": {
+            "text": "Descárgalos cuando los necesites, sin esperas.",
+            "source": "brief",
+            "note": null
+          },
+          "image": null,
+          "link": null
+        },
+        {
+          "title": {
+            "text": "Tus datos al día",
+            "source": "agent_draft",
+            "note": null
+          },
+          "body": {
+            "text": "Actualiza tu teléfono, tu email o tu cuenta bancaria en pocos pasos.",
+            "source": "agent_draft",
+            "note": null
+          },
+          "image": null,
+          "link": null
+        }
+      ],
+      "columns": 3
+    },
+    {
+      "id": "legales",
+      "type": "legal",
+      "purpose": "Textos legales del envío",
+      "background": "legales-bg",
+      "textColor": "brand-primary",
+      "align": "left",
+      "eyebrow": null,
+      "headline": null,
+      "headlineLevel": null,
+      "body": [
+        {
+          "text": "[PENDIENTE: textos legales del envío]",
+          "source": "placeholder",
+          "note": "el brief no los trae"
+        }
+      ],
+      "cta": null,
+      "image": null,
+      "imageSide": null,
+      "items": [],
+      "columns": null
+    },
+    {
+      "id": "footer",
+      "type": "footer",
+      "purpose": "Baja, identificación del remitente y aviso de buzón no atendido",
+      "background": "footer-legal-bg",
+      "textColor": "text-dark",
+      "align": "center",
+      "eyebrow": null,
+      "headline": null,
+      "headlineLevel": null,
+      "body": [],
+      "cta": null,
+      "image": null,
+      "imageSide": null,
+      "items": [],
+      "columns": null
+    }
+  ],
+  "decisions": {
+    "fonts": {},
+    "cta": {
+      "fill": "brand-cta",
+      "text": "brand-primary",
+      "radius": "pill",
+      "by": "agent_proposal",
+      "note": "Colores observados en los emails del cliente; píldora como en web/app (laguna del manual). En Outlook clásico saldrá recto"
+    },
+    "logo": {
+      "logoId": "principal-blanco",
+      "widthPx": 197,
+      "by": "agent_proposal",
+      "note": "Cabecera verde (brand-primary): versión blanca por contraste; 197 px como en los emails actuales. Sin archivo: hueco pendiente"
+    },
+    "other": [
+      {
+        "topic": "estructura",
+        "decision": "cabecera → hero (H1 + CTA) → 3 ventajas → legales → pie; un único CTA principal",
+        "by": "agent_proposal",
+        "note": null
+      }
+    ]
+  },
+  "assumptions": [
+    "Email informativo sin oferta: no lleva precios, plazos ni condiciones",
+    "La imagen del hero la aporta el cliente (placeholder de 600×280)",
+    "El pie definitivo es el componente del cliente (footer-mutualidad); aquí va una versión con los obligatorios pendientes",
+    "El tercer beneficio se propone en el tono del manual (segunda persona, frases cortas, verbos de acción)"
+  ],
+  "confirmation": null
+}

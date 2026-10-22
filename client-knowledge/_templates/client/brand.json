@@ -1,0 +1,123 @@
+{
+  "schema": "pcb.brand.v1",
+  "slug": "cliente-ejemplo",
+  "name": "Cliente Ejemplo",
+  "status": "draft",
+  "validation": null,
+  "sources": [
+    {
+      "kind": "manual_pdf",
+      "label": "Manual de marca (nombre, versión)",
+      "location": null,
+      "version": null,
+      "retrievedAt": "2026-10-22"
+    }
+  ],
+  "colors": [
+    {
+      "id": "principal",
+      "name": "Principal",
+      "hex": "#1A1A1A",
+      "rgb": [
+        26,
+        26,
+        26
+      ],
+      "cmyk": null,
+      "pantone": null,
+      "role": "primary",
+      "usage": null,
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual p. ?"
+    },
+    {
+      "id": "blanco",
+      "name": "Blanco",
+      "hex": "#FFFFFF",
+      "rgb": [
+        255,
+        255,
+        255
+      ],
+      "cmyk": null,
+      "pantone": null,
+      "role": "base",
+      "usage": null,
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual p. ?"
+    }
+  ],
+  "typography": {
+    "families": [
+      {
+        "family": "Inter",
+        "styles": [
+          "Regular",
+          "Bold"
+        ],
+        "license": "ofl",
+        "figma": "google_fonts",
+        "usage": null,
+        "source": "manual p. ?"
+      }
+    ],
+    "fallback": null,
+    "roles": {
+      "headline": null,
+      "subheadline": null,
+      "body": null,
+      "cta": null,
+      "legal": null,
+      "claim": null
+    },
+    "rules": []
+  },
+  "logos": [
+    {
+      "id": "principal",
+      "label": "Logo principal",
+      "version": "primary",
+      "colorway": "positive_one_ink",
+      "inks": [
+        "principal"
+      ],
+      "file": null,
+      "minWidthPx": null,
+      "externalUse": true,
+      "usage": null,
+      "source": "manual p. ?"
+    }
+  ],
+  "logoRules": {
+    "clearSpace": null,
+    "idealWidthRatio": null,
+    "minContrast": null,
+    "backgrounds": [],
+    "overPhoto": null,
+    "prohibitions": []
+  },
+  "graphicDevices": [],
+  "photography": {
+    "rules": [],
+    "avoid": []
+  },
+  "layout": {
+    "rules": []
+  },
+  "copy": {
+    "claims": [],
+    "mandatoryTexts": [],
+    "tone": []
+  },
+  "rules": {
+    "must": [],
+    "never": []
+  },
+  "gaps": [
+    "Rellenar con brand-kit-generator a partir del manual"
+  ],
+  "openQuestions": [],
+  "templates": []
+}

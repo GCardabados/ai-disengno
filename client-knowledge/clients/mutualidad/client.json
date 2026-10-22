@@ -1,0 +1,44 @@
+{
+  "schema": "ck.client.v1",
+  "slug": "mutualidad",
+  "name": "Mutualidad",
+  "aliases": ["Mutualidad", "Mutualidad de la Abogacía"],
+  "domains": ["mutualidad.com"],
+  "status": "draft",
+  "owners": [],
+  "updatedAt": "2026-10-22",
+  "relatedClients": [
+    { "slug": "avanza-prevision", "relation": "Submarca con logo y proporción cromática propios (manual p. 14): kit propio, no dada de alta" },
+    { "slug": "fundacion-mutualidad", "relation": "Submarca con logo y proporción cromática propios (manual p. 14): kit propio, no dada de alta" }
+  ],
+  "figma": {
+    "libraries": [],
+    "files": [
+      { "label": "Emails-Mutualidad", "fileKey": "iSokYkIKrVvMEVU6kolXPL", "channels": ["email"], "note": "Emails 2025-2026 y estudio de footer (página Footer 4539:3754). Escritura vía MCP: requiere asiento Full" }
+    ]
+  },
+  "files": [
+    {
+      "id": "brand", "path": "brand.json", "kind": "brand", "channels": ["all"],
+      "topics": ["color", "tipografía", "logo", "fotografía", "maquetación", "tono", "reglas", "lagunas"],
+      "status": "draft", "version": "2026-10-15.1", "updatedAt": "2026-10-15",
+      "source": "brand-kit-generator desde «Brand guidelines Mutualidad» (mayo 2023, v01)", "approval": null, "load": "always",
+      "description": "Tokens y reglas de marca (pcb.brand.v1), cada dato con su página del manual"
+    },
+    {
+      "id": "guidelines", "path": "guidelines.md", "kind": "guidelines", "channels": ["all"],
+      "topics": ["logo", "color", "tipografía", "elementos gráficos", "fotografía", "maquetación", "tono de voz", "arquitectura de marca", "lagunas"],
+      "status": "draft", "version": "2026-10-15.1", "updatedAt": "2026-10-15",
+      "source": "brand-kit-generator desde el manual 2023 v01", "approval": null, "load": "on_demand",
+      "description": "Lectura humana del manual con páginas (tono de voz en la sección 8)"
+    },
+    {
+      "id": "email", "path": "channels/email.json", "kind": "channel", "channels": ["email"],
+      "topics": ["anchos", "tipografía email", "colores email", "CTA", "cabecera", "pie", "legales", "módulos", "ejemplos"],
+      "status": "draft", "version": "2026-10-22.1", "updatedAt": "2026-10-22",
+      "source": "Consolidado de ai-mkt-automation clients/mutualidad (design-system.md, client.json, registry) + lectura de Figma Emails-Mutualidad 2026-10-22",
+      "approval": null, "load": "always",
+      "description": "Reglas del canal email (ck.email.v1): casi todo OBSERVADO en emails aprobados, no escrito como norma"
+    }
+  ]
+}
