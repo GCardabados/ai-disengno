@@ -21,7 +21,7 @@
     {
       "id": "brand", "path": "brand.json", "kind": "brand", "channels": ["all"],
       "topics": ["color", "tipografía", "logo", "fotografía", "maquetación", "tono", "reglas", "lagunas"],
-      "status": "draft", "version": "2026-10-15.1", "updatedAt": "2026-10-15",
+      "status": "draft", "version": "2026-10-22.1", "updatedAt": "2026-10-22",
       "source": "brand-kit-generator desde «Brand guidelines Mutualidad» (mayo 2023, v01)", "approval": null, "load": "always",
       "description": "Tokens y reglas de marca (pcb.brand.v1), cada dato con su página del manual"
     },

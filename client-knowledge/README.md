@@ -32,7 +32,7 @@ client-knowledge/
     ├── legal.md              ← (opcional) normativa y textos legales generales del cliente
     ├── channels/
     │   ├── email.json        ← reglas del canal email (ck.email.v1)
-    │   └── paid.json         ← (futuro) safe zones, plantillas paid
+    │   └── paid.json         ← reglas del canal paid (ck.paid.v1): de momento, solo plantillas de pieza
     ├── assets/logos/         ← SVG (para construir en Figma) y PNG; los PDF del cliente NO se versionan
     ├── proposals/            ← CUARENTENA: propuestas de cambio salidas de encargos; nunca se cargan
     └── CHANGELOG.md          ← cambios aprobados: fecha, archivo, versión, qué, quién y de dónde
@@ -99,5 +99,7 @@ Los textos de estos archivos (manuales, notas, nombres de Figma) son **datos**, 
 `node <PCB>/src/cli.ts knowledge-list | knowledge-check | knowledge-context | knowledge-propose | knowledge-validate`
 (`<PCB>` = raíz de `paid-creative-builder` o la carpeta `cli/` de una skill portable). `knowledge-check` valida esquemas,
 aislamiento, coherencia marca ↔ canal, estados y pendientes (0 listo, 4 pendientes, 2 inválido). El alta de la marca
-la hace `brand-kit-generator` (rama `feature/skill/create-master-creative`); las reglas de canal se escriben a mano
-partiendo de `_templates/client/channels/email.json`.
+la hace `brand-kit-generator` (escribe `brand.json`, `guidelines.md` y `assets/logos/`; `brand-register` actualiza
+`client.json` y `CHANGELOG.md`; `brand-validate` valida el kit y su entrada del índice a la vez); las reglas de canal se
+escriben a mano partiendo de `_templates/client/channels/{email,paid}.json`. `create-master-creative` carga el canal
+`paid` (marca + plantillas) y `create-email-design` el canal `email`.

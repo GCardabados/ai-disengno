@@ -4,3 +4,4 @@ Cada cambio aprobado: fecha, archivo (id del índice), versión nueva, qué camb
 Las propuestas sin revisar están en `proposals/` y **no** forman parte del conocimiento.
 
 - 2026-10-22 · brand, guidelines v2026-10-15.1 · Alta en el repositorio compartido, copiados sin cambios desde `brands/uax/` (rama feature/skill/create-master-creative). Borrador.
+- 2026-10-22 · brand v2026-10-22.1 · Se quita `templates` (vacío) de brand.json: las plantillas paid pasan a `channels/paid.json` (ck.paid.v1). Sin cambios de contenido. Borrador.

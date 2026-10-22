@@ -11,6 +11,7 @@ import { z } from 'zod';
 
 export const CLIENT_INDEX_SCHEMA_ID = 'ck.client.v1';
 export const EMAIL_CHANNEL_SCHEMA_ID = 'ck.email.v1';
+export const PAID_CHANNEL_SCHEMA_ID = 'ck.paid.v1';
 export const KNOWLEDGE_PROPOSAL_SCHEMA_ID = 'ck.proposal.v1';
 export const KNOWLEDGE_CONTEXT_SCHEMA_ID = 'ck.context.v1';
 
@@ -181,6 +182,40 @@ export const EmailChannelSchema = z.strictObject({
   openQuestions: z.array(z.strictObject({ id: z.string(), question: z.string(), status: z.enum(['open', 'resolved']), answer: z.string().nullable(), source: Source })),
 });
 export type EmailChannel = z.infer<typeof EmailChannelSchema>;
+
+// ---------- Canal paid (channels/paid.json) ----------
+// Mínimo: solo las plantillas de pieza del cliente (modo «plantilla» de create-master-creative). Safe zones, tamaños
+// por plataforma o legales paid no están modelados todavía.
+
+/** Plantilla de pieza del cliente en Figma. Su archivo debe estar declarado en client.json → figma.files. */
+export const PaidTemplateSchema = z.strictObject({
+  id: Slug,
+  label: z.string(),
+  fileKey: z.string().min(1),
+  nodeId: z.string().min(1),
+  width: z.number().positive(),
+  height: z.number().positive(),
+  /** Huecos rellenables: rol → nodeId del texto o de la imagen en la plantilla. */
+  slots: z.record(z.string(), z.strictObject({ kind: z.enum(['text', 'image']), nodeId: z.string().min(1) })),
+  /** Nodos del logo en la plantilla (protegidos: no se tocan). */
+  logoNodeIds: z.array(z.string()),
+  notes: z.string().nullable(),
+  source: Source,
+});
+export type PaidTemplate = z.infer<typeof PaidTemplateSchema>;
+
+export const PaidChannelSchema = z.strictObject({
+  schema: z.literal(PAID_CHANNEL_SCHEMA_ID),
+  client: Slug,
+  status: z.enum(['draft', 'validated']),
+  approval: ApprovalSchema.nullable(),
+  version: z.string().min(1),
+  updatedAt: z.string(),
+  templates: z.array(PaidTemplateSchema),
+  gaps: z.array(z.string()),
+  openQuestions: z.array(z.strictObject({ id: z.string(), question: z.string(), status: z.enum(['open', 'resolved']), answer: z.string().nullable(), source: Source })),
+});
+export type PaidChannel = z.infer<typeof PaidChannelSchema>;
 
 // ---------- Propuestas de cambio (cuarentena: nunca se cargan como conocimiento) ----------
 

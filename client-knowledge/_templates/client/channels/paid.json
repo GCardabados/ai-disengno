@@ -1,0 +1,11 @@
+{
+  "schema": "ck.paid.v1",
+  "client": "cliente-ejemplo",
+  "status": "draft",
+  "approval": null,
+  "version": "2026-10-22.1",
+  "updatedAt": "2026-10-22",
+  "templates": [],
+  "gaps": [],
+  "openQuestions": []
+}

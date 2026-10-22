@@ -12,8 +12,8 @@ import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { parse, parseOrThrow } from '../contracts/schema.ts';
 import { BrandSchema, type Brand } from '../contracts/brand.ts';
 import {
-  ClientIndexSchema, EmailChannelSchema, KNOWLEDGE_CONTEXT_SCHEMA_ID, KnowledgeProposalSchema,
-  type ClientIndex, type EmailChannel, type KnowledgeFile, type KnowledgeProposal,
+  ClientIndexSchema, EmailChannelSchema, KNOWLEDGE_CONTEXT_SCHEMA_ID, KnowledgeProposalSchema, PaidChannelSchema,
+  type ClientIndex, type EmailChannel, type KnowledgeFile, type KnowledgeProposal, type PaidChannel,
 } from '../contracts/knowledge.ts';
 import { checkBrand, confirmedColors } from '../brand/check.ts';
 import { sha256Hex } from '../hash/canonical.ts';
@@ -83,6 +83,8 @@ export interface KnowledgeContext {
   onDemand: Array<{ id: string; path: string; topics: string[]; description: string; bytes: number; status: string }>;
   brand: Brand | null;
   email: EmailChannel | null;
+  /** Reglas del canal paid (plantillas del cliente). */
+  paid: PaidChannel | null;
   /** SVG de los logos que el canal referencia (para construirlos en Figma). */
   logoSvgs: Record<string, string>;
   issues: KnowledgeIssue[];
@@ -94,7 +96,7 @@ export async function loadContext(root: string, slug: string, channel: string): 
   const idx = await loadIndex(root, slug);
   const issues: KnowledgeIssue[] = [];
   const loaded: LoadedFile[] = [], onDemand: KnowledgeContext['onDemand'] = [];
-  let brand: Brand | null = null, email: EmailChannel | null = null;
+  let brand: Brand | null = null, email: EmailChannel | null = null, paid: PaidChannel | null = null;
   for (const f of idx.files) {
     if (!forChannel(f, channel)) continue;
     const p = clientPath(root, slug, f.path);
@@ -106,12 +108,16 @@ export async function loadContext(root: string, slug: string, channel: string): 
     const json = JSON.parse(raw) as { schema?: string };
     if (json.schema === 'pcb.brand.v1') brand = parseOrThrow(BrandSchema, json, f.path);
     else if (json.schema === 'ck.email.v1') email = parseOrThrow(EmailChannelSchema, json, f.path);
+    else if (json.schema === 'ck.paid.v1') paid = parseOrThrow(PaidChannelSchema, json, f.path);
   }
   if (brand && brand.slug !== slug) issues.push({ code: 'BRAND_OTHER_CLIENT', severity: 'blocking', message: `brand.json es de ${brand.slug}, no de ${slug}` });
   if (email && email.client !== slug) issues.push({ code: 'EMAIL_OTHER_CLIENT', severity: 'blocking', message: `channels/email.json es de ${email.client}, no de ${slug}` });
+  if (paid && paid.client !== slug) issues.push({ code: 'PAID_OTHER_CLIENT', severity: 'blocking', message: `channels/paid.json es de ${paid.client}, no de ${slug}` });
   if (!brand) issues.push({ code: 'NO_BRAND', severity: 'blocking', message: `${slug} no tiene brand.json cargable para ${channel}` });
   if (channel === 'email' && !email) issues.push({ code: 'NO_EMAIL_CHANNEL', severity: 'warning', message: `${slug} no tiene reglas de email: se usarán los valores por defecto de la skill, declarados` });
+  if (channel === 'paid' && !paid) issues.push({ code: 'NO_PAID_CHANNEL', severity: 'warning', message: `${slug} no tiene reglas paid (channels/paid.json): sin plantillas del cliente, solo se puede crear desde cero` });
   if (brand && email) issues.push(...crossCheck(brand, email, idx));
+  if (paid) issues.push(...crossCheckPaid(paid, idx));
 
   const logoSvgs: Record<string, string> = {};
   if (brand && email?.logo) for (const id of [email.logo.logoId, email.logo.darkModeLogoId].filter((x): x is string => !!x)) {
@@ -126,7 +132,7 @@ export async function loadContext(root: string, slug: string, channel: string): 
   return {
     schema: KNOWLEDGE_CONTEXT_SCHEMA_ID, root, channel,
     client: { slug, name: idx.name, status: idx.status, domains: idx.domains, figmaLibraries: idx.figma.libraries.filter((l) => l.channels.includes('all') || l.channels.includes(channel as never)), figmaFiles: idx.figma.files },
-    loaded, onDemand, brand, email, logoSvgs, issues, openProposals,
+    loaded, onDemand, brand, email, paid, logoSvgs, issues, openProposals,
   };
 }
 
@@ -181,6 +187,20 @@ export function crossCheck(brand: Brand, email: EmailChannel, idx: ClientIndex):
   return out;
 }
 
+/** Coherencia del canal paid con el índice: las plantillas solo pueden venir de archivos de Figma del cliente. */
+export function crossCheckPaid(paid: PaidChannel, idx: ClientIndex): KnowledgeIssue[] {
+  const out: KnowledgeIssue[] = [];
+  const ids = new Set<string>();
+  for (const t of paid.templates) {
+    if (ids.has(t.id)) out.push({ code: 'PAID_TEMPLATE_DUPLICATE', severity: 'blocking', message: `Plantilla paid repetida: ${t.id}` });
+    ids.add(t.id);
+    if (!idx.figma.files.some((f) => f.fileKey === t.fileKey)) out.push({ code: 'PAID_TEMPLATE_FILE_NOT_DECLARED', severity: 'blocking', message: `Plantilla ${t.id}: el archivo ${t.fileKey} no está declarado en client.json (posible mezcla de clientes)` });
+    if (!Object.keys(t.slots).length) out.push({ code: 'PAID_TEMPLATE_WITHOUT_SLOTS', severity: 'blocking', message: `Plantilla ${t.id}: sin huecos declarados` });
+  }
+  for (const q of paid.openQuestions) if (q.status === 'open') out.push({ code: 'PAID_OPEN_QUESTION', severity: 'warning', message: `Pregunta abierta (paid): ${q.question}` });
+  return out;
+}
+
 /** Comprobación completa del conocimiento de un cliente (knowledge-check). */
 export async function checkClient(root: string, slug: string): Promise<{ issues: KnowledgeIssue[]; index: ClientIndex }> {
   const idx = await loadIndex(root, slug);
@@ -205,6 +225,10 @@ export async function checkClient(root: string, slug: string): Promise<{ issues:
       } else if (json.schema === 'ck.email.v1') {
         const r = parse(EmailChannelSchema, json);
         if (!r.ok) issues.push({ code: 'EMAIL_INVALID', severity: 'blocking', message: `${f.path}: ${r.issues.slice(0, 3).map((i) => `${i.path} ${i.message}`).join('; ')}` });
+        else if (r.value.status !== f.status) issues.push({ code: 'STATUS_MISMATCH', severity: 'pending', message: `${f.id}: el índice dice «${f.status}» y ${f.path} «${r.value.status}»` });
+      } else if (json.schema === 'ck.paid.v1') {
+        const r = parse(PaidChannelSchema, json);
+        if (!r.ok) issues.push({ code: 'PAID_INVALID', severity: 'blocking', message: `${f.path}: ${r.issues.slice(0, 3).map((i) => `${i.path} ${i.message}`).join('; ')}` });
         else if (r.value.status !== f.status) issues.push({ code: 'STATUS_MISMATCH', severity: 'pending', message: `${f.id}: el índice dice «${f.status}» y ${f.path} «${r.value.status}»` });
       }
     }
@@ -247,10 +271,55 @@ export async function validateFile(root: string, slug: string, fileId: string, b
   const f = idx.files.find((x) => x.id === fileId);
   if (!f) throw new Error(`${slug} no tiene el archivo ${fileId}`);
   const { issues } = await checkClient(root, slug);
-  const stop = issues.filter((i) => i.severity !== 'warning' && (i.message.includes(f.path) || i.message.startsWith(`${f.id}:`) || (f.kind === 'brand' && i.code.startsWith('BRAND_')) || (f.kind === 'channel' && i.code.startsWith('EMAIL_'))));
+  const stop = issues.filter((i) => i.severity !== 'warning' && (i.message.includes(f.path) || i.message.startsWith(`${f.id}:`) || (f.kind === 'brand' && i.code.startsWith('BRAND_')) || (f.kind === 'channel' && (i.code.startsWith('EMAIL_') || i.code.startsWith('PAID_')))));
   if (stop.length) throw new Error(`No se puede validar ${fileId} con pendientes:\n${stop.map((i) => `- ${i.message}`).join('\n')}`);
   const at = new Date().toISOString();
   const next = { ...idx, files: idx.files.map((x) => (x.id === fileId ? { ...x, status: 'validated' as const, approval: { by, at, note }, updatedAt: at.slice(0, 10) } : x)) };
   await writeFile(clientPath(root, slug, 'client.json'), `${JSON.stringify(next, null, 2)}\n`, 'utf8');
   return next;
+}
+
+/** Versión siguiente (AAAA-MM-DD.n): el mismo día suma 1; otro día empieza en .1. */
+export const nextVersion = (prev: string | null, today: string): string => {
+  const m = prev?.match(/^(\d{4}-\d{2}-\d{2})\.(\d+)$/);
+  return m && m[1] === today ? `${today}.${Number(m[2]) + 1}` : `${today}.1`;
+};
+
+/** Añade una línea al CHANGELOG.md del cliente (lo crea con su cabecera si no existe). */
+export async function appendChangelog(root: string, slug: string, line: string): Promise<void> {
+  const p = clientPath(root, slug, 'CHANGELOG.md');
+  const head = `# Cambios del conocimiento — ${slug}\n\nCada cambio aprobado: fecha, archivo (id del índice), versión nueva, qué cambia, quién lo aprobó y de dónde sale.\nLas propuestas sin revisar están en \`proposals/\` y **no** forman parte del conocimiento.\n\n`;
+  const prev = existsSync(p) ? await readFile(p, 'utf8') : head;
+  await writeFile(p, `${prev.replace(/\n*$/, '\n')}- ${line}\n`, 'utf8');
+}
+
+export type KnowledgeFileEntry = Omit<KnowledgeFile, 'status' | 'version' | 'updatedAt' | 'approval'>;
+
+/** Registra en el índice un cambio de archivos de conocimiento ya escritos en la carpeta del cliente: los da de alta si
+ *  no están, sube su versión, los deja en borrador (un cambio anula la validación) y añade la línea al CHANGELOG. Si el
+ *  cliente no tiene índice, lo crea con lo mínimo. No escribe el contenido de los archivos. */
+export async function recordChange(
+  root: string, slug: string, entries: KnowledgeFileEntry[], note: string,
+  opts: { name: string; today?: string },
+): Promise<ClientIndex> {
+  const today = opts.today ?? new Date().toISOString().slice(0, 10);
+  for (const e of entries) if (!existsSync(clientPath(root, slug, e.path))) throw new Error(`${slug}: falta ${e.path}`);
+  const idx: ClientIndex = existsSync(clientPath(root, slug, 'client.json')) ? await loadIndex(root, slug) : {
+    schema: 'ck.client.v1', slug, name: opts.name, aliases: [opts.name], domains: [], status: 'draft', owners: [], updatedAt: today,
+    relatedClients: [], figma: { libraries: [], files: [] }, files: [],
+  };
+  const files = [...idx.files];
+  const changed: string[] = [];
+  for (const e of entries) {
+    const i = files.findIndex((f) => f.id === e.id);
+    const prev = i >= 0 ? files[i]! : null;
+    if (prev && prev.path !== e.path) throw new Error(`${slug}: el archivo ${e.id} del índice es ${prev.path}, no ${e.path}`);
+    const next: KnowledgeFile = { ...(prev ?? e), source: e.source, status: 'draft', version: nextVersion(prev?.version ?? null, today), updatedAt: today, approval: null };
+    if (i >= 0) files[i] = next; else files.push(next);
+    changed.push(`${e.id} v${next.version}`);
+  }
+  const out = parseOrThrow(ClientIndexSchema, { ...idx, status: 'draft', updatedAt: today, files }, `clients/${slug}/client.json`);
+  await writeFile(clientPath(root, slug, 'client.json'), `${JSON.stringify(out, null, 2)}\n`, 'utf8');
+  await appendChangelog(root, slug, `${today} · ${changed.join(', ')} · ${note}. Borrador.`);
+  return out;
 }

@@ -4,6 +4,7 @@
 import type { Brand, TextRole } from '../contracts/brand.ts';
 import { TEXT_ROLES } from '../contracts/brand.ts';
 import type { MasterBrief } from '../contracts/master.ts';
+import type { PaidTemplate } from '../contracts/knowledge.ts';
 import { hashOf } from '../hash/canonical.ts';
 import { confirmedColors } from '../brand/check.ts';
 import { contrast } from '../brand/color.ts';
@@ -44,7 +45,8 @@ function proposeFont(brand: Brand, role: TextRole): string {
   return bold(head) ?? '—';
 }
 
-export function checkBrief(b: MasterBrief, brand: Brand): BriefCheck {
+/** `templates`: plantillas del canal paid del cliente (channels/paid.json); solo cuentan en modo plantilla. */
+export function checkBrief(b: MasterBrief, brand: Brand, templates: PaidTemplate[] = []): BriefCheck {
   const issues: BriefIssue[] = [];
   const add = (i: BriefIssue) => issues.push(i);
   // Para texto, fondo y CTA solo cuentan los colores de la paleta (blanco/negro puros solo existen para tintas de logo).
@@ -56,8 +58,8 @@ export function checkBrief(b: MasterBrief, brand: Brand): BriefCheck {
 
   // Modo.
   if (b.mode === 'template') {
-    const t = brand.templates.find((x) => x.id === b.templateId);
-    if (!t) add({ code: 'TEMPLATE_UNKNOWN', severity: 'blocking', message: `La marca no tiene la plantilla ${b.templateId ?? '(sin indicar)'}; plantillas: ${brand.templates.map((x) => x.id).join(', ') || 'ninguna (usar modo scratch)'}` });
+    const t = templates.find((x) => x.id === b.templateId);
+    if (!t) add({ code: 'TEMPLATE_UNKNOWN', severity: 'blocking', message: `El canal paid de ${brand.name} no tiene la plantilla ${b.templateId ?? '(sin indicar)'}; plantillas: ${templates.map((x) => x.id).join(', ') || 'ninguna (usar modo scratch)'}` });
     else if (t.width !== b.format.width || t.height !== b.format.height) add({ code: 'TEMPLATE_SIZE', severity: 'blocking', message: `La plantilla ${t.id} mide ${t.width}×${t.height}, no ${b.format.width}×${b.format.height}: crea la maestra en su tamaño y adáptala después con adapt-master-creative` });
   } else if (!b.archetype) add({ code: 'ARCHETYPE_MISSING', severity: 'pending', message: 'Falta elegir la composición', proposal: `«${proposeArchetype(b)}»` });
 
@@ -134,8 +136,8 @@ export function checkBrief(b: MasterBrief, brand: Brand): BriefCheck {
   return { issues, ready: !issues.some((i) => i.severity !== 'warning') };
 }
 
-export function confirmBrief(b: MasterBrief, brand: Brand, by: string, note: string): MasterBrief {
-  const stop = checkBrief(b, brand).issues.filter((i) => i.severity === 'blocking' || (i.severity === 'pending' && !['BRIEF_NOT_CONFIRMED', 'BRIEF_CHANGED_AFTER_CONFIRMATION', 'IMAGE_NOT_IN_FIGMA'].includes(i.code)));
+export function confirmBrief(b: MasterBrief, brand: Brand, by: string, note: string, templates: PaidTemplate[] = []): MasterBrief {
+  const stop = checkBrief(b, brand, templates).issues.filter((i) => i.severity === 'blocking' || (i.severity === 'pending' && !['BRIEF_NOT_CONFIRMED', 'BRIEF_CHANGED_AFTER_CONFIRMATION', 'IMAGE_NOT_IN_FIGMA'].includes(i.code)));
   if (stop.length) throw new Error(`El brief no se puede confirmar todavía:\n${stop.map((i) => `- ${i.message}${i.proposal ? ` (propuesta: ${i.proposal})` : ''}`).join('\n')}`);
   return { ...b, confirmation: { by, at: new Date().toISOString(), note, hash: briefHash(b) } };
 }

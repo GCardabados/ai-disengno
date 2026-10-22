@@ -1,5 +1,7 @@
-// Brand kit por marca (brands/<marca>/brand.json). Lo genera y mantiene la skill brand-kit-generator a partir del
-// manual de marca, los logos, las fuentes y (opcionalmente) el Figma del cliente; lo consume create-master-creative.
+// Brand kit por marca (client-knowledge/clients/<slug>/brand.json, conocimiento compartido). Lo genera y mantiene la
+// skill brand-kit-generator a partir del manual de marca, los logos, las fuentes y (opcionalmente) el Figma del cliente;
+// lo consumen create-master-creative y create-email-design. Las reglas propias de cada canal (p. ej. las plantillas
+// paid) no van aquí sino en channels/<canal>.json.
 //  - Cada dato lleva su procedencia (`source`: «manual p. 14», «figma», «persona 2026-10-15»…). No se inventan valores:
 //    lo que el manual no dice va a `gaps` y lo que contradice va a `openQuestions`.
 //  - Un kit `draft` sirve para propuestas; solo `validated` (lo valida una persona) sirve para producir sin avisos.
@@ -86,23 +88,6 @@ export const LogoRulesSchema = z.strictObject({
 
 const Rule = z.strictObject({ text: z.string().min(1), source: Source });
 
-/** Plantilla de pieza del cliente en Figma (modo «plantilla» de create-master-creative). */
-export const BrandTemplateSchema = z.strictObject({
-  id: z.string().regex(/^[a-z][a-z0-9-]*$/),
-  label: z.string(),
-  fileKey: z.string().min(1),
-  nodeId: z.string().min(1),
-  width: z.number().positive(),
-  height: z.number().positive(),
-  /** Huecos rellenables: rol → nodeId del texto o de la imagen en la plantilla. */
-  slots: z.record(z.string(), z.strictObject({ kind: z.enum(['text', 'image']), nodeId: z.string().min(1) })),
-  /** Nodos del logo en la plantilla (protegidos: no se tocan). */
-  logoNodeIds: z.array(z.string()),
-  notes: z.string().nullable(),
-  source: Source,
-});
-export type BrandTemplate = z.infer<typeof BrandTemplateSchema>;
-
 export const BrandSchema = z.strictObject({
   schema: z.literal(BRAND_SCHEMA_ID),
   slug: z.string().regex(/^[a-z][a-z0-9-]*$/),
@@ -134,6 +119,5 @@ export const BrandSchema = z.strictObject({
   gaps: z.array(z.string()),
   /** Erratas o contradicciones a resolver con el cliente. */
   openQuestions: z.array(z.strictObject({ id: z.string(), question: z.string(), status: z.enum(['open', 'resolved']), answer: z.string().nullable(), source: Source })),
-  templates: z.array(BrandTemplateSchema),
 });
 export type Brand = z.infer<typeof BrandSchema>;

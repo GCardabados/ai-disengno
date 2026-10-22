@@ -97,6 +97,7 @@ texto. Se resuelve en la revisión (caja del titular ≈ 400 px o salto de líne
 
 1. Crear el repositorio remoto `client-knowledge` y apuntar a él `ai-mkt-automation` (migrar `design-system.md` de
    cada cliente a `channels/email.json`, conservando allí solo módulos HTML y artefactos de maquetación).
-2. Fusionar la rama de maestras y apuntar `create-master-creative` / `brand-kit-generator` a `client-knowledge`
-   (hoy leen `brands/`).
+2. ~~Fusionar la rama de maestras y apuntar `create-master-creative` / `brand-kit-generator` a `client-knowledge`~~
+   Hecho el 2026-10-22: `brands/` eliminado; las plantillas paid pasan de `brand.templates` a `channels/paid.json`
+   (`ck.paid.v1`, mínimo: solo plantillas); `brand-register` / `brand-validate` mantienen `client.json` y `CHANGELOG.md`.
 3. Respuestas de Mutualidad: logo de cabecera y archivos, titulares Arial vs Rufina, `#002A1E`, legales y pie.

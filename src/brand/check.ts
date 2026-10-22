@@ -67,9 +67,6 @@ export async function checkBrand(b: Brand, dir: string): Promise<BrandCheck> {
   }
   if (!b.logoRules.clearSpace) add('CLEAR_SPACE_UNSPECIFIED', 'warning', 'Área de reserva del logo no especificada');
 
-  // Plantillas.
-  for (const t of b.templates) if (!Object.keys(t.slots).length) add('TEMPLATE_WITHOUT_SLOTS', 'blocking', `Plantilla ${t.id}: sin huecos declarados`);
-
   for (const q of b.openQuestions.filter((x) => x.status === 'open')) add('OPEN_QUESTION', 'pending', `${q.question} (${q.source})`);
   if (b.status === 'validated' && !b.validation) add('VALIDATED_WITHOUT_DECISION', 'blocking', 'El kit figura como validado sin registro de quién lo validó');
   if (b.status === 'validated' && issues.some((i) => i.severity === 'pending')) add('VALIDATED_WITH_PENDING', 'blocking', 'Un kit validado no puede tener pendientes');

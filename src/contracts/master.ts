@@ -1,8 +1,8 @@
 // Contratos de la skill create-master-creative: crear una pieza MAESTRA nueva en Figma a partir de un brief y del brand
-// kit de la marca (brands/<marca>/brand.json). Dos modos:
+// kit de la marca (client-knowledge/clients/<slug>/brand.json, cargado con knowledge-context para el canal paid). Dos modos:
 //  - scratch: el CLI calcula una composición tipo (archetype) con los tokens de la marca y genera el script que la
 //    construye en un frame NUEVO dentro de una sección de salida (nunca toca nodos existentes);
-//  - template: se parte de una plantilla del cliente en Figma (brand.templates) y se rellena con el pipeline de
+//  - template: se parte de una plantilla del cliente en Figma (channels/paid.json → templates) y se rellena con el pipeline de
 //    variantes (master-template-job → variant-*).
 // Reglas: el copy es el del brief (exacto) o un borrador del agente confirmado por la persona; no se inventan datos
 // comerciales; lo que la marca no especifica (CTA, escala tipográfica…) se decide por encargo y queda registrado. El

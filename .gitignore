@@ -11,7 +11,7 @@ references/CONVERSACION-ASTRA.md
 # Paquetes portables de las skills (generados por scripts/build-skills.ts)
 dist/
 # Material del cliente que no se versiona: manuales de marca y archivos de fuentes (Figma debe tenerlas instaladas).
-brands/**/*.pdf
-brands/**/*.zip
-brands/**/*.ttf
-brands/**/*.otf
+client-knowledge/**/*.pdf
+client-knowledge/**/*.zip
+client-knowledge/**/*.ttf
+client-knowledge/**/*.otf

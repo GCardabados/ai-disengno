@@ -33,8 +33,10 @@ Diseño y decisiones: [docs/00-auditoria-y-diseno.md](docs/00-auditoria-y-diseno
   repo). Probado en `test/skill-bundle.test.ts`. Instalación: `references/instalacion.md` de cada skill.
 - **Maestras desde el brief (2026-10-15):** skill `create-master-creative` (brief + brand kit → maestra nueva en Figma,
   desde una composición tipo o una plantilla del cliente; comandos `master-*`) y skill `brand-kit-generator` (manual
-  PDF + logos + fuentes → `brands/<marca>/brand.json` y `guidelines.md`; comandos `brand-*`). Kits en borrador de
-  `uax` y `mutualidad` (esta sin logos). Probado solo con MOCK.
+  PDF + logos + fuentes → brand kit; comandos `brand-*`). Desde 2026-10-22 ambas usan solo el conocimiento compartido
+  `client-knowledge/clients/<slug>/` (`brand.json`, `guidelines.md`, `assets/logos/`, `client.json`, `CHANGELOG.md`;
+  plantillas paid en `channels/paid.json`). Kits en borrador de `uax` y `mutualidad` (esta sin logos). Probado solo
+  con MOCK.
 
 - **Emails en Figma (2026-10-22):** skill [`create-email-design`](.claude/skills/create-email-design/SKILL.md): brief +
   conocimiento del cliente → email editable desktop/mobile en Figma (componentes, auto layout, anotaciones, notas de

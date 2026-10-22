@@ -5,7 +5,7 @@
 > `runs/` está fuera de Git.
 
 ## 1. Marca y campaña
-- **Marca** (kit en `brands/`): ☐ uax ☐ mutualidad ☐ otra: ___ <!-- si no tiene kit, primero brand-kit-generator -->
+- **Marca** (kit en `client-knowledge/clients/<slug>/`): ☐ uax ☐ mutualidad ☐ otra: ___ <!-- si no tiene kit, primero brand-kit-generator -->
 - **Campaña / producto:**
 - **Objetivo** (awareness, tráfico, leads, conversión):
 - **Público:**

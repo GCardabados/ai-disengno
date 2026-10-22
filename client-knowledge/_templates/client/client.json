@@ -19,6 +19,11 @@
       "id": "email", "path": "channels/email.json", "kind": "channel", "channels": ["email"], "topics": ["email"],
       "status": "draft", "version": "2026-10-22.1", "updatedAt": "2026-10-22", "source": "indicar de dónde salen las reglas",
       "approval": null, "load": "always", "description": "Reglas del canal email (ck.email.v1)"
+    },
+    {
+      "id": "paid", "path": "channels/paid.json", "kind": "channel", "channels": ["paid"], "topics": ["plantillas"],
+      "status": "draft", "version": "2026-10-22.1", "updatedAt": "2026-10-22", "source": "indicar de dónde salen las plantillas",
+      "approval": null, "load": "always", "description": "Reglas del canal paid (ck.paid.v1): plantillas de pieza del cliente"
     }
   ]
 }

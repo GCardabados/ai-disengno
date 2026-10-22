@@ -1,12 +1,19 @@
-// MOCK: brand kits (brands/uax, brands/mutualidad) y skill create-master-creative — brief, plan, script de
-// construcción (simulación escribible mínima) y validación sobre relecturas sintéticas. Nada es una lectura real.
+// MOCK: brand kits (client-knowledge/clients/{uax,mutualidad}), canal paid y skill create-master-creative — brief,
+// plan, script de construcción (simulación escribible mínima) y validación sobre relecturas sintéticas. Nada es una
+// lectura real.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { parseOrThrow } from '../src/contracts/schema.ts';
 import { BrandSchema, type Brand } from '../src/contracts/brand.ts';
 import { MASTER_RESULT_SCHEMA_ID, type MasterBrief, type MasterPlan, type MasterResult } from '../src/contracts/master.ts';
 import type { VariantAssetsRead } from '../src/contracts/variants.ts';
+import type { PaidChannel, PaidTemplate } from '../src/contracts/knowledge.ts';
+import { checkClient, loadContext, nextVersion } from '../src/knowledge/store.ts';
+import { runBrandCommand } from '../src/brand/cli.ts';
+import { runMasterCommand } from '../src/master/cli.ts';
 import { checkBrand } from '../src/brand/check.ts';
 import { contrast, rgbToHex, svgAspect, svgColors } from '../src/brand/color.ts';
 import { checkBrief, confirmBrief } from '../src/master/brief.ts';
@@ -19,10 +26,10 @@ import { universityMasterSpec, MOCK_FILE_KEY } from '../src/figma/mock/fixtures.
 import type { MockNodeSpec } from '../src/figma/mock/fake-figma.ts';
 import { snap } from './helpers.ts';
 
-const ROOT = new URL('../', import.meta.url).pathname;
-const brand = (slug: string): Brand => parseOrThrow(BrandSchema, JSON.parse(readFileSync(`${ROOT}brands/${slug}/brand.json`, 'utf8')), slug);
+const ROOT = new URL('../client-knowledge/', import.meta.url).pathname;
+const brand = (slug: string): Brand => parseOrThrow(BrandSchema, JSON.parse(readFileSync(`${ROOT}clients/${slug}/brand.json`, 'utf8')), slug);
 const UAX = brand('uax'), MUT = brand('mutualidad');
-const svgs = (b: Brand) => Object.fromEntries(b.logos.flatMap((l) => (l.file?.endsWith('.svg') ? [[l.id, readFileSync(`${ROOT}brands/${b.slug}/${l.file}`, 'utf8')]] : [])));
+const svgs = (b: Brand) => Object.fromEntries(b.logos.flatMap((l) => (l.file?.endsWith('.svg') ? [[l.id, readFileSync(`${ROOT}clients/${b.slug}/${l.file}`, 'utf8')]] : [])));
 const ASSETS: VariantAssetsRead = { schema: 'pcb.variant-assets.v1', hashes: [], nodes: [{ nodeId: '80:2', found: true, type: 'RECTANGLE', width: 400, height: 400, images: [{ paintIndex: 0, hash: 'img_campus', visible: true, width: 2400, height: 1600, error: null }] }] };
 
 function briefUax(over: Partial<MasterBrief> = {}): MasterBrief {
@@ -53,11 +60,11 @@ const planOf = (b: MasterBrief, br = UAX) => buildMasterPlan({ brief: b, brand: 
 // ---------- Brand kits ----------
 
 test('MOCK: los kits de UAX y Mutualidad son válidos; las erratas del manual quedan como pendientes, no como datos', async () => {
-  const u = await checkBrand(UAX, `${ROOT}brands/uax`);
+  const u = await checkBrand(UAX, `${ROOT}clients/uax`);
   assert.equal(u.ready, true, JSON.stringify(u.issues.filter((i) => i.severity === 'blocking')));
   assert.ok(u.issues.some((i) => i.code === 'COLOR_HEX_RGB_MISMATCH' && /F700FF/.test(i.message) && i.severity === 'pending'));
   assert.ok(Math.abs(u.logoAspects['principal-color']! - 483 / 95) < 1e-9);
-  const m = await checkBrand(MUT, `${ROOT}brands/mutualidad`);
+  const m = await checkBrand(MUT, `${ROOT}clients/mutualidad`);
   assert.equal(m.ready, true);
   assert.ok(m.issues.some((i) => i.code === 'NO_EXTERNAL_LOGO'), 'faltan los logos de Mutualidad');
   assert.ok(m.issues.some((i) => i.code === 'FONT_NEEDS_INSTALL' && /Mutualidad/.test(i.message)));
@@ -244,12 +251,121 @@ test('MOCK: master-check — la relectura conforme supera las comprobaciones; de
 
 test('MOCK: modo plantilla — el brief confirmado rellena los huecos de la plantilla como un encargo de variantes listo', async () => {
   const s = await snap(universityMasterSpec());
-  const withTpl: Brand = { ...UAX, templates: [{ id: 'feed-1080', label: 'Feed 1080 (MOCK)', fileKey: s.fileKey, nodeId: '70:1', width: 1080, height: 1080, slots: { headline: { kind: 'text', nodeId: '70:8' }, cta: { kind: 'text', nodeId: '70:10' }, image: { kind: 'image', nodeId: '70:2' } }, logoNodeIds: ['70:4'], notes: null, source: 'MOCK' }] };
-  const b = confirmed(briefUax({ mode: 'template', templateId: 'feed-1080', archetype: null, copy: { ...briefUax().copy, body: null } }), withTpl);
-  const job = buildTemplateJob(b, withTpl, s);
+  const tpls = [feedTemplate(s.fileKey)];
+  const raw = briefUax({ mode: 'template', templateId: 'feed-1080', archetype: null, copy: { ...briefUax().copy, body: null } });
+  assert.ok(checkBrief(raw, UAX).issues.some((i) => i.code === 'TEMPLATE_UNKNOWN'), 'sin canal paid no hay plantillas');
+  const b = confirmBrief(raw, UAX, 'Revisora MOCK', 'MOCK: sí', tpls);
+  const job = buildTemplateJob(b, UAX, tpls, s);
   assert.deepEqual(job.fields.map((f) => [f.fieldId, f.nodeId]), [['headline', '70:8'], ['cta', '70:10'], ['image', '70:2']]);
   assert.equal(job.output.cloneNamePattern, 'uax_{variant}_1080x1080');
   assert.deepEqual(job.protected.logoNodeIds, ['70:4']);
   const chk = checkVariantJob(job, s);
   assert.equal(chk.ready, true, JSON.stringify(chk.issues));
+});
+
+// ---------- Conocimiento compartido: canal paid y mantenimiento del kit ----------
+
+function feedTemplate(fileKey: string): PaidTemplate {
+  return { id: 'feed-1080', label: 'Feed 1080 (MOCK)', fileKey, nodeId: '70:1', width: 1080, height: 1080, slots: { headline: { kind: 'text', nodeId: '70:8' }, cta: { kind: 'text', nodeId: '70:10' }, image: { kind: 'image', nodeId: '70:2' } }, logoNodeIds: ['70:4'], notes: null, source: 'MOCK' };
+}
+/** Copia temporal de client-knowledge (los comandos de mantenimiento escriben). */
+function withTmpRoot(fn: (root: string) => Promise<void>): Promise<void> {
+  const tmp = mkdtempSync(join(tmpdir(), 'ck-master-'));
+  cpSync(ROOT, tmp, { recursive: true });
+  return fn(tmp).finally(() => rmSync(tmp, { recursive: true, force: true }));
+}
+const readJsonSync = (p: string) => JSON.parse(readFileSync(p, 'utf8'));
+const quiet = async <T>(fn: () => Promise<T>): Promise<T> => { const log = console.log; console.log = () => {}; try { return await fn(); } finally { console.log = log; } };
+
+test('MOCK: canal paid — la marca sale de client-knowledge; sin channels/paid.json solo se avisa', async () => {
+  const ctx = await loadContext(ROOT, 'uax', 'paid');
+  assert.equal(ctx.brand?.slug, 'uax');
+  assert.equal(ctx.paid, null);
+  assert.ok(!ctx.issues.some((i) => i.severity === 'blocking'), JSON.stringify(ctx.issues));
+  assert.ok(ctx.issues.some((i) => i.code === 'NO_PAID_CHANNEL' && i.severity === 'warning'));
+  assert.ok(ctx.loaded.some((f) => f.id === 'brand' && /^[0-9a-f]{64}$/.test(f.sha256)), 'queda la versión y el hash de la marca');
+});
+
+test('MOCK: canal paid — plantillas cargadas, archivo de Figma del cliente obligatorio y sin mezclar clientes', async () => {
+  await withTmpRoot(async (root) => {
+    const dir = join(root, 'clients', 'uax');
+    const paid: PaidChannel = { schema: 'ck.paid.v1', client: 'uax', status: 'draft', approval: null, version: '2026-10-22.1', updatedAt: '2026-10-22', templates: [feedTemplate('FILE_UAX')], gaps: [], openQuestions: [] };
+    mkdirSync(join(dir, 'channels'), { recursive: true });
+    writeFileSync(join(dir, 'channels', 'paid.json'), JSON.stringify(paid));
+    const idx = readJsonSync(join(dir, 'client.json'));
+    idx.files.push({ id: 'paid', path: 'channels/paid.json', kind: 'channel', channels: ['paid'], topics: ['plantillas'], status: 'draft', version: '2026-10-22.1', updatedAt: '2026-10-22', source: 'MOCK', approval: null, load: 'always', description: 'MOCK' });
+    writeFileSync(join(dir, 'client.json'), JSON.stringify(idx));
+    let ctx = await loadContext(root, 'uax', 'paid');
+    assert.deepEqual(ctx.paid?.templates.map((t) => t.id), ['feed-1080']);
+    assert.ok(ctx.issues.some((i) => i.code === 'PAID_TEMPLATE_FILE_NOT_DECLARED' && i.severity === 'blocking'), 'el archivo no está en client.json');
+    idx.figma.files.push({ label: 'Plantillas paid (MOCK)', fileKey: 'FILE_UAX', channels: ['paid'], note: null });
+    writeFileSync(join(dir, 'client.json'), JSON.stringify(idx));
+    ctx = await loadContext(root, 'uax', 'paid');
+    assert.ok(!ctx.issues.some((i) => i.severity === 'blocking'), JSON.stringify(ctx.issues));
+    assert.ok(!(await loadContext(root, 'uax', 'email')).paid, 'el canal paid no se carga para email');
+    writeFileSync(join(dir, 'channels', 'paid.json'), JSON.stringify({ ...paid, client: 'mutualidad' }));
+    assert.ok((await loadContext(root, 'uax', 'paid')).issues.some((i) => i.code === 'PAID_OTHER_CLIENT'));
+    writeFileSync(join(dir, 'channels', 'paid.json'), JSON.stringify({ ...paid, templates: [{ ...feedTemplate('FILE_UAX'), slots: {} }] }));
+    assert.ok((await checkClient(root, 'uax')).issues.some((i) => i.code === 'PAID_TEMPLATE_WITHOUT_SLOTS'));
+  });
+});
+
+test('MOCK: master-brief-check lee la marca del conocimiento compartido por el slug del brief', async () => {
+  await withTmpRoot(async (root) => {
+    const p = join(root, 'brief.json');
+    writeFileSync(p, JSON.stringify(confirmed(briefUax())));
+    assert.equal(await quiet(() => runMasterCommand('master-brief-check', ['--brief', p, '--root', root])), 0);
+    writeFileSync(p, JSON.stringify(briefUax({ brand: 'no-existe' })));
+    await assert.rejects(quiet(() => runMasterCommand('master-brief-check', ['--brief', p, '--root', root])), /no-existe/);
+  });
+});
+
+test('MOCK: brand-register — da de alta un cliente nuevo y versiona los cambios del kit en client.json y CHANGELOG', async () => {
+  assert.equal(nextVersion('2026-10-22.1', '2026-10-22'), '2026-10-22.2');
+  assert.equal(nextVersion('2026-10-15.3', '2026-10-22'), '2026-10-22.1');
+  assert.equal(nextVersion(null, '2026-10-22'), '2026-10-22.1');
+  await withTmpRoot(async (root) => {
+    // Cliente nuevo: solo brand.json (sin índice).
+    const dir = join(root, 'clients', 'uax-copia');
+    cpSync(join(root, 'clients', 'uax', 'assets'), join(dir, 'assets'), { recursive: true });
+    writeFileSync(join(dir, 'brand.json'), JSON.stringify({ ...UAX, slug: 'uax-copia' }));
+    assert.equal(await quiet(() => runBrandCommand('brand-check', ['--client', 'uax-copia', '--root', root])), 4, 'sin índice queda pendiente');
+    assert.equal(await quiet(() => runBrandCommand('brand-register', ['--client', 'uax-copia', '--note', 'Alta MOCK', '--root', root])), 0);
+    const idx = readJsonSync(join(dir, 'client.json'));
+    assert.deepEqual(idx.files.map((f: { id: string; status: string }) => [f.id, f.status]), [['brand', 'draft']]);
+    assert.match(readFileSync(join(dir, 'CHANGELOG.md'), 'utf8'), /· brand v\d{4}-\d{2}-\d{2}\.1 · Alta MOCK\. Borrador\./);
+    // Cliente existente: sube versión de brand y guidelines y conserva su descripción.
+    const before = readJsonSync(join(root, 'clients', 'uax', 'client.json'));
+    await quiet(() => runBrandCommand('brand-register', ['--client', 'uax', '--note', 'Logos nuevos MOCK', '--root', root]));
+    const after = readJsonSync(join(root, 'clients', 'uax', 'client.json'));
+    for (const id of ['brand', 'guidelines']) {
+      const [b, a] = [before, after].map((x) => x.files.find((f: { id: string }) => f.id === id));
+      assert.notEqual(a.version, b.version);
+      assert.equal(a.description, b.description);
+    }
+  });
+});
+
+test('MOCK: brand-validate — con pendientes no valida; sin ellos valida brand.json y su entrada del índice a la vez', async () => {
+  await withTmpRoot(async (root) => {
+    await assert.rejects(quiet(() => runBrandCommand('brand-validate', ['--client', 'uax', '--by', 'Revisora', '--note', 'ok', '--root', root])), /pendientes/);
+    // Kit sin pendientes: UAX sin la errata del manual, colores sin HEX, logos sin archivo ni preguntas abiertas.
+    const p = join(root, 'clients', 'uax', 'brand.json');
+    const b = readJsonSync(p) as Brand;
+    const fixed: Brand = { ...b, openQuestions: [], colors: b.colors.filter((c) => c.hex).map((c) => ({ ...c, rgb: null })), logos: b.logos.filter((l) => l.file) };
+    writeFileSync(p, JSON.stringify(fixed));
+    const pend = (await checkBrand(fixed, join(root, 'clients', 'uax'))).issues.filter((i) => i.severity !== 'warning');
+    if (pend.length) return assert.fail(`el MOCK aún tiene pendientes: ${pend.map((i) => i.code).join(', ')}`);
+    assert.equal(await quiet(() => runBrandCommand('brand-validate', ['--client', 'uax', '--by', 'Revisora', '--note', 'MOCK ok', '--root', root])), 0);
+    const kit = readJsonSync(p), entry = readJsonSync(join(root, 'clients', 'uax', 'client.json')).files.find((f: { id: string }) => f.id === 'brand');
+    assert.equal(kit.status, 'validated');
+    assert.equal(entry.status, 'validated');
+    assert.deepEqual(kit.validation, entry.approval);
+    assert.ok(!(await checkClient(root, 'uax')).issues.some((i) => i.code === 'STATUS_MISMATCH'));
+    assert.match(readFileSync(join(root, 'clients', 'uax', 'CHANGELOG.md'), 'utf8'), /Kit validado por Revisora: MOCK ok\./);
+    // Registrar un cambio después deja el kit y el índice en borrador.
+    await quiet(() => runBrandCommand('brand-register', ['--client', 'uax', '--note', 'Cambio MOCK', '--root', root]));
+    assert.equal(readJsonSync(p).status, 'draft');
+    assert.ok(!(await checkClient(root, 'uax')).issues.some((i) => i.code === 'STATUS_MISMATCH'));
+  });
 });

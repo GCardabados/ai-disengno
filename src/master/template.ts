@@ -1,20 +1,21 @@
-// Modo plantilla de create-master-creative: una plantilla del cliente en Figma (brand.templates) se rellena con el
+// Modo plantilla de create-master-creative: una plantilla del cliente en Figma (channels/paid.json) se rellena con el
 // copy y la imagen del brief. Es una variante de contenido de la plantilla, así que se produce y valida con el
 // pipeline variant-* (la plantilla nunca se modifica; la maestra nueva es un clon). La confirmación del brief es la
 // autorización de campos y contenido.
 import type { Brand } from '../contracts/brand.ts';
 import type { MasterBrief } from '../contracts/master.ts';
+import type { PaidTemplate } from '../contracts/knowledge.ts';
 import type { MasterSnapshot } from '../contracts/snapshot.ts';
 import type { VariantField, VariantJob, VariantRow } from '../contracts/variants.ts';
 import { confirm } from '../variants/job.ts';
 import { briefHash, checkBrief } from './brief.ts';
 
-export function buildTemplateJob(b: MasterBrief, brand: Brand, s: MasterSnapshot): VariantJob {
+export function buildTemplateJob(b: MasterBrief, brand: Brand, templates: PaidTemplate[], s: MasterSnapshot): VariantJob {
   if (b.mode !== 'template') throw new Error('El brief no está en modo plantilla');
-  const t = brand.templates.find((x) => x.id === b.templateId);
-  if (!t) throw new Error(`La marca no tiene la plantilla ${b.templateId}`);
+  const t = templates.find((x) => x.id === b.templateId);
+  if (!t) throw new Error(`El canal paid de ${brand.name} no tiene la plantilla ${b.templateId}`);
   if (s.rootNodeId !== t.nodeId || s.fileKey !== t.fileKey) throw new Error(`La instantánea no es la de la plantilla ${t.id} (${t.fileKey} ${t.nodeId})`);
-  const stop = checkBrief(b, brand).issues.filter((i) => i.severity !== 'warning');
+  const stop = checkBrief(b, brand, templates).issues.filter((i) => i.severity !== 'warning');
   if (stop.length) throw new Error(`El brief no está listo:\n${stop.map((i) => `- ${i.message}`).join('\n')}`);
   if (!b.confirmation || b.confirmation.hash !== briefHash(b)) throw new Error('Falta la confirmación vigente del brief');
   const byId = new Map(s.nodes.map((n) => [n.id, n]));
