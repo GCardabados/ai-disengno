@@ -1,0 +1,698 @@
+{
+  "schema": "pcb.brand.v1",
+  "slug": "uax",
+  "name": "UAX — Universidad Alfonso X el Sabio",
+  "status": "draft",
+  "validation": null,
+  "sources": [
+    {
+      "kind": "manual_pdf",
+      "label": "Manual de marca UAX (Hotwire Spain, junio 2023, uso digital, 115 p.)",
+      "location": "uax_manual_marca.pdf (no versionado; lo aporta el cliente)",
+      "version": "2023-06",
+      "retrievedAt": "2026-10-15"
+    },
+    {
+      "kind": "logos",
+      "label": "Logo.zip (principal «Largo» y monograma «Corto», color/negro/blanco, SVG y PNG)",
+      "location": "Logo.zip (aportado por la persona)",
+      "version": null,
+      "retrievedAt": "2026-10-15"
+    },
+    {
+      "kind": "fonts",
+      "label": "Manrope (Google Fonts, OFL)",
+      "location": "Manrope.zip (aportado por la persona)",
+      "version": null,
+      "retrievedAt": "2026-10-15"
+    }
+  ],
+  "colors": [
+    {
+      "id": "azul-uax",
+      "name": "Azul UAX",
+      "hex": "#0060AB",
+      "rgb": [
+        0,
+        96,
+        171
+      ],
+      "cmyk": [
+        100,
+        60,
+        0,
+        0
+      ],
+      "pantone": "2935 CP",
+      "role": "primary",
+      "usage": "Color acento primario; color dominante («UAX es azul»)",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual UAX 2023 p. 58-60"
+    },
+    {
+      "id": "negro-uax",
+      "name": "Negro UAX",
+      "hex": "#222222",
+      "rgb": [
+        34,
+        34,
+        34
+      ],
+      "cmyk": [
+        0,
+        0,
+        0,
+        100
+      ],
+      "pantone": "419 C",
+      "role": "base",
+      "usage": "Color base primario; logo y texto",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual UAX 2023 p. 58-60"
+    },
+    {
+      "id": "blanco-uax",
+      "name": "Blanco UAX",
+      "hex": "#F5F5F5",
+      "rgb": [
+        245,
+        245,
+        245
+      ],
+      "cmyk": [
+        5,
+        3,
+        4,
+        0
+      ],
+      "pantone": null,
+      "role": "base",
+      "usage": "Color base primario; fondos claros",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual UAX 2023 p. 58-60"
+    },
+    {
+      "id": "secundario-1",
+      "name": "Secundario I",
+      "hex": "#008CF7",
+      "rgb": [
+        0,
+        140,
+        247
+      ],
+      "cmyk": [
+        100,
+        40,
+        0,
+        0
+      ],
+      "pantone": null,
+      "role": "secondary",
+      "usage": "Paleta monocromática de azules",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual UAX 2023 p. 59-60"
+    },
+    {
+      "id": "secundario-2",
+      "name": "Secundario II",
+      "hex": "#4AACF7",
+      "rgb": [
+        74,
+        172,
+        247
+      ],
+      "cmyk": [
+        70,
+        15,
+        0,
+        0
+      ],
+      "pantone": null,
+      "role": "secondary",
+      "usage": "Paleta monocromática de azules",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual UAX 2023 p. 59-60"
+    },
+    {
+      "id": "secundario-3",
+      "name": "Secundario III",
+      "hex": "#3781B9",
+      "rgb": [
+        55,
+        129,
+        185
+      ],
+      "cmyk": [
+        70,
+        30,
+        0,
+        20
+      ],
+      "pantone": null,
+      "role": "secondary",
+      "usage": "Paleta monocromática de azules",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual UAX 2023 p. 59-60"
+    },
+    {
+      "id": "secundario-4",
+      "name": "Secundario IV",
+      "hex": "#004478",
+      "rgb": [
+        0,
+        68,
+        120
+      ],
+      "cmyk": [
+        100,
+        40,
+        0,
+        50
+      ],
+      "pantone": null,
+      "role": "secondary",
+      "usage": "Paleta monocromática de azules",
+      "digitalOnly": false,
+      "status": "confirmed",
+      "source": "manual UAX 2023 p. 59-60"
+    },
+    {
+      "id": "acento-analogo",
+      "name": "Acento análogo I (flúor)",
+      "hex": "#0DFCE4",
+      "rgb": [
+        13,
+        252,
+        228
+      ],
+      "cmyk": [
+        12,
+        0,
+        12,
+        2
+      ],
+      "pantone": null,
+      "role": "accent",
+      "usage": "Énfasis puntual; solo digital",
+      "digitalOnly": true,
+      "status": "confirmed",
+      "source": "manual UAX 2023 p. 59-60"
+    },
+    {
+      "id": "acento-complementario-1",
+      "name": "Acento complementario I (flúor)",
+      "hex": null,
+      "rgb": [
+        244,
+        247,
+        25
+      ],
+      "cmyk": null,
+      "pantone": null,
+      "role": "accent",
+      "usage": "Énfasis puntual; solo digital",
+      "digitalOnly": true,
+      "status": "needs_confirmation",
+      "source": "manual UAX 2023 p. 59-60"
+    },
+    {
+      "id": "acento-complementario-2",
+      "name": "Acento complementario II (flúor)",
+      "hex": "#F700E1",
+      "rgb": [
+        247,
+        0,
+        255
+      ],
+      "cmyk": null,
+      "pantone": null,
+      "role": "accent",
+      "usage": "Énfasis puntual; solo digital",
+      "digitalOnly": true,
+      "status": "needs_confirmation",
+      "source": "manual UAX 2023 p. 59-60"
+    }
+  ],
+  "typography": {
+    "families": [
+      {
+        "family": "Manrope",
+        "styles": [
+          "ExtraLight",
+          "Regular",
+          "Bold"
+        ],
+        "license": "ofl",
+        "figma": "google_fonts",
+        "usage": "Familia corporativa única; el logotipo es una modificación de Manrope",
+        "source": "manual UAX 2023 p. 61-62"
+      }
+    ],
+    "fallback": {
+      "family": "Helvetica",
+      "source": "manual UAX 2023 p. 61"
+    },
+    "roles": {
+      "headline": {
+        "family": "Manrope",
+        "style": "Bold",
+        "source": "manual UAX 2023 p. 62"
+      },
+      "subheadline": null,
+      "body": {
+        "family": "Manrope",
+        "style": "Regular",
+        "source": "manual UAX 2023 p. 62"
+      },
+      "cta": null,
+      "legal": null,
+      "claim": null
+    },
+    "rules": [
+      {
+        "text": "Titulares grandes también en Manrope ExtraLight; recurso de mezclar ligero + palabra clave en Bold («El futuro / es **ahora**.»)",
+        "source": "manual UAX 2023 p. 62, 97, 99"
+      },
+      {
+        "text": "«UAX» siempre en mayúsculas en texto corrido",
+        "source": "manual UAX 2023 p. 6"
+      },
+      {
+        "text": "Azul UAX para resaltar información e hipervínculos",
+        "source": "manual UAX 2023 p. 78"
+      }
+    ]
+  },
+  "logos": [
+    {
+      "id": "principal-color",
+      "label": "Principal horizontal 2 tintas",
+      "version": "primary",
+      "colorway": "two_ink",
+      "inks": [
+        "negro-uax",
+        "azul-uax"
+      ],
+      "file": "assets/logos/principal-color.svg",
+      "minWidthPx": 240,
+      "externalUse": true,
+      "usage": "Firma obligatoria en comunicación externa (con descriptor)",
+      "source": "manual UAX 2023 p. 6, 12, 105"
+    },
+    {
+      "id": "principal-negro",
+      "label": "Principal horizontal negro (1 tinta)",
+      "version": "primary",
+      "colorway": "positive_one_ink",
+      "inks": [
+        "negro-uax"
+      ],
+      "file": "assets/logos/principal-negro.svg",
+      "minWidthPx": 240,
+      "externalUse": true,
+      "usage": "Sobre color o foto cuando el 2 tintas no es posible",
+      "source": "manual UAX 2023 p. 12, 14"
+    },
+    {
+      "id": "principal-blanco",
+      "label": "Principal horizontal blanco (negativo)",
+      "version": "primary",
+      "colorway": "negative_one_ink",
+      "inks": [
+        "white"
+      ],
+      "file": "assets/logos/principal-blanco.svg",
+      "minWidthPx": 240,
+      "externalUse": true,
+      "usage": "Sobre fondos oscuros, Azul UAX o foto",
+      "source": "manual UAX 2023 p. 12, 14"
+    },
+    {
+      "id": "monograma-color",
+      "label": "Monograma UAX 2 tintas",
+      "version": "monogram",
+      "colorway": "two_ink",
+      "inks": [
+        "negro-uax",
+        "azul-uax"
+      ],
+      "file": "assets/logos/monograma-color.svg",
+      "minWidthPx": 60,
+      "externalUse": false,
+      "usage": "Solo interno o falta extrema de espacio; nunca como firma principal externa",
+      "source": "manual UAX 2023 p. 20-21"
+    },
+    {
+      "id": "monograma-negro",
+      "label": "Monograma UAX negro",
+      "version": "monogram",
+      "colorway": "positive_one_ink",
+      "inks": [
+        "negro-uax"
+      ],
+      "file": "assets/logos/monograma-negro.svg",
+      "minWidthPx": 60,
+      "externalUse": false,
+      "usage": "Solo interno o falta extrema de espacio; en el claim «Somos #UAXmakers»",
+      "source": "manual UAX 2023 p. 20-21, 82"
+    },
+    {
+      "id": "monograma-blanco",
+      "label": "Monograma UAX blanco",
+      "version": "monogram",
+      "colorway": "negative_one_ink",
+      "inks": [
+        "white"
+      ],
+      "file": "assets/logos/monograma-blanco.svg",
+      "minWidthPx": 60,
+      "externalUse": false,
+      "usage": "Solo interno o falta extrema de espacio; en el claim «Somos #UAXmakers»",
+      "source": "manual UAX 2023 p. 20-21, 82"
+    },
+    {
+      "id": "vertical",
+      "label": "Vertical (sin archivo)",
+      "version": "vertical",
+      "colorway": "two_ink",
+      "inks": [
+        "negro-uax",
+        "azul-uax"
+      ],
+      "file": null,
+      "minWidthPx": 120,
+      "externalUse": true,
+      "usage": "Solo si el principal no es posible por formato (justificado)",
+      "source": "manual UAX 2023 p. 16-18"
+    }
+  ],
+  "logoRules": {
+    "clearSpace": {
+      "rule": "La mitad de la altura de la «X» del monograma por los cuatro lados; nada puede invadirla",
+      "ratioOfLogoHeight": 0.5,
+      "source": "manual UAX 2023 p. 12-13"
+    },
+    "idealWidthRatio": {
+      "value": 0.2,
+      "source": "manual UAX 2023 p. 73"
+    },
+    "minContrast": {
+      "value": 4.5,
+      "source": "manual UAX 2023 p. 14"
+    },
+    "backgrounds": [
+      {
+        "colorway": "two_ink",
+        "rule": "Sobre fondo neutro y luminoso (blanco o ligeramente azulado)",
+        "darkestBg": "#D8D8D8",
+        "lightestBg": null,
+        "source": "manual UAX 2023 p. 14"
+      },
+      {
+        "colorway": "positive_one_ink",
+        "rule": "Sobre fondos de color con contraste óptimo",
+        "darkestBg": "#828282",
+        "lightestBg": null,
+        "source": "manual UAX 2023 p. 14"
+      },
+      {
+        "colorway": "negative_one_ink",
+        "rule": "Cuando no se puedan usar las positivas; fondos oscuros",
+        "darkestBg": null,
+        "lightestBg": "#707070",
+        "source": "manual UAX 2023 p. 14"
+      }
+    ],
+    "overPhoto": {
+      "rule": "Sobre fotografía se priorizan las versiones monocromáticas (salvo foto luminosa en B/N donde el 2 tintas sea legible)",
+      "allowedColorways": [
+        "positive_one_ink",
+        "negative_one_ink"
+      ],
+      "source": "manual UAX 2023 p. 14"
+    },
+    "prohibitions": [
+      {
+        "text": "Cambiar la tipografía del descriptor",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Reorganizar el texto del descriptor",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Rotar o voltear el logotipo",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Cambiar el descriptor de posición",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Deformar el logotipo",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Modificar el tamaño del descriptor",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Contornear el logotipo",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Cambiar el color de la «X»",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Cambiar el color de relleno",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Usar degradados o imágenes como relleno",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Enmarcar el logotipo en una pastilla de color",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Aplicar efectos o filtros (sombra…)",
+        "source": "manual UAX 2023 p. 32-33"
+      }
+    ]
+  },
+  "graphicDevices": [
+    {
+      "id": "flecha",
+      "name": "Flecha / chevron (mitad de la X)",
+      "rule": "Recurso para acompañar textos (claim, campus, mensajes); arriba o abajo del enunciado, siempre en Azul UAX, tamaño en función de la altura de la «X»",
+      "colorIds": [
+        "azul-uax"
+      ],
+      "source": "manual UAX 2023 p. 83-85"
+    },
+    {
+      "id": "x-grafica",
+      "name": "La «X» (o parte) como recurso visual",
+      "rule": "Puede usarse a gran tamaño como recurso gráfico (gris muy claro, translúcida o azul claro en los ejemplos)",
+      "colorIds": [
+        "azul-uax"
+      ],
+      "source": "manual UAX 2023 p. 68, 111-112"
+    },
+    {
+      "id": "patron-chevron",
+      "name": "Patrón de chevrones en zigzag",
+      "rule": "Se puede alterar sustrayendo, volteando o girando elementos; nunca en negro: positivo en Azul UAX o negativo en blanco",
+      "colorIds": [
+        "azul-uax"
+      ],
+      "source": "manual UAX 2023 p. 68"
+    },
+    {
+      "id": "iconos",
+      "name": "Iconos lineales",
+      "rule": "Set lineal de trazo fino en negro o Azul UAX; apoyo, no deben condicionar otros elementos",
+      "colorIds": [
+        "negro-uax",
+        "azul-uax"
+      ],
+      "source": "manual UAX 2023 p. 67-71"
+    }
+  ],
+  "photography": {
+    "rules": [
+      {
+        "text": "Estudiantes, docentes y profesionales en contexto tecnológico, disruptivo y creativo; el estudiante en el centro",
+        "source": "manual UAX 2023 p. 63"
+      },
+      {
+        "text": "Retratos espontáneos, naturales y cercanos; luz natural, imágenes luminosas con predominio del blanco y, si es posible, algún elemento azul",
+        "source": "manual UAX 2023 p. 64"
+      },
+      {
+        "text": "Entorno UAX real, lleno de luz, tonos neutros, planos abiertos con profundidad",
+        "source": "manual UAX 2023 p. 65"
+      },
+      {
+        "text": "Lifestyle con propósito: el azul presente sin ser invasivo; funcionan mejor con copy",
+        "source": "manual UAX 2023 p. 66"
+      }
+    ],
+    "avoid": [
+      {
+        "text": "Imágenes posadas",
+        "source": "manual UAX 2023 p. 65"
+      }
+    ]
+  },
+  "layout": {
+    "rules": [
+      {
+        "text": "Ancho ideal del logo = 1/5 del ancho del formato, sin bajar del mínimo",
+        "source": "manual UAX 2023 p. 73"
+      },
+      {
+        "text": "Aspecto aséptico, limpio y claro; jugar con blancos y pesos tipográficos; imagen en áreas definidas",
+        "source": "manual UAX 2023 p. 78"
+      },
+      {
+        "text": "Estructura simple: logo arriba a la izquierda + marco principal con imagen",
+        "source": "manual UAX 2023 p. 79"
+      },
+      {
+        "text": "Retícula dinámica por tercios horizontales y columnas",
+        "source": "manual UAX 2023 p. 81"
+      },
+      {
+        "text": "El claim puede ir independiente del logo, centrado, en 1 o 2 líneas",
+        "source": "manual UAX 2023 p. 82"
+      }
+    ]
+  },
+  "copy": {
+    "claims": [
+      {
+        "text": "Somos #UAXmakers",
+        "rule": "«UAX» como monograma a una tinta (negro o blanco); centrado o alineado con el logo/flecha",
+        "source": "manual UAX 2023 p. 82"
+      }
+    ],
+    "mandatoryTexts": [],
+    "tone": [
+      {
+        "text": "Excelencia académica, aprendizaje disruptivo, innovación y conexión con el mundo profesional; esfuerzo, superación, perseverancia",
+        "source": "manual UAX 2023 p. 4"
+      },
+      {
+        "text": "Makers: aprendizaje experiencial e interdisciplinar, co-creación",
+        "source": "manual UAX 2023 p. 82"
+      }
+    ]
+  },
+  "rules": {
+    "must": [
+      {
+        "text": "En comunicación externa (paid), logotipo principal horizontal completo con descriptor; vertical solo justificado",
+        "source": "manual UAX 2023 p. 6, 16, 105"
+      },
+      {
+        "text": "Logo en una de las 3 fórmulas (2 tintas sobre claro, negro sobre color, blanco sobre oscuro) con contraste ≥ 4,5",
+        "source": "manual UAX 2023 p. 14"
+      },
+      {
+        "text": "Área de reserva = 0,5 × altura de la X",
+        "source": "manual UAX 2023 p. 12"
+      },
+      {
+        "text": "Ancho del logo ≈ 1/5 del ancho de la pieza y ≥ 240 px (principal)",
+        "source": "manual UAX 2023 p. 12, 73"
+      },
+      {
+        "text": "Manrope: Bold titulares, Regular texto, ExtraLight titulares grandes",
+        "source": "manual UAX 2023 p. 61-62"
+      },
+      {
+        "text": "Azul UAX como color dominante",
+        "source": "manual UAX 2023 p. 58-60"
+      },
+      {
+        "text": "Flecha/chevron siempre en Azul UAX",
+        "source": "manual UAX 2023 p. 85"
+      }
+    ],
+    "never": [
+      {
+        "text": "Modificar, rotar, deformar, contornear, recolorear, degradar, enmarcar o aplicar efectos al logo",
+        "source": "manual UAX 2023 p. 32-33"
+      },
+      {
+        "text": "Colores flúor fuera de digital o como color dominante",
+        "source": "manual UAX 2023 p. 59"
+      },
+      {
+        "text": "Patrón en negro",
+        "source": "manual UAX 2023 p. 68"
+      },
+      {
+        "text": "Monograma solo como firma principal externa",
+        "source": "manual UAX 2023 p. 20"
+      },
+      {
+        "text": "Submarcas de área (UAX SALUD, BUSINESS & TECH…) en comunicación externa",
+        "source": "manual UAX 2023 p. 46"
+      },
+      {
+        "text": "Escudo o logotipo institucional en piezas promocionales",
+        "source": "manual UAX 2023 p. 26-27"
+      },
+      {
+        "text": "Brandear la oferta formativa (crear marcas para titulaciones)",
+        "source": "manual UAX 2023 p. 54"
+      }
+    ]
+  },
+  "gaps": [
+    "No hay ejemplos de anuncios paid (Meta/Google), display, stories, reels ni posts",
+    "Diseño del CTA (forma, color, radio, tipografía): solo se ven botones de contorno redondeado en la web (p. 104)",
+    "Escala tipográfica para piezas (titular, subtítulo, cuerpo, legal), interlineado y tracking",
+    "Textos legales, menciones de acreditación (títulos oficiales), disclaimers, becas/precios",
+    "Combinaciones de color texto/fondo y contraste para texto (solo hay 4,5 para el logo)",
+    "Márgenes en px para formatos digitales (solo A4: 8 mm) y safe zones",
+    "Posición obligatoria del logo en digital (los ejemplos lo ponen arriba a la izquierda)",
+    "Overlays o velos sobre foto y tratamiento de color",
+    "Si los tamaños mínimos del logo son de ancho o de alto (se interpreta ancho)",
+    "Archivo del logotipo vertical"
+  ],
+  "openQuestions": [
+    {
+      "id": "uax-hex-complementario-1",
+      "question": "Acento complementario I (flúor): el manual imprime #3781B9 (que es Secundario III) para RGB 244,247,25 (= #F4F719). ¿Cuál es el correcto?",
+      "status": "open",
+      "answer": null,
+      "source": "manual UAX 2023 p. 59-60"
+    },
+    {
+      "id": "uax-hex-complementario-2",
+      "question": "Acento complementario II (flúor): RGB 247,0,255 (= #F700FF) pero el manual imprime #F700E1. ¿Cuál es el correcto?",
+      "status": "open",
+      "answer": null,
+      "source": "manual UAX 2023 p. 59-60"
+    },
+    {
+      "id": "uax-submarcas-paid",
+      "question": "El manual prohíbe las submarcas de área en comunicación externa (p. 46) pero sus maquetas web y de monoposte las muestran (p. 104, 107). ¿Se pueden usar en paid?",
+      "status": "open",
+      "answer": null,
+      "source": "manual UAX 2023 p. 46, 104, 107"
+    }
+  ],
+  "templates": []
+}

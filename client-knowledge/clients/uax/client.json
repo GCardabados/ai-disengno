@@ -1,0 +1,33 @@
+{
+  "schema": "ck.client.v1",
+  "slug": "uax",
+  "name": "UAX — Universidad Alfonso X el Sabio",
+  "aliases": ["UAX", "Universidad Alfonso X", "Alfonso X el Sabio"],
+  "domains": [],
+  "status": "draft",
+  "owners": [],
+  "updatedAt": "2026-10-22",
+  "relatedClients": [],
+  "figma": {
+    "libraries": [
+      { "name": "UAX UI 25", "libraryKey": "lk-0697444896d943427828b59983ad65feba2d87aaf886f2f18e01e288506c2dc881d467494cf22a58dd647f13ac66008b620d7afff861b732b1193311698c556e", "channels": ["web"], "note": "Librería de producto WEB (2024-08), vista con search_design_system el 2026-10-22: componentes web, no email-safe. Confirmar titularidad" }
+    ],
+    "files": []
+  },
+  "files": [
+    {
+      "id": "brand", "path": "brand.json", "kind": "brand", "channels": ["all"],
+      "topics": ["color", "tipografía", "logo", "fotografía", "maquetación", "tono", "reglas", "lagunas"],
+      "status": "draft", "version": "2026-10-15.1", "updatedAt": "2026-10-15",
+      "source": "brand-kit-generator desde el manual de marca UAX (Hotwire, junio 2023)", "approval": null, "load": "always",
+      "description": "Tokens y reglas de marca (pcb.brand.v1), cada dato con su página del manual"
+    },
+    {
+      "id": "guidelines", "path": "guidelines.md", "kind": "guidelines", "channels": ["all"],
+      "topics": ["logo", "color", "tipografía", "sistema gráfico", "fotografía", "maquetación", "tono de voz", "lagunas"],
+      "status": "draft", "version": "2026-10-15.1", "updatedAt": "2026-10-15",
+      "source": "brand-kit-generator desde el manual UAX 2023", "approval": null, "load": "on_demand",
+      "description": "Lectura humana del manual con páginas"
+    }
+  ]
+}

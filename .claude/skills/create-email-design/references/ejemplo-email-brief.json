@@ -1,0 +1,236 @@
+{
+  "schema": "pcb.email-brief.v1",
+  "slug": "ejemplo-bienvenida",
+  "name": "BienvenidaEjemplo",
+  "client": "cliente-ejemplo",
+  "request": "EJEMPLO de brief estructurado (cliente ficticio de la plantilla). Ver references/plantilla-brief-email.md",
+  "objective": "Dar la bienvenida y activar el primer uso",
+  "audience": "Clientes nuevos",
+  "mainMessage": "Ya puedes empezar a usar tu cuenta",
+  "language": "es",
+  "subject": {
+    "text": "Bienvenida: tu cuenta ya está activa",
+    "source": "agent_draft",
+    "note": null
+  },
+  "preheader": {
+    "text": "Te contamos en un minuto lo que puedes hacer desde hoy con tu cuenta.",
+    "source": "agent_draft",
+    "note": null
+  },
+  "figma": {
+    "fileKey": "<FILE_KEY>",
+    "pageId": "<PAGE_ID>",
+    "sectionName": "EMAIL · cliente-ejemplo · BienvenidaEjemplo"
+  },
+  "canvas": {
+    "background": null,
+    "text": "principal"
+  },
+  "modules": [
+    {
+      "id": "header",
+      "type": "header",
+      "purpose": "Identificar al remitente de un vistazo (logo) y ofrecer la versión web, como en los emails actuales del cliente",
+      "background": null,
+      "textColor": null,
+      "align": "center",
+      "eyebrow": null,
+      "headline": null,
+      "headlineLevel": null,
+      "body": [],
+      "cta": null,
+      "image": null,
+      "imageSide": null,
+      "items": [],
+      "columns": null
+    },
+    {
+      "id": "hero",
+      "type": "hero",
+      "purpose": "Mensaje principal y acción principal: lo primero que se ve y lo único imprescindible",
+      "background": null,
+      "textColor": null,
+      "align": "center",
+      "eyebrow": null,
+      "headline": {
+        "text": "Te damos la bienvenida",
+        "source": "brief",
+        "note": null
+      },
+      "headlineLevel": "h1",
+      "body": [
+        {
+          "text": "Tu cuenta ya está activa. Entra y completa tu perfil en dos minutos.",
+          "source": "brief",
+          "note": null
+        }
+      ],
+      "cta": {
+        "label": {
+          "text": "Completa tu perfil",
+          "source": "brief",
+          "note": null
+        },
+        "url": null,
+        "variant": "primary"
+      },
+      "image": {
+        "label": "Imagen de bienvenida (foto de marca)",
+        "alt": {
+          "text": "Persona sonriendo mientras usa el móvil",
+          "source": "agent_draft",
+          "note": null
+        },
+        "decorative": false,
+        "ratio": [
+          15,
+          7
+        ],
+        "figmaNodeId": null,
+        "mobileCrop": false
+      },
+      "imageSide": null,
+      "items": [],
+      "columns": null
+    },
+    {
+      "id": "ventajas",
+      "type": "columns",
+      "purpose": "Razones para entrar: refuerzan el mensaje principal sin competir con el CTA",
+      "background": null,
+      "textColor": null,
+      "align": "left",
+      "eyebrow": null,
+      "headline": {
+        "text": "Todo lo que puedes hacer",
+        "source": "agent_draft",
+        "note": "titular de bloque propuesto"
+      },
+      "headlineLevel": "h2",
+      "body": [],
+      "cta": null,
+      "image": null,
+      "imageSide": null,
+      "items": [
+        {
+          "title": {
+            "text": "Tu perfil",
+            "source": "brief",
+            "note": null
+          },
+          "body": {
+            "text": "Revisa tus datos de contacto.",
+            "source": "brief",
+            "note": null
+          },
+          "image": null,
+          "link": null
+        },
+        {
+          "title": {
+            "text": "Tus avisos",
+            "source": "agent_draft",
+            "note": null
+          },
+          "body": {
+            "text": "Elige qué comunicaciones quieres recibir.",
+            "source": "agent_draft",
+            "note": null
+          },
+          "image": null,
+          "link": null
+        }
+      ],
+      "columns": 1
+    },
+    {
+      "id": "legales",
+      "type": "legal",
+      "purpose": "Textos legales del envío",
+      "background": null,
+      "textColor": null,
+      "align": "left",
+      "eyebrow": null,
+      "headline": null,
+      "headlineLevel": null,
+      "body": [
+        {
+          "text": "[PENDIENTE: textos legales del envío]",
+          "source": "placeholder",
+          "note": "el brief no los trae"
+        }
+      ],
+      "cta": null,
+      "image": null,
+      "imageSide": null,
+      "items": [],
+      "columns": null
+    },
+    {
+      "id": "footer",
+      "type": "footer",
+      "purpose": "Baja, identificación del remitente y aviso de buzón no atendido",
+      "background": null,
+      "textColor": null,
+      "align": "center",
+      "eyebrow": null,
+      "headline": null,
+      "headlineLevel": null,
+      "body": [],
+      "cta": null,
+      "image": null,
+      "imageSide": null,
+      "items": [],
+      "columns": null
+    }
+  ],
+  "decisions": {
+    "fonts": {
+      "h1": {
+        "stack": "Arial, Helvetica, sans-serif",
+        "figma": {
+          "family": "Arimo",
+          "style": "Bold"
+        },
+        "by": "agent_proposal",
+        "note": "el cliente no define tipografía de email"
+      },
+      "body": {
+        "stack": "Arial, Helvetica, sans-serif",
+        "figma": {
+          "family": "Arimo",
+          "style": "Regular"
+        },
+        "by": "agent_proposal",
+        "note": null
+      }
+    },
+    "cta": {
+      "fill": "principal",
+      "text": "blanco",
+      "radius": 4,
+      "by": "agent_proposal",
+      "note": "radio 4: en Outlook clásico saldrá recto"
+    },
+    "logo": {
+      "logoId": "principal",
+      "widthPx": 160,
+      "by": "agent_proposal",
+      "note": null
+    },
+    "other": [
+      {
+        "topic": "estructura",
+        "decision": "cabecera → hero (H1 + CTA) → lista de 2 pasos → legales → pie",
+        "by": "agent_proposal",
+        "note": null
+      }
+    ]
+  },
+  "assumptions": [
+    "Email de servicio sin oferta: no lleva precios ni condiciones",
+    "La imagen la aporta el cliente (placeholder)"
+  ],
+  "confirmation": null
+}

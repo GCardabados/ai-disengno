@@ -1,0 +1,24 @@
+{
+  "schema": "ck.client.v1",
+  "slug": "cliente-ejemplo",
+  "name": "Cliente Ejemplo",
+  "aliases": ["Cliente Ejemplo"],
+  "domains": [],
+  "status": "draft",
+  "owners": [],
+  "updatedAt": "2026-10-22",
+  "relatedClients": [],
+  "figma": { "libraries": [], "files": [] },
+  "files": [
+    {
+      "id": "brand", "path": "brand.json", "kind": "brand", "channels": ["all"], "topics": ["color", "tipografía", "logo"],
+      "status": "draft", "version": "2026-10-22.1", "updatedAt": "2026-10-22", "source": "manual de marca (indicar nombre y versión)",
+      "approval": null, "load": "always", "description": "Tokens y reglas de marca (pcb.brand.v1)"
+    },
+    {
+      "id": "email", "path": "channels/email.json", "kind": "channel", "channels": ["email"], "topics": ["email"],
+      "status": "draft", "version": "2026-10-22.1", "updatedAt": "2026-10-22", "source": "indicar de dónde salen las reglas",
+      "approval": null, "load": "always", "description": "Reglas del canal email (ck.email.v1)"
+    }
+  ]
+}
