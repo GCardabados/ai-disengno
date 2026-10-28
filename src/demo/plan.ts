@@ -199,7 +199,7 @@ export function buildDemoPlan(s: MasterSnapshot, c: DemoComposition, opts: { tex
     const unit = c.units.find((u) => u.anchorNodeId === b.nodeId);
     if (!bn) { issues.push(`escala de bloque de nodo desconocido ${b.nodeId}`); continue; }
     if (!unit || unit.nodeIds.length !== 1) { issues.push(`escala de bloque ${b.nodeId}: debe ser el ancla y único nodo de su unidad (la escala parte de su esquina superior izquierda)`); continue; }
-    if (bn.type !== 'FRAME' && bn.type !== 'GROUP') issues.push(`escala de bloque ${b.nodeId}: solo se escalan FRAME o GROUP (contenedores de contenido)`);
+    if (bn.type !== 'FRAME' && bn.type !== 'GROUP' && bn.type !== 'TEXT') issues.push(`escala de bloque ${b.nodeId}: solo se escalan FRAME, GROUP o TEXT (contenedores de contenido o un texto suelto)`);
     const lpe = c.logoPolicy?.mode === 'experimental' ? c.logoPolicy : null;
     const lockedInside = [...locked].filter((l) => ancestors(l).includes(b.nodeId));
     const hostsOk = lockedInside.every((l) => lpe && lpe.logoNodeId === l && Math.abs(lpe.scale - b.scale) < 1e-9);
