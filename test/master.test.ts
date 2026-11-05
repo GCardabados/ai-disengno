@@ -3,15 +3,16 @@
 // lectura real.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { parseOrThrow } from '../src/contracts/schema.ts';
 import { BrandSchema, type Brand } from '../src/contracts/brand.ts';
 import { MASTER_RESULT_SCHEMA_ID, type MasterBrief, type MasterPlan, type MasterResult } from '../src/contracts/master.ts';
 import type { VariantAssetsRead } from '../src/contracts/variants.ts';
 import type { PaidChannel, PaidTemplate } from '../src/contracts/knowledge.ts';
-import { checkClient, loadContext, nextVersion } from '../src/knowledge/store.ts';
+import { checkClient, loadContext, nextVersion, resolveKnowledgeRoot, validateFile } from '../src/knowledge/store.ts';
+import { runKnowledgeCommand } from '../src/knowledge/cli.ts';
 import { runBrandCommand } from '../src/brand/cli.ts';
 import { runMasterCommand } from '../src/master/cli.ts';
 import { checkBrand } from '../src/brand/check.ts';
@@ -307,6 +308,51 @@ test('MOCK: canal paid — plantillas cargadas, archivo de Figma del cliente obl
     assert.ok((await loadContext(root, 'uax', 'paid')).issues.some((i) => i.code === 'PAID_OTHER_CLIENT'));
     writeFileSync(join(dir, 'channels', 'paid.json'), JSON.stringify({ ...paid, templates: [{ ...feedTemplate('FILE_UAX'), slots: {} }] }));
     assert.ok((await checkClient(root, 'uax')).issues.some((i) => i.code === 'PAID_TEMPLATE_WITHOUT_SLOTS'));
+  });
+});
+
+test('MOCK: raíz explícita sin clients/ — error claro con la ruta probada y no se escribe en ninguna otra raíz', async () => {
+  const empty = mkdtempSync(join(tmpdir(), 'ck-vacia-'));
+  const repoIdx = join(ROOT, 'clients', 'uax', 'client.json'), repoLog = join(ROOT, 'clients', 'uax', 'CHANGELOG.md');
+  const before = [readFileSync(repoIdx, 'utf8'), readFileSync(repoLog, 'utf8')];
+  const env = process.env.CLIENT_KNOWLEDGE_ROOT;
+  try {
+    assert.throws(() => resolveKnowledgeRoot(empty), (e: Error) => e.message.includes('--root') && e.message.includes(empty));
+    await assert.rejects(quiet(() => runBrandCommand('brand-register', ['--client', 'uax', '--note', 'No debe escribirse', '--root', empty])), /no contiene clients\//);
+    await assert.rejects(quiet(() => runKnowledgeCommand('knowledge-validate', ['--client', 'uax', '--file', 'brand', '--by', 'Revisora', '--note', 'no', '--root', empty])), /no contiene clients\//);
+    process.env.CLIENT_KNOWLEDGE_ROOT = empty;
+    assert.throws(() => resolveKnowledgeRoot(), (e: Error) => e.message.includes('CLIENT_KNOWLEDGE_ROOT') && e.message.includes(empty));
+    assert.equal(resolveKnowledgeRoot(ROOT), resolve(ROOT), '--root tiene prioridad sobre la variable');
+    delete process.env.CLIENT_KNOWLEDGE_ROOT;
+    assert.equal(resolveKnowledgeRoot(), resolve(ROOT), 'sin raíz explícita, cae al client-knowledge del repo');
+    assert.deepEqual(readdirSync(empty), [], 'la raíz vacía sigue vacía');
+    assert.deepEqual([readFileSync(repoIdx, 'utf8'), readFileSync(repoLog, 'utf8')], before, 'el client-knowledge del repo no cambia');
+  } finally {
+    if (env === undefined) delete process.env.CLIENT_KNOWLEDGE_ROOT; else process.env.CLIENT_KNOWLEDGE_ROOT = env;
+    rmSync(empty, { recursive: true, force: true });
+  }
+});
+
+test('MOCK: validar un archivo de canal solo mira las incidencias de su canal (email.json → EMAIL_*, paid.json → PAID_*)', async () => {
+  await withTmpRoot(async (root) => {
+    const dir = join(root, 'clients', 'mutualidad');
+    // Email con una contradicción pendiente con la marca (EMAIL_COLOR_CONFLICT).
+    const ep = join(dir, 'channels', 'email.json');
+    const email = readJsonSync(ep); email.colors[0].hex = '#003828'; writeFileSync(ep, JSON.stringify(email));
+    // Paid limpio, con su archivo de Figma declarado.
+    const paid: PaidChannel = { schema: 'ck.paid.v1', client: 'mutualidad', status: 'draft', approval: null, version: '2026-10-22.1', updatedAt: '2026-10-22', templates: [feedTemplate('FILE_MUT')], gaps: [], openQuestions: [] };
+    writeFileSync(join(dir, 'channels', 'paid.json'), JSON.stringify(paid));
+    const idx = readJsonSync(join(dir, 'client.json'));
+    idx.files.push({ id: 'paid', path: 'channels/paid.json', kind: 'channel', channels: ['paid'], topics: ['plantillas'], status: 'draft', version: '2026-10-22.1', updatedAt: '2026-10-22', source: 'MOCK', approval: null, load: 'always', description: 'MOCK' });
+    idx.figma.files.push({ label: 'Plantillas paid (MOCK)', fileKey: 'FILE_MUT', channels: ['paid'], note: null });
+    writeFileSync(join(dir, 'client.json'), JSON.stringify(idx));
+    assert.ok((await checkClient(root, 'mutualidad')).issues.some((i) => i.code === 'EMAIL_COLOR_CONFLICT'));
+    await assert.rejects(validateFile(root, 'mutualidad', 'email', 'Revisora', 'MOCK'), /pendientes/);
+    const out = await validateFile(root, 'mutualidad', 'paid', 'Revisora', 'MOCK ok');
+    assert.equal(out.files.find((f) => f.id === 'paid')?.status, 'validated', 'una incidencia EMAIL_* no frena paid.json');
+    // Y al revés: una incidencia PAID_* sí frena paid.json.
+    writeFileSync(join(dir, 'channels', 'paid.json'), JSON.stringify({ ...paid, templates: [{ ...feedTemplate('FILE_MUT'), slots: {} }] }));
+    await assert.rejects(validateFile(root, 'mutualidad', 'paid', 'Revisora', 'MOCK'), /sin huecos/);
   });
 });
 
