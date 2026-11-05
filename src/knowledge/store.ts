@@ -21,10 +21,18 @@ import { sha256Hex } from '../hash/canonical.ts';
 
 export interface KnowledgeIssue { code: string; severity: 'blocking' | 'pending' | 'warning'; message: string }
 
-/** Raíz del conocimiento: --root > CLIENT_KNOWLEDGE_ROOT > <cwd>/client-knowledge > <repo>/client-knowledge. */
+const hasClients = (dir: string) => existsSync(join(dir, 'clients')) && statSync(join(dir, 'clients')).isDirectory();
+
+/** Raíz del conocimiento: --root > CLIENT_KNOWLEDGE_ROOT > <cwd>/client-knowledge > <repo>/client-knowledge.
+ *  Una raíz explícita (--root o la variable) se usa o falla: nunca se cae a otra, porque hay comandos que escriben. */
 export function resolveKnowledgeRoot(explicit?: string): string {
-  const candidates = [explicit, process.env.CLIENT_KNOWLEDGE_ROOT, join(process.cwd(), 'client-knowledge'), resolve(import.meta.dirname, '..', '..', 'client-knowledge')];
-  for (const c of candidates) if (c && existsSync(join(c, 'clients'))) return resolve(c);
+  const given = explicit ? { from: '--root', dir: explicit } : process.env.CLIENT_KNOWLEDGE_ROOT ? { from: 'CLIENT_KNOWLEDGE_ROOT', dir: process.env.CLIENT_KNOWLEDGE_ROOT } : null;
+  if (given) {
+    const dir = resolve(given.dir);
+    if (!hasClients(dir)) throw new Error(`${given.from} apunta a ${dir}, que no contiene clients/: no uso otra raíz (se escribiría en la equivocada). Corrige la ruta.`);
+    return dir;
+  }
+  for (const c of [join(process.cwd(), 'client-knowledge'), resolve(import.meta.dirname, '..', '..', 'client-knowledge')]) if (hasClients(c)) return resolve(c);
   throw new Error('No encuentro el conocimiento de clientes: usa --root DIR o la variable CLIENT_KNOWLEDGE_ROOT (carpeta que contiene clients/).');
 }
 
@@ -277,7 +285,9 @@ export async function validateFile(root: string, slug: string, fileId: string, b
   const f = idx.files.find((x) => x.id === fileId);
   if (!f) throw new Error(`${slug} no tiene el archivo ${fileId}`);
   const { issues } = await checkClient(root, slug);
-  const stop = issues.filter((i) => i.severity !== 'warning' && (i.message.includes(f.path) || i.message.startsWith(`${f.id}:`) || (f.kind === 'brand' && i.code.startsWith('BRAND_')) || (f.kind === 'channel' && (i.code.startsWith('EMAIL_') || i.code.startsWith('PAID_')))));
+  // Un archivo de canal solo se frena por las incidencias de SU canal (email.json → EMAIL_*, paid.json → PAID_*).
+  const channelPrefixes = f.kind === 'channel' ? f.channels.filter((c) => c !== 'all').map((c) => `${c.toUpperCase()}_`) : [];
+  const stop = issues.filter((i) => i.severity !== 'warning' && (i.message.includes(f.path) || i.message.startsWith(`${f.id}:`) || (f.kind === 'brand' && i.code.startsWith('BRAND_')) || channelPrefixes.some((p) => i.code.startsWith(p))));
   if (stop.length) throw new Error(`No se puede validar ${fileId} con pendientes:\n${stop.map((i) => `- ${i.message}`).join('\n')}`);
   const at = new Date().toISOString();
   const next = { ...idx, files: idx.files.map((x) => (x.id === fileId ? { ...x, status: 'validated' as const, approval: { by, at, note }, updatedAt: at.slice(0, 10) } : x)) };
