@@ -28,6 +28,7 @@ export interface MockTextSpec {
   fontStyle?: string;
   fontSize?: number;
   align?: string;
+  alignVertical?: string;
   /** Simula un entorno que rechaza campos avanzados de getStyledTextSegments. */
   rejectAdvancedSegmentFields?: boolean;
   /** Tramos con estilos distintos (fin exclusivo de cada tramo; el último debe ser characters.length). */
@@ -230,7 +231,7 @@ export function createFakeFigma(opts: FakeFigmaOptions): FakeFigma {
       t.textTruncation = tx.truncation ?? 'DISABLED';
       t.maxLines = tx.maxLines ?? null;
       t.textAlignHorizontal = tx.align ?? 'LEFT';
-      t.textAlignVertical = 'TOP';
+      t.textAlignVertical = tx.alignVertical ?? 'TOP';
       t.leadingTrim = 'NONE';
       const fills = t.fills;
       t.getStyledTextSegments = (fields: string[]) => {

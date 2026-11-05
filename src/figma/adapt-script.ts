@@ -25,11 +25,12 @@
 //    cargan ANTES de clonar: si alguna no está disponible se detiene sin escribir y lo informa; nunca se sustituye.
 //  - v9: escala PROPORCIONAL de bloques de contenido con maquetación automática (blockScales): rescale de la raíz del
 //    bloque (cuerpos, rellenos, huecos, radios y trazos con el mismo factor). Solo entra en el script si el plan la declara.
+//  - v11: la tolerancia de tamaño de un bloque que es un TEXTO suma 1 px (Figma redondea su ancho al reescalar; el parche fallaba por 0,6 px).
 //  - v10: efectos e imágenes se colocan por su CAJA (esquina superior izquierda respecto al frame), no por x/y: en un nodo
 //    volteado (p. ej. una imagen con espejo vertical) x/y es el origen del giro y no la esquina visible.
 import type { DemoPlan } from '../demo/plan.ts';
 
-export const ADAPT_SCRIPT_VERSION = 'pcb.adapt-script.v10';
+export const ADAPT_SCRIPT_VERSION = 'pcb.adapt-script.v11';
 
 /** Única eliminación permitida: el clon creado por este mismo script, si falla algo después de crearlo. */
 export const ALLOWED_DISCARD_LINE = '  clone.remove(); // PCB_DISCARD_OWN_CLONE';
@@ -344,7 +345,7 @@ for (var bi = 0; bi < PLAN.blockScales.length; bi++) {
   var bnode = onClone(bs.nodeId);
   var mB = await figma.getNodeByIdAsync(bs.nodeId);
   var bBefore = { x: bnode.x, y: bnode.y, width: bnode.width, height: bnode.height };
-  var bTarget = mB.width * bs.scale, bTol = 1e-3 * Math.max(1, mB.width);
+  var bTarget = mB.width * bs.scale, bTol = 1e-3 * Math.max(1, mB.width) + (mB.type === 'TEXT' ? 1 : 0); // un texto redondea su ancho a px enteros al reescalar
   if (Math.abs(bnode.width - bTarget) > bTol) {
     if (Math.abs(bnode.width - mB.width) > bTol) throw new Error('PCB_BLOCK_UNEXPECTED_SIZE ' + bs.nodeId + ' ' + bnode.width);
     bnode.rescale(bs.scale); // PCB_BLOCK_RESCALE

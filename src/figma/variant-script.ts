@@ -13,7 +13,8 @@
 //  - No cabe ⇒ la variante falla (strict/reflow), o fit_text reduce el cuerpo de todos los tramos con el mismo factor
 //    hasta el mínimo AUTORIZADO; nunca trunca ni usa elipsis.
 //  - Si algo distinto de los nodos editados cambia de caja (auto layout, constraints), la variante falla
-//    («requiere adaptación de diseño»).
+//    («requiere adaptación de diseño»). Un texto editado de caja fija (autoResize NONE) debe conservar la caja de la
+//    maestra (x, y, ancho, alto); si no, la variante falla (PCB_TEXT_BOX_MOVED).
 //  - Fallo aislado: si una variante falla, se descarta SU clon (única eliminación permitida) y se sigue con las demás.
 //  - Reejecución: si ya existe un clon con el nombre de la variante, no se duplica ni se toca ('exists').
 //    'patch' reaplica sobre el clon indicado; antes comprueba que cada nodo vinculado está en el estado de la maestra o
@@ -29,7 +30,7 @@ export const VARIANT_ALLOWED_LINES = [
   VARIANT_DISCARD_LINE,
   "    tn.insertCharacters(sg.end, op.parts[i], 'BEFORE'); // PCB_VARIANT_TEXT (hereda el estilo del tramo)",
   '    tn.deleteCharacters(sg.start, sg.end); // PCB_VARIANT_TEXT',
-  "    tn.textAutoResize = 'HEIGHT'; var mh = tn.height; tn.textAutoResize = 'NONE'; tn.resize(mT.width, mT.height); // PCB_TEXT_MEASURE",
+  "    tn.textAutoResize = 'HEIGHT'; var mh = tn.height; tn.textAutoResize = 'NONE'; tn.resize(mT.width, mT.height); tn.relativeTransform = mT.relativeTransform; // PCB_TEXT_MEASURE (caja y posición de la maestra)",
   "    tn.resize(mT.width, tn.height); tn.textAutoResize = 'HEIGHT'; // PCB_TEXT_REFLOW",
   '    tn.setRangeFontSize(r.s, r.e, st.size * k); // PCB_TEXT_FIT',
   "    if (st.lh && st.lh.unit === 'PIXELS') tn.setRangeLineHeight(r.s, r.e, { unit: 'PIXELS', value: st.lh.value * k }); // PCB_TEXT_FIT",
@@ -47,6 +48,7 @@ export const FORBIDDEN_IN_VARIANT_SCRIPT = [
 const FORBIDDEN_ASSIGNMENTS: Array<[string, RegExp]> = [
   ['fontName =', /fontName\s*=(?!=)/], ['.characters =', /\.characters\s*=(?!=)/], ['.fills =', /\.fills\s*=(?!=)/],
   ['textAutoResize =', /textAutoResize\s*=(?!=)/], ['figma.currentPage =', /figma\.currentPage\s*=(?!=)/],
+  ['relativeTransform =', /relativeTransform\s*=(?!=)/],
 ];
 
 export function staticVariantViolations(code: string): string[] {
@@ -234,6 +236,16 @@ for (var vi = 0; vi < VARIANTS.length; vi++) {
       edited[o.nodeId] = true;
       for (var up = masterNode[o.nodeId].parent; up && up !== master && up.type === 'GROUP'; up = up.parent) edited[up.id] = true;
     });
+    // Un texto editado de caja fija conserva la caja de la maestra (posición y tamaño relativos al marco).
+    var moved = [];
+    V.ops.forEach(function (o) {
+      if (o.kind !== 'text') return;
+      var ar = masterNode[o.nodeId].textAutoResize;
+      if (ar !== 'NONE' && ar !== 'TRUNCATE') return;
+      var cb = relBox(toClone[o.nodeId], clone), mb = masterBox[o.nodeId];
+      if (!cb || !mb || Math.abs(cb.x - mb.x) > 0.01 || Math.abs(cb.y - mb.y) > 0.01 || Math.abs(cb.w - mb.w) > 0.01 || Math.abs(cb.h - mb.h) > 0.01) moved.push(o.nodeId + ' ' + JSON.stringify({ master: mb, clone: cb }));
+    });
+    if (moved.length) throw new Error('PCB_TEXT_BOX_MOVED ' + moved.join('; '));
     var shifted = [];
     for (var id in masterBox) {
       if (edited[id] || !masterBox[id]) continue;
@@ -285,9 +297,12 @@ async function applyText(op, tn, mT, clone, failed) {
   if (op.policy.mode === 'reflow' && mT.textAutoResize === 'WIDTH_AND_HEIGHT' && tn.width > mT.width + 0.5) {
     tn.resize(mT.width, tn.height); tn.textAutoResize = 'HEIGHT'; // PCB_TEXT_REFLOW
   }
+  // Caja fija: se mide con alto automático y se devuelve la caja de la maestra (tamaño Y posición). Al pasar a 'HEIGHT'
+  // un texto centrado (o abajo) en vertical encoge manteniendo su centro, y resize() crece desde arriba: sin restaurar
+  // la posición, la caja quedaría desplazada (alto maestra − alto medido) / 2.
   function measure() {
     if (tn.textAutoResize === 'NONE' || tn.textAutoResize === 'TRUNCATE') {
-    tn.textAutoResize = 'HEIGHT'; var mh = tn.height; tn.textAutoResize = 'NONE'; tn.resize(mT.width, mT.height); // PCB_TEXT_MEASURE
+    tn.textAutoResize = 'HEIGHT'; var mh = tn.height; tn.textAutoResize = 'NONE'; tn.resize(mT.width, mT.height); tn.relativeTransform = mT.relativeTransform; // PCB_TEXT_MEASURE (caja y posición de la maestra)
       return { fits: mh <= limitH + 0.5, width: mT.width, height: mh };
     }
     var wOk = tn.textAutoResize !== 'WIDTH_AND_HEIGHT' || tn.width <= mT.width + 0.5;

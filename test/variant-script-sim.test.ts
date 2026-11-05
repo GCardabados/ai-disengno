@@ -17,11 +17,11 @@ import { snap } from './helpers.ts';
 interface Seg { end: number; style: string; size: number; family?: string }
 interface SimNode {
   id: string; type: string; name: string; x: number; y: number; width: number; height: number; parent: SimNode | null;
-  children: SimNode[]; fills: unknown[]; layoutMode: string; characters?: string; segs?: Seg[]; textAutoResize?: string; textAlignHorizontal?: string;
+  children: SimNode[]; fills: unknown[]; layoutMode: string; characters?: string; segs?: Seg[]; textAutoResize?: string; textAlignHorizontal?: string; textAlignVertical?: string;
   [k: string]: unknown;
 }
 
-function sim(root: MockNodeSpec, opts: { missingFont?: string; hug?: boolean } = {}) {
+function sim(root: MockNodeSpec, opts: { missingFont?: string; hug?: boolean; ignoreTransform?: boolean } = {}) {
   let next = 500;
   const all = new Map<string, SimNode>();
   const writes: string[] = [];
@@ -47,7 +47,13 @@ function sim(root: MockNodeSpec, opts: { missingFont?: string; hug?: boolean } =
     n.findAll = (f: (x: SimNode) => boolean) => { const out: SimNode[] = []; const w = (x: SimNode) => x.children.forEach((c) => { if (f(c)) out.push(c); w(c); }); w(n); return out; };
     n.appendChild = (c: SimNode) => { if (c.parent) c.parent.children = c.parent.children.filter((x) => x !== c); n.children.push(c); c.parent = n; };
     n.resizeWithoutConstraints = (w: number, h: number) => { n.width = w; n.height = h; };
+    // resize() crece desde arriba a la izquierda (como en Figma).
     n.resize = (w: number, h: number) => { writes.push(`resize ${n.id}`); n.width = w; n.height = h; };
+    Object.defineProperty(n, 'relativeTransform', {
+      get: () => [[1, 0, n.x], [0, 1, n.y]],
+      set: (t: number[][]) => { writes.push(`transform ${n.id}`); if (!opts.ignoreTransform) { n.x = t[0]![2]!; n.y = t[1]![2]!; } },
+      enumerable: false, configurable: true,
+    });
     n.remove = () => { writes.push(`remove ${n.id}`); n.parent!.children = n.parent!.children.filter((x) => x !== n); const rm = (x: SimNode) => { all.delete(x.id); x.children.forEach(rm); }; rm(n); };
     n.clone = () => {
       const cp = (x: SimNode, p: SimNode | null): SimNode => {
@@ -92,7 +98,13 @@ function sim(root: MockNodeSpec, opts: { missingFont?: string; hug?: boolean } =
         n.segs = n.segs!.map((s, k) => ((k ? n.segs![k - 1]!.end : 0) >= a && s.end <= b ? { ...s, size: v } : s));
         reflow(n);
       };
-      Object.defineProperty(n, 'textAutoResize', { get: () => n._ar, set: (v: string) => { writes.push(`autoResize ${n.id}`); n._ar = v; reflow(n); }, enumerable: true });
+      // De caja fija a alto automático, un texto centrado (o abajo) en vertical encoge manteniendo su centro (o su base).
+      Object.defineProperty(n, 'textAutoResize', { get: () => n._ar, set: (v: string) => {
+        writes.push(`autoResize ${n.id}`);
+        const was = n._ar, h0 = n.height;
+        n._ar = v; reflow(n);
+        if (was === 'NONE' && v === 'HEIGHT' && n.textAlignVertical !== 'TOP') n.y += (h0 - n.height) * (n.textAlignVertical === 'CENTER' ? 0.5 : 1);
+      }, enumerable: true });
     }
   };
   const build = (s: MockNodeSpec, parent: SimNode | null): SimNode => {
@@ -102,6 +114,7 @@ function sim(root: MockNodeSpec, opts: { missingFont?: string; hug?: boolean } =
       n.segs = (s.text!.segments ?? [{ end: s.text!.characters.length }]).map((r) => ({ end: r.end, style: r.fontStyle ?? 'Regular', size: r.fontSize ?? s.text!.fontSize ?? 32 }));
       n._ar = s.text!.autoResize ?? 'HEIGHT';
       n.textAlignHorizontal = 'LEFT';
+      n.textAlignVertical = s.text!.alignVertical ?? 'TOP';
     }
     methods(n);
     n.children = (s.children ?? []).map((c) => build(c, n));
@@ -133,8 +146,8 @@ const ASSETS: VariantAssetsRead = {
   ],
 };
 
-async function plan(titulares: Record<string, string>, policy: VariantJob['fields'][number]['textPolicy'] = { mode: 'strict' }): Promise<VariantPlan> {
-  const s = await snap(universityMasterSpec());
+async function plan(titulares: Record<string, string>, policy: VariantJob['fields'][number]['textPolicy'] = { mode: 'strict' }, spec = universityMasterSpec()): Promise<VariantPlan> {
+  const s = await snap(spec);
   const job: VariantJob = {
     schema: 'pcb.variant-job.v1', request: 'MOCK',
     master: { fileKey: s.fileKey, nodeId: '70:1', name: 'UNI_Grados_1080x1080', width: 1080, height: 1080, fingerprint: s.fingerprints.master, params: { grado: 'Derecho', ciudad: 'Madrid' } },
@@ -230,6 +243,31 @@ test('MOCK [simulación]: si el auto layout desplaza otro elemento, la variante 
   assert.equal(res.variants[0]!.status, 'failed');
   assert.match(res.variants[0]!.error!, /^PCB_LAYOUT_SHIFT requiere adaptación de diseño: 70:9 .*clon descartado/);
   assert.equal(f.page.children.find((n) => n.type === 'SECTION')!.children.length, 0);
+});
+
+// Caso UAX 2026-10-22: titular de caja fija (926×164, centrado en vertical) que pasa de 2 líneas a 1; tras medir, la
+// caja bajó (164 − alto medido) / 2 px sin que ninguna comprobación lo detectara.
+const centeredHeadline = () => mapSpec(universityMasterSpec(), '70:7', (n) => ({ ...n, text: { ...n.text!, autoResize: 'NONE', alignVertical: 'CENTER' } }));
+
+test('MOCK [simulación]: un texto de caja fija centrado en vertical conserva la caja de la maestra al acortarse', async () => {
+  const p = await plan({ vigo: 'Vigo' }, { mode: 'strict' }, centeredHeadline());
+  const f = sim(centeredHeadline());
+  const res = await f.run(buildVariantScript(p));
+  assert.equal(res.variants[0]!.status, 'created', res.variants[0]!.error ?? '');
+  const t = f.page.children.find((n) => n.type === 'SECTION')!.children[0]!.children.find((c) => c.name === 'Text 1')!;
+  assert.equal(t.characters, 'Estudia Medicina en Vigo');
+  assert.equal((res.variants[0]!.applied[0]!.detail as { height: number }).height, 160, 'la caja conserva el alto de la maestra');
+  assert.deepEqual({ x: t.x, y: t.y, w: t.width, h: t.height, ar: t.textAutoResize }, { x: 60, y: 620, w: 960, h: 160, ar: 'NONE' }, 'misma caja que la maestra');
+});
+
+test('MOCK [simulación]: si la caja de un texto editado de caja fija se desplaza, la variante falla (PCB_TEXT_BOX_MOVED)', async () => {
+  const p = await plan({ vigo: 'Vigo' }, { mode: 'strict' }, centeredHeadline());
+  // Entorno en el que no se puede restaurar la posición: reproduce el desplazamiento del caso UAX.
+  const f = sim(centeredHeadline(), { ignoreTransform: true });
+  const res = await f.run(buildVariantScript(p));
+  assert.equal(res.variants[0]!.status, 'failed');
+  assert.match(res.variants[0]!.error!, /^PCB_TEXT_BOX_MOVED 70:7 .*"y":620.*"y":656\.8.*clon descartado/);
+  assert.equal(f.page.children.find((n) => n.type === 'SECTION')!.children.length, 0, 'no queda ninguna salida parcial');
 });
 
 test('MOCK [simulación]: una fuente que no carga detiene todo ANTES de clonar', async () => {

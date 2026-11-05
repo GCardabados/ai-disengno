@@ -128,7 +128,7 @@ imagen asignada, qué se mantiene, datos pendientes). Permitir confirmar todas a
 escribe solo los nodos vinculados (texto por tramos heredando su estilo; imagen solo `imageHash` y encaje), mide el
 texto (si no cabe: `strict`/`reflow` fallan, `fit_text` reduce todos los tramos con el mismo factor hasta el mínimo
 autorizado) y comprueba que **ningún otro elemento** cambió de caja (`PCB_LAYOUT_SHIFT` ⇒ «requiere adaptación de
-diseño»). Si una variante falla, descarta su clon, lo registra y sigue con las demás. Un clon con el mismo nombre ya
+diseño») y que cada texto editado de caja fija conserva la caja de la maestra (`PCB_TEXT_BOX_MOVED`). Si una variante falla, descarta su clon, lo registra y sigue con las demás. Un clon con el mismo nombre ya
 existente no se duplica (`exists`).
 
 Reejecuciones: para rehacer una variante, antes `read-request --mode node-digests --node-id <clon>` +

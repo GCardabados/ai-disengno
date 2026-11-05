@@ -383,6 +383,7 @@ test('MOCK [script]: solo operaciones permitidas, cada variante desde la maestra
   assert.ok(code.includes("status: 'exists'"), 'reejecución: un clon con el mismo nombre no se duplica');
   assert.ok(code.includes('PCB_DISCARD_OWN_CLONE') && code.includes('results.push'), 'una variante fallida descarta su clon y se sigue con las demás');
   assert.ok(code.includes('PCB_LAYOUT_SHIFT'), 'si el auto layout desplaza algo, se detiene esa variante');
+  assert.ok(code.includes('PCB_TEXT_BOX_MOVED'), 'un texto editado de caja fija conserva la caja de la maestra');
   assert.equal(buildVariantScript(plan), code, 'determinista entre ejecuciones');
   const one = buildVariantScript(plan, { variantIds: ['ade-valencia'] });
   assert.ok(one.includes('"ade-valencia"') && !one.includes('"medicina-sevilla"'));
