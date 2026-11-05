@@ -2,9 +2,11 @@
 // y los briefs/resultados de la prueba en Figma del 2026-11-05 (email «nuevo buscador médico», canales axa y directo).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { checkClient, clientPath } from '../src/knowledge/store.ts';
+import { checkClient, clientPath, figmaNodeUrl, loadContext } from '../src/knowledge/store.ts';
 import { parseOrThrow } from '../src/contracts/schema.ts';
 import { extractEnvelope } from '../src/figma/ingest-envelope.ts';
 import { EMAIL_TEMPLATE_RESULT_SCHEMA_ID, EmailBlocksCatalogSchema, EmailTemplateBriefSchema, EmailTemplateResultSchema, type EmailTemplateBrief, type EmailTemplateResult } from '../src/contracts/email-template.ts';
@@ -133,4 +135,33 @@ test('verificación con las auditorías reales de Figma: pasan; texto alterado o
   const left = structuredClone(r);
   left.placeholdersLeft.push({ at: 2, slot: 'texto_1', text: BLOCK_PLACEHOLDERS[1]! });
   assert.equal(verifyTemplateResult(AXA, chk.blocks, left).status, 'fail');
+});
+
+test('knowledge-context: AXA expone sus plantillas con el frame de Figma (modo plantillas); otro cliente no', async () => {
+  const ctx = await loadContext(ROOT, 'axa', 'email');
+  const eb = ctx.emailBlocks!;
+  assert.ok(eb, 'emailBlocks');
+  assert.equal(eb.figma.fileKey, CAT.figma.fileKey);
+  assert.deepEqual(eb.templates.map((t) => [t.key, t.nodeId]), CAT.templates.map((t) => [t.key, t.figmaId]));
+  assert.equal(eb.templates[0]!.url, figmaNodeUrl(CAT.figma.fileKey, CAT.templates[0]!.figmaId));
+  assert.match(eb.templates[0]!.url, /node-id=\d+-\d+$/);
+  assert.equal(eb.blocks.fixed + eb.blocks.variable, CAT.blocks.length);
+  assert.match(ctx.issues.find((i) => i.code === 'NO_BRAND')!.message, /modo plantillas/);
+  assert.equal((await loadContext(ROOT, 'mutualidad', 'email')).emailBlocks, null);
+});
+
+test('miniaturas en el conocimiento del cliente y compositor generado desde el catálogo', () => {
+  const dir = clientPath(ROOT, 'axa', CAT.thumbsDir!);
+  const missing = CAT.blocks.flatMap((b) => b.variants.map((v) => v.componentId)).filter((id) => !existsSync(join(dir, `${id.replace(':', '_')}.jpg`)));
+  assert.deepEqual(missing, []);
+  const py = spawnSync('python3', ['--version']);
+  if (py.status !== 0) return; // sin Python no se prueba el generador
+  const out = mkdtempSync(join(tmpdir(), 'pcb-composer-'));
+  try {
+    const r = spawnSync('python3', [join(import.meta.dirname, '..', 'scripts', 'email-composer.py'), '--catalog', clientPath(ROOT, 'axa', 'channels/email-blocks.json'), '--out', join(out, 'c.html')], { encoding: 'utf8' });
+    assert.equal(r.status, 0, r.stderr);
+    const html = readFileSync(join(out, 'c.html'), 'utf8');
+    assert.ok(!html.includes('/*__CATALOG__*/null') && !html.includes('/*__THUMBS__*/null'));
+    assert.equal((html.match(/data:image\/jpeg;base64,/g) ?? []).length, CAT.blocks.reduce((n, b) => n + b.variants.length, 0));
+  } finally { rmSync(out, { recursive: true, force: true }); }
 });

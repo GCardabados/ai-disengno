@@ -32,8 +32,11 @@ client-knowledge/
     ├── legal.md              ← (opcional) normativa y textos legales generales del cliente
     ├── channels/
     │   ├── email.json        ← reglas del canal email (ck.email.v1)
+    │   ├── email-blocks.json ← (opcional) bloques y plantillas de email en Figma (ck.email-blocks.v1): con él,
+    │   │                        create-email-design monta el email con instancias de esos bloques (modo plantillas)
     │   └── paid.json         ← reglas del canal paid (ck.paid.v1): de momento, solo plantillas de pieza
     ├── assets/logos/         ← SVG (para construir en Figma) y PNG; los PDF del cliente NO se versionan
+    ├── assets/email-blocks/  ← (opcional) miniaturas de los bloques de email para el compositor guiado
     ├── proposals/            ← CUARENTENA: propuestas de cambio salidas de encargos; nunca se cargan
     └── CHANGELOG.md          ← cambios aprobados: fecha, archivo, versión, qué, quién y de dónde
 ```

@@ -11,7 +11,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { parse, parseOrThrow } from '../contracts/schema.ts';
 import { BrandSchema, type Brand } from '../contracts/brand.ts';
-import { EMAIL_BLOCKS_SCHEMA_ID, EmailBlocksCatalogSchema } from '../contracts/email-template.ts';
+import { EMAIL_BLOCKS_SCHEMA_ID, EmailBlocksCatalogSchema, type EmailBlocksCatalog } from '../contracts/email-template.ts';
 import {
   ClientIndexSchema, EmailChannelSchema, KNOWLEDGE_CONTEXT_SCHEMA_ID, KnowledgeProposalSchema, PaidChannelSchema,
   type ClientIndex, type EmailChannel, type KnowledgeFile, type KnowledgeProposal, type PaidChannel,
@@ -80,6 +80,29 @@ export async function loadIndex(root: string, slug: string): Promise<ClientIndex
 
 const forChannel = (f: KnowledgeFile, channel: string) => f.status !== 'deprecated' && (f.channels.includes('all') || f.channels.includes(channel as never));
 
+export interface EmailBlocksSummary {
+  fileId: string; path: string; status: string; version: string;
+  figma: { fileKey: string; pageUrl: string; blocksUrl: string; templatesUrl: string };
+  templates: Array<{ key: string; name: string; nodeId: string; url: string; blocks: string[] }>;
+  blocks: { fixed: number; variable: number };
+  options: { idioma: string[]; canal: string[]; legal: string[] };
+  pending: string[];
+}
+
+export const figmaNodeUrl = (fileKey: string, nodeId: string) => `https://www.figma.com/design/${fileKey}/?node-id=${nodeId.replace(':', '-')}`;
+
+function summarizeEmailBlocks(f: KnowledgeFile, c: EmailBlocksCatalog): EmailBlocksSummary {
+  const k = c.figma.fileKey;
+  return {
+    fileId: f.id, path: f.path, status: c.status, version: c.version,
+    figma: { fileKey: k, pageUrl: figmaNodeUrl(k, c.figma.pageId), blocksUrl: figmaNodeUrl(k, c.figma.blocksSection), templatesUrl: figmaNodeUrl(k, c.figma.templatesSection) },
+    templates: c.templates.map((t) => ({ key: t.key, name: t.name, nodeId: t.figmaId, url: figmaNodeUrl(k, t.figmaId), blocks: t.blocks.map((b) => b.block) })),
+    blocks: { fixed: c.blocks.filter((b) => b.kind === 'fixed').length, variable: c.blocks.filter((b) => b.kind === 'variable').length },
+    options: { idioma: c.options.idioma, canal: Object.keys(c.options.canal), legal: c.options.legal },
+    pending: c.pending,
+  };
+}
+
 export interface LoadedFile { id: string; path: string; kind: string; status: string; version: string; updatedAt: string; sha256: string; bytes: number }
 
 export interface KnowledgeContext {
@@ -92,6 +115,9 @@ export interface KnowledgeContext {
   onDemand: Array<{ id: string; path: string; topics: string[]; description: string; bytes: number; status: string }>;
   brand: Brand | null;
   email: EmailChannel | null;
+  /** Catálogo de bloques y plantillas de email del cliente en Figma (ck.email-blocks.v1), resumido: con él, el email se
+   *  monta con instancias de sus bloques (modo plantillas de create-email-design) en vez de diseñarse desde cero. */
+  emailBlocks: EmailBlocksSummary | null;
   /** Reglas del canal paid (plantillas del cliente). */
   paid: PaidChannel | null;
   /** SVG de los logos que el canal referencia (para construirlos en Figma). */
@@ -105,11 +131,21 @@ export async function loadContext(root: string, slug: string, channel: string): 
   const idx = await loadIndex(root, slug);
   const issues: KnowledgeIssue[] = [];
   const loaded: LoadedFile[] = [], onDemand: KnowledgeContext['onDemand'] = [];
-  let brand: Brand | null = null, email: EmailChannel | null = null, paid: PaidChannel | null = null;
+  let brand: Brand | null = null, email: EmailChannel | null = null, paid: PaidChannel | null = null, emailBlocks: EmailBlocksSummary | null = null;
   for (const f of idx.files) {
     if (!forChannel(f, channel)) continue;
     const p = clientPath(root, slug, f.path);
     if (!existsSync(p)) { issues.push({ code: 'FILE_MISSING', severity: 'blocking', message: `${f.id}: falta ${f.path}` }); continue; }
+    // El catálogo de bloques se resume siempre (aunque sea bajo demanda): decide el modo de trabajo de la skill.
+    if (f.kind === 'channel' && f.path.endsWith('.json')) {
+      const j = JSON.parse(await readFile(p, 'utf8')) as { schema?: string };
+      if (j.schema === EMAIL_BLOCKS_SCHEMA_ID) {
+        const r = parse(EmailBlocksCatalogSchema, j);
+        if (!r.ok) issues.push({ code: 'EMAIL_BLOCKS_INVALID', severity: 'blocking', message: `${f.path}: ${r.issues.slice(0, 3).map((i) => `${i.path} ${i.message}`).join('; ')}` });
+        else if (r.value.client !== slug) issues.push({ code: 'EMAIL_BLOCKS_OTHER_CLIENT', severity: 'blocking', message: `${f.path} es de ${r.value.client}, no de ${slug}` });
+        else emailBlocks = summarizeEmailBlocks(f, r.value);
+      }
+    }
     if (f.load === 'on_demand') { onDemand.push({ id: f.id, path: f.path, topics: f.topics, description: f.description, bytes: statSync(p).size, status: f.status }); continue; }
     const raw = await readFile(p, 'utf8');
     loaded.push({ id: f.id, path: f.path, kind: f.kind, status: f.status, version: f.version, updatedAt: f.updatedAt, sha256: sha256Hex(raw), bytes: Buffer.byteLength(raw) });
@@ -122,8 +158,8 @@ export async function loadContext(root: string, slug: string, channel: string): 
   if (brand && brand.slug !== slug) issues.push({ code: 'BRAND_OTHER_CLIENT', severity: 'blocking', message: `brand.json es de ${brand.slug}, no de ${slug}` });
   if (email && email.client !== slug) issues.push({ code: 'EMAIL_OTHER_CLIENT', severity: 'blocking', message: `channels/email.json es de ${email.client}, no de ${slug}` });
   if (paid && paid.client !== slug) issues.push({ code: 'PAID_OTHER_CLIENT', severity: 'blocking', message: `channels/paid.json es de ${paid.client}, no de ${slug}` });
-  if (!brand) issues.push({ code: 'NO_BRAND', severity: 'blocking', message: `${slug} no tiene brand.json cargable para ${channel}` });
-  if (channel === 'email' && !email) issues.push({ code: 'NO_EMAIL_CHANNEL', severity: 'warning', message: `${slug} no tiene reglas de email: se usarán los valores por defecto de la skill, declarados` });
+  if (!brand) issues.push({ code: 'NO_BRAND', severity: 'blocking', message: `${slug} no tiene brand.json cargable para ${channel}${emailBlocks ? ': no se puede diseñar desde cero; sí montar el email con sus bloques y plantillas (modo plantillas, ' + emailBlocks.path + ')' : ''}` });
+  if (channel === 'email' && !email) issues.push({ code: 'NO_EMAIL_CHANNEL', severity: 'warning', message: emailBlocks ? `${slug} no tiene reglas generales de email (channels/email.json): en el modo plantillas mandan sus bloques; desde cero se usarían los valores por defecto de la skill, declarados` : `${slug} no tiene reglas de email: se usarán los valores por defecto de la skill, declarados` });
   if (channel === 'paid' && !paid) issues.push({ code: 'NO_PAID_CHANNEL', severity: 'warning', message: `${slug} no tiene reglas paid (channels/paid.json): sin plantillas del cliente, solo se puede crear desde cero` });
   if (brand && email) issues.push(...crossCheck(brand, email, idx));
   if (paid) issues.push(...crossCheckPaid(paid, idx));
@@ -141,7 +177,7 @@ export async function loadContext(root: string, slug: string, channel: string): 
   return {
     schema: KNOWLEDGE_CONTEXT_SCHEMA_ID, root, channel,
     client: { slug, name: idx.name, status: idx.status, domains: idx.domains, figmaLibraries: idx.figma.libraries.filter((l) => l.channels.includes('all') || l.channels.includes(channel as never)), figmaFiles: idx.figma.files },
-    loaded, onDemand, brand, email, paid, logoSvgs, issues, openProposals,
+    loaded, onDemand, brand, email, emailBlocks, paid, logoSvgs, issues, openProposals,
   };
 }
 

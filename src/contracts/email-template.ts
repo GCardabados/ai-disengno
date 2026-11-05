@@ -38,6 +38,8 @@ export const EmailBlocksCatalogSchema = z.strictObject({
   status: z.enum(['draft', 'validated']),
   version: z.string(), updatedAt: z.string(), source: z.string(),
   figma: z.strictObject({ fileKey: z.string(), pageId: z.string(), blocksSection: z.string(), templatesSection: z.string() }),
+  /** Miniaturas de cada variante (<componentId con _>.jpg), relativas a la carpeta del cliente: las usa el compositor. */
+  thumbsDir: z.string().optional(),
   canvas: z.strictObject({ emailWidth: z.number(), contentWidth: z.number(), background: z.string(), paddingTop: z.number(), gutter: z.number(), gap: z.number() }),
   fonts: z.record(z.string(), z.strictObject({ implement: z.string(), status: z.string() })),
   options: z.strictObject({

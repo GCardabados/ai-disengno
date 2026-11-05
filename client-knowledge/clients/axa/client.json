@@ -23,7 +23,7 @@
       "status": "draft", "version": "2026-11-05.1", "updatedAt": "2026-11-05",
       "source": "Bloques construidos el 2026-11-05 desde los emails de referencia de la página «Mails» (2839:2) de IAs (Copy); textos legales y variantes observados, no validados por AXA",
       "approval": null, "load": "on_demand",
-      "description": "Catálogo ck.email-blocks.v1: bloques fijos y variables (componentes de Figma), plantillas por familia y opciones; lo usan los comandos email-template-*"
+      "description": "Catálogo ck.email-blocks.v1: bloques fijos y variables (componente de Figma de cada uno), las 6 plantillas por familia (frame de Figma de cada una), opciones y miniaturas (assets/email-blocks/). knowledge-context lo resume con enlaces (emailBlocks); lo usan email-template-* y el compositor"
     }
   ]
 }

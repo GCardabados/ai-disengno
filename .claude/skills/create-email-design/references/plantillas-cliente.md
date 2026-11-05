@@ -9,7 +9,7 @@ los huecos con el brief. Primer cliente con catálogo: AXA (`client-knowledge/cl
 | Pieza | Dónde | Qué es |
 |---|---|---|
 | Catálogo `ck.email-blocks.v1` | `client-knowledge/clients/<slug>/channels/email-blocks.json` | Bloques (id de componente/variantes, huecos con rol y ejemplo, tipo fijo/variable), plantillas (secuencias de bloques), opciones (idioma, canal, legal), fuentes sustitutas y pendientes. Lo valida `knowledge-check`. |
-| Bloques y plantillas en Figma | `figma.pageId` / `blocksSection` / `templatesSection` del catálogo | Componentes con huecos `slot:<rol>_<n>`. Las plantillas son frames de instancias, solo de referencia visual. |
+| Bloques y plantillas en Figma | `figma.pageId` / `blocksSection` / `templatesSection` del catálogo; cada plantilla con su frame (`templates[].figmaId`) y cada bloque con su componente (`nodeId`). `knowledge-context` los resume con enlaces en `emailBlocks` | Componentes con huecos `slot:<rol>_<n>`. Las plantillas son frames de instancias, solo de referencia visual. |
 | Brief `pcb.email-template-brief.v1` | `R/brief.json` | Cliente, intención, asunto, preheader, idioma, canal, legal, composición (`{template}` o `{blocks[]}`) y contenido por posición (`slots`, `images`, `links`, `hide`, `omit`). Contrato: `src/contracts/email-template.ts`. |
 | Compositor guiado | `scripts/email-composer.py` + `email-composer.template.html` | Página web autocontenida: plantillas, bloques vacíos con miniatura, añadir/ordenar/quitar, variantes de footer y cierre, vista previa y el **esqueleto del brief** con `[PENDIENTE: …]` en cada hueco. No escribe en Figma. |
 
@@ -27,9 +27,10 @@ los huecos con el brief. Primer cliente con catálogo: AXA (`client-knowledge/cl
 
 1. **Plantilla predefinida**: `composition: { "template": "<key>" }` (`email-template-list --client C`).
 2. **Compositor guiado**: la persona elige plantilla o compone con los bloques vacíos y copia el brief generado.
-   Generarlo: `python3 <PCB>/scripts/email-composer.py --catalog <catálogo> --thumbs <dir> --out R/compositor.html` y
-   publicarlo (Artifact) o abrirlo en local. `--thumbs` = carpeta con `<componentId con _>.jpg` de cada variante
-   (`get_screenshot` del componente); sin miniatura la tarjeta sale vacía, el resto funciona.
+   Generarlo: `python3 <PCB>/scripts/email-composer.py --catalog <catálogo> --out R/compositor.html` y publicarlo
+   (Artifact) o abrirlo en local. Miniaturas: `thumbsDir` del catálogo (AXA: `assets/email-blocks/`, un
+   `<componentId con _>.jpg` por variante, sacado con `get_screenshot` del componente); `--thumbs DIR` la sustituye.
+   Sin miniatura la tarjeta sale vacía; el resto funciona.
 3. **Manual en Figma**: la persona arma el email con instancias de los bloques. La skill no lo regenera: revisa con
    `get_metadata`/`get_screenshot` y, si se quiere rellenar con el script, se transcribe la secuencia a
    `composition: { "blocks": [...] }`.

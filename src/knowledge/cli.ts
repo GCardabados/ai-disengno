@@ -53,6 +53,11 @@ export async function runKnowledgeCommand(cmd: string, argv: string[]): Promise<
       await writeFile(need(a.out, 'out'), `${JSON.stringify(ctx, null, 2)}\n`, 'utf8');
       console.log(`✓ ${a.out}: ${ctx.loaded.map((f) => `${f.id}@${f.version}(${f.status})`).join(', ')}`);
       if (ctx.onDemand.length) console.log(`  Bajo demanda (no cargado): ${ctx.onDemand.map((f) => `${f.path} [${f.topics.join(', ')}] ${Math.round(f.bytes / 1024)} KB`).join('; ')}`);
+      if (ctx.emailBlocks) {
+        const eb = ctx.emailBlocks;
+        console.log(`  Bloques y plantillas de email en Figma (${eb.path}, ${eb.status} v${eb.version}): ${eb.blocks.variable} variables + ${eb.blocks.fixed} fijos · ${eb.figma.pageUrl}`);
+        for (const t of eb.templates) console.log(`    - ${t.key}: ${t.name} → ${t.url}`);
+      }
       for (const i of ctx.issues) console.log(`${icon(i.severity)} ${i.code}: ${i.message}`);
       return ctx.issues.some((i) => i.severity === 'blocking') ? 2 : 0;
     }

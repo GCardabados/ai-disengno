@@ -11,6 +11,7 @@
   "blocksSection": "2859:121",
   "templatesSection": "2864:420"
  },
+ "thumbsDir": "assets/email-blocks",
  "canvas": {
   "emailWidth": 680,
   "contentWidth": 620,
