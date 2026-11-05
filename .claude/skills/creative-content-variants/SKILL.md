@@ -168,6 +168,11 @@ con ->`; cambios aplicados; validaciones; decisiones pendientes. Recordar que qu
 - Falta de permisos de escritura (asiento View/Dev): trabajar en una copia del archivo o pedir acceso.
 - La maestra o un clon aceptado cambiaron desde la última lectura.
 
+**Formato de las preguntas:** siempre que sea posible, cada pregunta lleva opciones de respuesta concretas (letradas o
+numeradas, con la recomendada primero y marcada «(recomendada)», y una última «Otra: …» si procede). Si el cliente
+dispone de una herramienta de preguntas con opciones (p. ej. `AskUserQuestion`), úsala. Solo se deja abierta una
+pregunta cuando no hay opciones razonables (p. ej. pedir un copy o un dato comercial).
+
 ## Traducciones
 
 Una traducción es una variante de contenido: misma pieza, mismo tamaño y organización, solo cambia el copy (al idioma

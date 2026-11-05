@@ -162,6 +162,11 @@ y se comprueba con `verify-sent --request … --calls DIR/calls-L.json`.
 
 Los ajustes técnicos o decorativos recuperables sobre un clon propio no requieren parar.
 
+**Formato de las preguntas:** siempre que sea posible, cada pregunta lleva opciones de respuesta concretas (letradas o
+numeradas, con la recomendada primero y marcada «(recomendada)», y una última «Otra: …» si procede). Si el cliente
+dispone de una herramienta de preguntas con opciones (p. ej. `AskUserQuestion`), úsala. Solo se deja abierta una
+pregunta cuando no hay opciones razonables (p. ej. pedir un copy o un dato comercial).
+
 ## Traducciones
 
 Traducir no es adaptar: reescribe el copy y no cambia el formato, así que no se hace con este flujo. Es una variante de
