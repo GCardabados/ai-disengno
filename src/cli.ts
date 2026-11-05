@@ -42,6 +42,7 @@ import { runBrandCommand, BRAND_USAGE } from './brand/cli.ts';
 import { runMasterCommand, MASTER_USAGE } from './master/cli.ts';
 import { KNOWLEDGE_USAGE, runKnowledgeCommand } from './knowledge/cli.ts';
 import { EMAIL_USAGE, runEmailCommand } from './email/cli.ts';
+import { EMAIL_TEMPLATE_USAGE, runEmailTemplateCommand } from './email/template-cli.ts';
 
 const USAGE = `pcb <comando> [opciones]
 
@@ -90,7 +91,8 @@ ${TRANSLATION_USAGE}
 ${BRAND_USAGE}
 ${MASTER_USAGE}
 ${KNOWLEDGE_USAGE}
-${EMAIL_USAGE}`;
+${EMAIL_USAGE}
+${EMAIL_TEMPLATE_USAGE}`;
 
 const opts = {
   'file-key': { type: 'string' },
@@ -188,6 +190,7 @@ async function main(argv: string[]): Promise<number> {
   if (cmd?.startsWith('brand-')) return runBrandCommand(cmd, rest);
   if (cmd?.startsWith('master-')) return runMasterCommand(cmd, rest);
   if (cmd?.startsWith('knowledge-')) return runKnowledgeCommand(cmd, rest);
+  if (cmd?.startsWith('email-template-')) return runEmailTemplateCommand(cmd, rest);
   if (cmd?.startsWith('email-')) return runEmailCommand(cmd, rest);
   const { values: a } = parseArgs({ args: rest, options: opts, strict: true });
   const now = new Date().toISOString();

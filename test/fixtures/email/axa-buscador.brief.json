@@ -1,0 +1,107 @@
+{
+  "schema": "pcb.email-template-brief.v1",
+  "client": "axa",
+  "slug": "prueba-nuevo-buscador-medico-axa",
+  "name": "PRUEBA_202609_nuevo-buscador-medico_con_salud_axa",
+  "intent": {
+    "objetivo": "Informar del nuevo buscador del cuadro médico y llevar al cliente a probarlo",
+    "audiencia": "Asegurados de salud AXA con mediador",
+    "mensaje": "Encuentra especialista, prueba o urgencias más rápido con el nuevo buscador"
+  },
+  "subject": {
+    "text": "#Nombre#, nuevo buscador médico: encuentra tu especialista más rápido ⚡",
+    "source": "client_approved",
+    "note": "Figma 2839:42154 (token normalizado)"
+  },
+  "preheader": {
+    "text": "Descubre la forma más sencilla de cuidar de tu salud desde hoy",
+    "source": "client_approved",
+    "note": "Figma 2839:42154"
+  },
+  "idioma": "CAST",
+  "canal": "axa",
+  "legal": "Generales con condiciones",
+  "composition": {
+    "template": "informativo-servicio"
+  },
+  "content": [
+    {
+      "at": 0,
+      "block": "AXA/Cabecera/Imagen + título",
+      "slots": {
+        "titulo_1": "Descubre el nuevo buscador médico"
+      },
+      "images": {
+        "imagen_1": "2839:42164"
+      },
+      "links": {},
+      "hide": [],
+      "omit": false
+    },
+    {
+      "at": 1,
+      "block": "AXA/Contenido/Saludo + texto",
+      "slots": {
+        "texto_1": "Tu salud y la de tu familia es lo primero, y sabemos que cada segundo cuenta. Por eso, hemos rediseñado por completo el **buscador del cuadro médico de tu póliza #num poliza#** para que encuentres **el especialista, la prueba o el centro de urgencias que necesitas de forma inmediata.**"
+      },
+      "images": {},
+      "links": {},
+      "hide": [],
+      "omit": false
+    },
+    {
+      "at": 2,
+      "block": "AXA/Contenido/Checks + imagen + CTA",
+      "slots": {
+        "titulo_1": "Ahora es mucho más sencillo y cómodo para ti gracias a estas mejoras",
+        "destacado_1": "**Búsquedas más sencillas y ágiles:** busca directamente por especialidad, patología o prueba médica, así como por el nombre del especialista o centro médico, sin pasos previos.",
+        "destacado_2": "**Tus favoritos a mano:** guarda tus centros de referencia y tus médicos de confianza para tenerlos siempre a un solo clic.",
+        "destacado_3": "**Filtros avanzados:** encuentra lo que buscas adaptado a ti (consultas infantiles, idiomas de atención, centros con citas priorizadas o centros sin copago).",
+        "destacado_4": "**Urgencias inmediatas1:** localiza rápidamente los centros de urgencias más cercanos y llama al instante en caso de necesidad.",
+        "texto_1": "Entra ahora y prueba la nueva experiencia de búsqueda diseñada para facilitarte el día a día.",
+        "cta_1": "NUEVO BUSCADOR"
+      },
+      "images": {
+        "imagen_1": "2839:42198"
+      },
+      "links": {},
+      "hide": [],
+      "omit": false
+    },
+    {
+      "at": 3,
+      "block": "AXA/Contenido/Vídeo",
+      "slots": {
+        "titulo_1": "¿Quieres ver cómo funciona en solo unos segundos?"
+      },
+      "images": {
+        "imagen_1": "2839:42969"
+      },
+      "links": {},
+      "hide": [],
+      "omit": false
+    },
+    {
+      "at": 7,
+      "block": "AXA/Legal",
+      "slots": {
+        "notas_1": "1. Solo para modalidades con cobertura de especialidad de urgencias."
+      },
+      "images": {},
+      "links": {},
+      "hide": [],
+      "omit": false
+    }
+  ],
+  "figma": {
+    "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+    "pageId": "2844:92994",
+    "sectionName": "AXA · Emails generados (pruebas)"
+  },
+  "confirmation": {
+    "by": "Claude (prueba, NO es aprobación humana)",
+    "at": "2026-11-05T11:39:09.658Z",
+    "note": "Regeneración del email de referencia nuevo buscador médico con su copy",
+    "hash": "sha256:e048dc2c8a4dc065e301d2dee6c0e7c13ef3a357ab2b7c116ac901d5fa6db619"
+  }
+}

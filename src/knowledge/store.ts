@@ -11,6 +11,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { parse, parseOrThrow } from '../contracts/schema.ts';
 import { BrandSchema, type Brand } from '../contracts/brand.ts';
+import { EMAIL_BLOCKS_SCHEMA_ID, EmailBlocksCatalogSchema } from '../contracts/email-template.ts';
 import {
   ClientIndexSchema, EmailChannelSchema, KNOWLEDGE_CONTEXT_SCHEMA_ID, KnowledgeProposalSchema, PaidChannelSchema,
   type ClientIndex, type EmailChannel, type KnowledgeFile, type KnowledgeProposal, type PaidChannel,
@@ -225,6 +226,11 @@ export async function checkClient(root: string, slug: string): Promise<{ issues:
       } else if (json.schema === 'ck.email.v1') {
         const r = parse(EmailChannelSchema, json);
         if (!r.ok) issues.push({ code: 'EMAIL_INVALID', severity: 'blocking', message: `${f.path}: ${r.issues.slice(0, 3).map((i) => `${i.path} ${i.message}`).join('; ')}` });
+        else if (r.value.status !== f.status) issues.push({ code: 'STATUS_MISMATCH', severity: 'pending', message: `${f.id}: el índice dice «${f.status}» y ${f.path} «${r.value.status}»` });
+      } else if (json.schema === EMAIL_BLOCKS_SCHEMA_ID) {
+        const r = parse(EmailBlocksCatalogSchema, json);
+        if (!r.ok) issues.push({ code: 'EMAIL_BLOCKS_INVALID', severity: 'blocking', message: `${f.path}: ${r.issues.slice(0, 3).map((i) => `${i.path} ${i.message}`).join('; ')}` });
+        else if (r.value.client !== slug) issues.push({ code: 'EMAIL_BLOCKS_OTHER_CLIENT', severity: 'blocking', message: `${f.path} es de ${r.value.client}, no de ${slug}` });
         else if (r.value.status !== f.status) issues.push({ code: 'STATUS_MISMATCH', severity: 'pending', message: `${f.id}: el índice dice «${f.status}» y ${f.path} «${r.value.status}»` });
       } else if (json.schema === 'ck.paid.v1') {
         const r = parse(PaidChannelSchema, json);

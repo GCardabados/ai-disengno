@@ -1,0 +1,29 @@
+{
+  "schema": "ck.client.v1",
+  "slug": "axa",
+  "name": "AXA",
+  "aliases": ["AXA", "AXA Seguros", "AXA España"],
+  "domains": [],
+  "status": "draft",
+  "owners": [],
+  "updatedAt": "2026-11-05",
+  "relatedClients": [
+    { "slug": "axa-direct", "relation": "Submarca Direct: fuera del alcance de los bloques de email (decisión 2026-11-05), no dada de alta" }
+  ],
+  "figma": {
+    "libraries": [],
+    "files": [
+      { "label": "IAs (Copy) · Mails y Plantillas", "fileKey": "UZgEPO8UUe9IDwTWitBbgF", "channels": ["email"], "note": "Página «Mails» (2839:2) con los emails de referencia; página «Plantillas» (2844:92994) con los bloques 620 (sección 2859:121), las plantillas (2864:420) y los emails generados de prueba (2867:2602). La librería AXA (Buttons, CTA, iconos) es remota: solo se instancian las copias cacheadas en el archivo" }
+    ]
+  },
+  "files": [
+    {
+      "id": "email-blocks", "path": "channels/email-blocks.json", "kind": "channel", "channels": ["email"],
+      "topics": ["bloques email", "plantillas email", "variantes idioma", "canal axa/directo/racc", "legal", "footer", "huecos", "tipografías sustitutas"],
+      "status": "draft", "version": "2026-11-05.1", "updatedAt": "2026-11-05",
+      "source": "Bloques construidos el 2026-11-05 desde los emails de referencia de la página «Mails» (2839:2) de IAs (Copy); textos legales y variantes observados, no validados por AXA",
+      "approval": null, "load": "on_demand",
+      "description": "Catálogo ck.email-blocks.v1: bloques fijos y variables (componentes de Figma), plantillas por familia y opciones; lo usan los comandos email-template-*"
+    }
+  ]
+}

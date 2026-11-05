@@ -19,6 +19,11 @@ const CONTROL = /[\u0000-\u0009\u000b-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u2
 /** Afirmaciones comerciales que un borrador del agente no puede introducir sin fuente en el brief. */
 const CLAIM = /\b(gratis|gratuit\w*|garantiz\w*|sin comisi\w*|rentabilidad\w*|descuento\w*|oferta\w*|promoci\w*|regalo\w*|sorteo\w*|premio\w*|[uú]ltim[oa]s (?:plazas|unidades|d[ií]as)|solo hoy|exclusiv\w*|n[ºo°]\s?1|l[ií]der\w*|el mejor|la mejor)\b/giu;
 const claimsOf = (t: string) => [...new Set([...t.matchAll(CLAIM)].map((m) => m[0].toLowerCase()))];
+/** Datos comerciales o afirmaciones de un borrador que no aparecen en los textos con fuente. */
+export function unsourcedClaims(draft: string, sourced: string): string[] {
+  const have = new Set([...commercialSignals(sourced), ...claimsOf(sourced)]);
+  return [...commercialSignals(draft), ...claimsOf(draft)].filter((k) => !have.has(k));
+}
 export const PLACEHOLDER_RE = /^\[PENDIENTE\b/;
 
 /** Todos los copys del brief con su ubicación legible. */

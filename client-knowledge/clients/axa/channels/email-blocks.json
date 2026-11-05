@@ -1,0 +1,2054 @@
+{
+ "schema": "ck.email-blocks.v1",
+ "client": "axa",
+ "status": "draft",
+ "version": "2026-11-05.1",
+ "updatedAt": "2026-11-05",
+ "source": "Bloques construidos el 2026-11-05 a partir de los emails de referencia de la página «Mails» (2839:2) del archivo IAs (Copy); clonados de bandas reales de 620, fuentes sustituidas, huecos variables vaciados",
+ "figma": {
+  "fileKey": "UZgEPO8UUe9IDwTWitBbgF",
+  "pageId": "2844:92994",
+  "blocksSection": "2859:121",
+  "templatesSection": "2864:420"
+ },
+ "canvas": {
+  "emailWidth": 680,
+  "contentWidth": 620,
+  "background": "#F5F5F5",
+  "paddingTop": 32,
+  "gutter": 30,
+  "gap": 24
+ },
+ "fonts": {
+  "Arimo": {
+   "implement": "Arial, Helvetica, sans-serif",
+   "status": "sustituto métrico declarado"
+  },
+  "Gelasio": {
+   "implement": "Georgia, serif (títulos de cabecera: Publico Headline en la imagen exportada)",
+   "status": "sustituto declarado; en cabeceras NO es métrico"
+  },
+  "Tahoma": {
+   "implement": "Tahoma",
+   "status": "se conserva (solo textos fijos: ver online, saludo)"
+  },
+  "Source Sans Pro": {
+   "implement": "Source Sans Pro",
+   "status": "Google Fonts, carga en Figma"
+  }
+ },
+ "options": {
+  "canal": {
+   "axa": {
+    "block": "AXA/Fijo/Mediador",
+    "set": {
+     "Canal": "AXA"
+    }
+   },
+   "directo": {
+    "block": "AXA/Fijo/Mediador",
+    "hide": true
+   },
+   "racc": {
+    "block": "AXA/Fijo/Mediador",
+    "set": {
+     "Canal": "RACC"
+    },
+    "onlyIdioma": [
+     "CAST"
+    ]
+   }
+  },
+  "idioma": [
+   "CAST",
+   "CAT",
+   "ENG"
+  ],
+  "legal": [
+   "AXA Seguros Generales",
+   "Generales con condiciones",
+   "AXA Aurora Vida",
+   "Generales + Aurora Vida + Pensiones"
+  ],
+  "footer": [
+   "Tipo=Comercial, Idioma=CAST",
+   "Tipo=Comercial, Idioma=CAT",
+   "Tipo=Comercial, Idioma=ENG",
+   "Tipo=Informativo, Idioma=CAST",
+   "Tipo=Con baja sin Ponle Freno, Idioma=CAST"
+  ],
+  "tokens": {
+   "nombre": "#Nombre#",
+   "poliza": "#num poliza#"
+  }
+ },
+ "blocks": [
+  {
+   "key": "cabecera-imagen-titulo",
+   "name": "AXA/Cabecera/Imagen + título",
+   "type": "COMPONENT",
+   "nodeId": "2860:328",
+   "category": "Cabeceras",
+   "kind": "variable",
+   "source": "202609_declaracion-siniestros-MyAXA-eclientes_eng_hogar_AXA (2839:33107)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:328",
+     "w": 620,
+     "h": 312,
+     "slots": [
+      {
+       "id": "imagen_1",
+       "role": "imagen",
+       "example": "621×282 px"
+      },
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Nueva forma de declarar los siniestros de tu hogar"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:297",
+      "x": 48,
+      "y": 151,
+      "w": 620,
+      "h": 312
+     }
+    }
+   ]
+  },
+  {
+   "key": "cabecera-descuento",
+   "name": "AXA/Cabecera/Descuento",
+   "type": "COMPONENT",
+   "nodeId": "2860:354",
+   "category": "Cabeceras",
+   "kind": "variable",
+   "source": "202609_GESTOR-final-ano-salud_com_salud_axa (2839:59413)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:354",
+     "w": 620,
+     "h": 266,
+     "slots": [
+      {
+       "id": "cifra_1",
+       "role": "cifra",
+       "example": "20"
+      },
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Con AXA, tu salud está protegida"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:297",
+      "x": 48,
+      "y": 527,
+      "w": 620,
+      "h": 266
+     }
+    }
+   ]
+  },
+  {
+   "key": "cabecera-titulo-saludo",
+   "name": "AXA/Cabecera/Título + saludo",
+   "type": "COMPONENT",
+   "nodeId": "2860:382",
+   "category": "Cabeceras",
+   "kind": "variable",
+   "source": "202609_campana_hospitalizacion_particulares_com_general_axa (2839:60602)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:382",
+     "w": 620,
+     "h": 440,
+     "slots": [
+      {
+       "id": "imagen_1",
+       "role": "imagen",
+       "example": "620×266 px"
+      },
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Seguro de Hospitalización: protégete con un 20% dto.1 para siempre"
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Ante un imprevisto de salud, lo más importante es mantener tu tranquil"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:297",
+      "x": 48,
+      "y": 857,
+      "w": 620,
+      "h": 440
+     }
+    }
+   ]
+  },
+  {
+   "key": "cabecera-evento-saludo",
+   "name": "AXA/Cabecera/Evento + saludo",
+   "type": "COMPONENT",
+   "nodeId": "2860:413",
+   "category": "Cabeceras",
+   "kind": "variable",
+   "source": "202609_Santander-soledad-no-deseada-2_cor_salud_AXA (2839:7651)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:413",
+     "w": 620,
+     "h": 486,
+     "slots": [
+      {
+       "id": "imagen_1",
+       "role": "imagen",
+       "example": "571×770 px"
+      },
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Soledad no Deseada y Salud Mental"
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "La Fundación AXA y la Fundación ONCE te invitan este martes, 22 de sep"
+      },
+      {
+       "id": "texto_2",
+       "role": "texto",
+       "example": "Las plazas son limitadas hasta completar aforo."
+      }
+     ],
+     "thumb": {
+      "catId": "2860:297",
+      "x": 48,
+      "y": 1361,
+      "w": 620,
+      "h": 486
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-saludo-texto",
+   "name": "AXA/Contenido/Saludo + texto",
+   "type": "COMPONENT",
+   "nodeId": "2860:419",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_final-ano-salud_com_salud_axa (2839:58350)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:419",
+     "w": 620,
+     "h": 120,
+     "slots": [
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Desde AXA queremos que dispongas de la mejor protección. Por eso, el S"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 151,
+      "w": 620,
+      "h": 120
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-aviso-destacado",
+   "name": "AXA/Contenido/Aviso destacado",
+   "type": "COMPONENT",
+   "nodeId": "2860:493",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_final-ano-salud_com_salud_axa (2839:58353)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:493",
+     "w": 620,
+     "h": 140,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Además, ahora con hasta un 20% de descuento1 y tu médico online2 grati"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 335,
+      "w": 620,
+      "h": 140
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-lista-con-iconos-2-cta",
+   "name": "AXA/Contenido/Lista con iconos + 2 CTA",
+   "type": "COMPONENT",
+   "nodeId": "2860:570",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_final-ano-salud_com_salud_axa (2839:58426)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:570",
+     "w": 620,
+     "h": 371,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "¿Por qué contratar tu Seguro de Salud en AXA?"
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Cobertura Vitalicia"
+      },
+      {
+       "id": "texto_2",
+       "role": "texto",
+       "example": "Nos comprometemos a no rescindir tu póliza si tú no quieres. "
+      },
+      {
+       "id": "texto_3",
+       "role": "texto",
+       "example": "Programas Preventivos Completos: "
+      },
+      {
+       "id": "texto_4",
+       "role": "texto",
+       "example": "Desde diagnóstico precoz de cáncer (mama, colon, piel, etc.) hasta pre"
+      },
+      {
+       "id": "texto_5",
+       "role": "texto",
+       "example": "Amplio Cuadro Médico"
+      },
+      {
+       "id": "texto_6",
+       "role": "texto",
+       "example": "44.000 servicios y 1.000 profesionales en psicología."
+      },
+      {
+       "id": "texto_7",
+       "role": "texto",
+       "example": "Innovación Médica y Tecnológica:"
+      },
+      {
+       "id": "texto_8",
+       "role": "texto",
+       "example": "Acceso a lo último en avances como Neuronavegador, láser verde, Rx 3D "
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "PIDE INFO A TU MEDIADOR"
+      },
+      {
+       "id": "cta_2",
+       "role": "cta",
+       "example": "Calcula tu precio"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 539,
+      "w": 620,
+      "h": 371
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-tarjetas-de-producto-3-cta",
+   "name": "AXA/Contenido/Tarjetas de producto ×3 + CTA",
+   "type": "COMPONENT",
+   "nodeId": "2860:620",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_final-ano-salud_com_salud_axa (2839:58467)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:620",
+     "w": 620,
+     "h": 602,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Nos adaptamos a ti: elige la cobertura que necesitas"
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Tienes una amplia gama de seguros, para que elijas según tus necesidad"
+      },
+      {
+       "id": "imagen_1",
+       "role": "imagen",
+       "example": "165×104 px"
+      },
+      {
+       "id": "destacado_1",
+       "role": "destacado",
+       "example": "Óptima Smart "
+      },
+      {
+       "id": "texto_2",
+       "role": "texto",
+       "example": "· Cobertura ambulatoria por cuadro médico concertado."
+      },
+      {
+       "id": "texto_3",
+       "role": "texto",
+       "example": "· Medicina general, especialistas, psicólogos y pruebas diagnósticas."
+      },
+      {
+       "id": "texto_4",
+       "role": "texto",
+       "example": "· Programas preventivos."
+      },
+      {
+       "id": "texto_5",
+       "role": "texto",
+       "example": "· Tu médico online2."
+      },
+      {
+       "id": "texto_6",
+       "role": "texto",
+       "example": " *Desde 31,20 €/mes"
+      },
+      {
+       "id": "imagen_2",
+       "role": "imagen",
+       "example": "165×104 px"
+      },
+      {
+       "id": "destacado_2",
+       "role": "destacado",
+       "example": "Óptima y Óptima Familiar"
+      },
+      {
+       "id": "texto_7",
+       "role": "texto",
+       "example": "· Todo lo de Ópitma Smart con una cobertura completa (no sólo ambulato"
+      },
+      {
+       "id": "texto_8",
+       "role": "texto",
+       "example": "· Incluye pruebas diagnósticas complejas (resonancia, PET TAC...), tra"
+      },
+      {
+       "id": "texto_9",
+       "role": "texto",
+       "example": "· Ingresos e intervenciones."
+      },
+      {
+       "id": "texto_10",
+       "role": "texto",
+       "example": "· Urgencias y servicio de ambulancia "
+      },
+      {
+       "id": "texto_11",
+       "role": "texto",
+       "example": "*Desde 60,18 €/mes"
+      },
+      {
+       "id": "imagen_3",
+       "role": "imagen",
+       "example": "165×104 px"
+      },
+      {
+       "id": "destacado_3",
+       "role": "destacado",
+       "example": "Óptima Plus "
+      },
+      {
+       "id": "texto_12",
+       "role": "texto",
+       "example": "· Todo lo anterior, con reembolsos y además servicios exclusivos."
+      },
+      {
+       "id": "texto_13",
+       "role": "texto",
+       "example": "· Libre acceso a facultativos en todo el mundo a través de reembolso d"
+      },
+      {
+       "id": "texto_14",
+       "role": "texto",
+       "example": "· Últimos avances médicos y servicios exclusivos (cirugía refractiva, "
+      },
+      {
+       "id": "texto_15",
+       "role": "texto",
+       "example": "· Medicina complementaria."
+      },
+      {
+       "id": "texto_16",
+       "role": "texto",
+       "example": "*Desde 143,93 €/mes"
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "SOLICITAR INFORMACIÓN"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 974,
+      "w": 620,
+      "h": 602
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-centro-medico-cta",
+   "name": "AXA/Contenido/Centro médico + CTA",
+   "type": "COMPONENT",
+   "nodeId": "2860:637",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_final-ano-salud_com_salud_axa (2839:58513)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:637",
+     "w": 620,
+     "h": 214,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Hospital y Centro Médico Mompía"
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Te ofrecen una atención integral y personalizada, con un equipo de más"
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "pIDE MÁS INFO"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 1640,
+      "w": 620,
+      "h": 214
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-checks-imagen-cta",
+   "name": "AXA/Contenido/Checks + imagen + CTA",
+   "type": "COMPONENT",
+   "nodeId": "2860:676",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_nuevo-buscador-medico_con_salud_axa (2839:42191)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:676",
+     "w": 620,
+     "h": 390,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Ahora es mucho más sencillo y cómodo para ti gracias a estas mejoras"
+      },
+      {
+       "id": "imagen_1",
+       "role": "imagen",
+       "example": "104×212 px"
+      },
+      {
+       "id": "destacado_1",
+       "role": "destacado",
+       "example": "Búsquedas más sencillas y ágiles: busca directamente por especialidad,"
+      },
+      {
+       "id": "destacado_2",
+       "role": "destacado",
+       "example": "Tus favoritos a mano: guarda tus centros de referencia y tus médicos d"
+      },
+      {
+       "id": "destacado_3",
+       "role": "destacado",
+       "example": "Filtros avanzados: encuentra lo que buscas adaptado a ti (consultas in"
+      },
+      {
+       "id": "destacado_4",
+       "role": "destacado",
+       "example": "Urgencias inmediatas1: localiza rápidamente los centros de urgencias m"
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Entra ahora y prueba la nueva experiencia de búsqueda diseñada para fa"
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "NUEVO BUSCADOR"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 1918,
+      "w": 620,
+      "h": 390
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-video",
+   "name": "AXA/Contenido/Vídeo",
+   "type": "COMPONENT",
+   "nodeId": "2860:1433",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_nuevo-buscador-medico_con_salud_axa (2839:42222)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:1433",
+     "w": 620,
+     "h": 378,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "¿Quieres ver cómo funciona en solo unos segundos? "
+      },
+      {
+       "id": "imagen_1",
+       "role": "imagen",
+       "example": "572×302 px"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 2372,
+      "w": 620,
+      "h": 378
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-pasos-4-imagen-cta",
+   "name": "AXA/Contenido/Pasos ×4 + imagen + CTA",
+   "type": "COMPONENT",
+   "nodeId": "2860:1476",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_declaracion-siniestros-MyAXA-eclientes_eng_hogar_AXA (2839:33918)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:1476",
+     "w": 620,
+     "h": 271,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "¿Cómo declarar tu siniestro en 4 sencillos pasos?"
+      },
+      {
+       "id": "destacado_1",
+       "role": "destacado",
+       "example": "Accede al menú: Entra en MyAXA y abre el menú principal (icono de tres"
+      },
+      {
+       "id": "destacado_2",
+       "role": "destacado",
+       "example": "Entra en Servicios: Selecciona la pestaña Servicios dentro del despleg"
+      },
+      {
+       "id": "destacado_3",
+       "role": "destacado",
+       "example": "Inicia la declaración: Haz clic en la opción Declara tu siniestro."
+      },
+      {
+       "id": "destacado_4",
+       "role": "destacado",
+       "example": "Confirma y envía: Revisa la dirección de tu vivienda, describe lo suce"
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Accede a tu área privada y descubre lo fácil que es gestionar tus impr"
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "Declara tu siniestro"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 2814,
+      "w": 620,
+      "h": 271
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-pasos-3-cta",
+   "name": "AXA/Contenido/Pasos ×3 + CTA",
+   "type": "COMPONENT",
+   "nodeId": "2860:1492",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_CTL_Gestióninsatisfechos_eng_general_axa (2839:53546)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:1492",
+     "w": 620,
+     "h": 295,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "¿Cómo canjear tu código?"
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Entra en www.porserdeaxa.es "
+      },
+      {
+       "id": "texto_2",
+       "role": "texto",
+       "example": "Introduce el código: #Codigo (Válido hasta el XX/XX/XXXX)"
+      },
+      {
+       "id": "texto_3",
+       "role": "texto",
+       "example": "Elige tu experiencia: puedes escoger entre diversas actividades, en va"
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "ENTRAR AHORA"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 3149,
+      "w": 620,
+      "h": 295
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-texto-ventajas-con-iconos-imagen",
+   "name": "AXA/Contenido/Texto + ventajas con iconos + imagen",
+   "type": "COMPONENT",
+   "nodeId": "2860:1515",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_declaracion-siniestros-MyAXA-eclientes_eng_hogar_AXA (2839:33138)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:1515",
+     "w": 620,
+     "h": 261,
+     "slots": [
+      {
+       "id": "destacado_1",
+       "role": "destacado",
+       "example": "Ahora, ante incidencias habituales como roturas o daños por agua, tien"
+      },
+      {
+       "id": "destacado_2",
+       "role": "destacado",
+       "example": "Gestión 100% digital Inicia tu declaración en solo un minuto y sin esp"
+      },
+      {
+       "id": "destacado_3",
+       "role": "destacado",
+       "example": "Documentación al instante Adjunta las fotografías y documentos directa"
+      },
+      {
+       "id": "destacado_4",
+       "role": "destacado",
+       "example": "Elige tu solución Según el tipo de daño, podrás solicitar la visita de"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 3508,
+      "w": 620,
+      "h": 261
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-ventajas-con-iconos-cta",
+   "name": "AXA/Contenido/Ventajas con iconos + CTA",
+   "type": "COMPONENT",
+   "nodeId": "2860:1598",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_campana_hospitalizacion_particulares_com_general_axa (2839:60752)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:1598",
+     "w": 620,
+     "h": 258,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "¿Qué ganas con esta cobertura?"
+      },
+      {
+       "id": "destacado_1",
+       "role": "destacado",
+       "example": "Dinero en tu cuenta Cobras una prestación diaria desde la primera noch"
+      },
+      {
+       "id": "destacado_2",
+       "role": "destacado",
+       "example": "Por menos de 6 €/mes2 Elige el capital diario que deseas recibir (de 3"
+      },
+      {
+       "id": "destacado_3",
+       "role": "destacado",
+       "example": "Contratación en 1 minuto Sin reconocimientos ni pruebas médicas previa"
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Afronta cualquier imprevisto de salud sin que afecte a tus ingresos di"
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "Ver mi precio"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 3833,
+      "w": 620,
+      "h": 258
+     }
+    }
+   ]
+  },
+  {
+   "key": "contenido-texto-con-iconos",
+   "name": "AXA/Contenido/Texto con iconos",
+   "type": "COMPONENT",
+   "nodeId": "2860:1643",
+   "category": "Contenido",
+   "kind": "variable",
+   "source": "202609_aviso-ahorro-rentabiliza_con_vida_axa (2839:48475)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:1643",
+     "w": 620,
+     "h": 182,
+     "slots": [
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Si ya estás registrado, cuando llegue el momento, entra en MyAXA y con"
+      },
+      {
+       "id": "texto_2",
+       "role": "texto",
+       "example": "Y si todavía no lo estás, no esperes más; regístrate ya en MyAXA para "
+      },
+      {
+       "id": "texto_3",
+       "role": "texto",
+       "example": "Si lo prefieres, también puedes descargarte la MyAXA App en Google Pla"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:414",
+      "x": 48,
+      "y": 4155,
+      "w": 620,
+      "h": 182
+     }
+    }
+   ]
+  },
+  {
+   "key": "evento-detalles-del-encuentro",
+   "name": "AXA/Evento/Detalles del encuentro",
+   "type": "COMPONENT",
+   "nodeId": "2860:1741",
+   "category": "Evento",
+   "kind": "variable",
+   "source": "202609_Santander-soledad-no-deseada-2_cor_salud_AXA (2839:7697)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:1741",
+     "w": 620,
+     "h": 340,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Asegura tu asistencia en un clic."
+      },
+      {
+       "id": "destacado_2",
+       "role": "destacado",
+       "example": "Begoña Gómez del Río, Consejera de Inclusión Social, Juventud, Familia"
+      },
+      {
+       "id": "destacado_4",
+       "role": "destacado",
+       "example": "Martes, 22 de septiembre de 2026"
+      },
+      {
+       "id": "destacado_6",
+       "role": "destacado",
+       "example": "11:00 h - 12:30 h"
+      },
+      {
+       "id": "destacado_8",
+       "role": "destacado",
+       "example": "Delegación territorial de la ONCE en Cantabria. (Calle Burgos, 3 – San"
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "Inscríbete aquí"
+      }
+     ],
+     "thumb": {
+      "catId": "2860:1644",
+      "x": 48,
+      "y": 151,
+      "w": 620,
+      "h": 340
+     }
+    }
+   ]
+  },
+  {
+   "key": "evento-calendario",
+   "name": "AXA/Evento/Calendario",
+   "type": "COMPONENT",
+   "nodeId": "2860:1760",
+   "category": "Evento",
+   "kind": "fixed",
+   "source": "202609_Santander-soledad-no-deseada-2_cor_salud_AXA (2839:7746)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2860:1760",
+     "w": 620,
+     "h": 120,
+     "slots": [],
+     "thumb": {
+      "catId": "2860:1644",
+      "x": 48,
+      "y": 555,
+      "w": 620,
+      "h": 120
+     }
+    }
+   ]
+  },
+  {
+   "key": "bienvenida-poliza-activada",
+   "name": "AXA/Bienvenida/Póliza activada",
+   "type": "COMPONENT",
+   "nodeId": "2861:313",
+   "category": "Bienvenida y MyAXA",
+   "kind": "variable",
+   "source": "202609_cj_Nuevos-Productos_com_hogar_AXA (2839:69101)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2861:313",
+     "w": 620,
+     "h": 110,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Tu protección de Hogar activada desde hoy: "
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Con número de póliza #poliza Te damos la bienvenida a tu seguro donde"
+      }
+     ],
+     "thumb": {
+      "catId": "2861:297",
+      "x": 48,
+      "y": 151,
+      "w": 620,
+      "h": 110
+     }
+    }
+   ]
+  },
+  {
+   "key": "bienvenida-compromiso-3-iconos",
+   "name": "AXA/Bienvenida/Compromiso ×3 iconos",
+   "type": "COMPONENT",
+   "nodeId": "2861:386",
+   "category": "Bienvenida y MyAXA",
+   "kind": "variable",
+   "source": "202609_cj_Nuevos-Productos_com_hogar_AXA (2839:69109)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2861:386",
+     "w": 620,
+     "h": 243,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Nuestro compromiso va más allá de darte tranquilidad. "
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Por eso, tu seguro de Hogar AXA incluye servicios como:"
+      },
+      {
+       "id": "destacado_1",
+       "role": "destacado",
+       "example": "Urgencias en menos de 3 horas: "
+      },
+      {
+       "id": "texto_2",
+       "role": "texto",
+       "example": "Si sufres un imprevisto en tu hogar, tendrás un profesional en tiempo "
+      },
+      {
+       "id": "destacado_2",
+       "role": "destacado",
+       "example": "Asesoramiento Legal:"
+      },
+      {
+       "id": "texto_3",
+       "role": "texto",
+       "example": "Te ayudamos con tus conflictos diarios para la protección de tu patrim"
+      },
+      {
+       "id": "destacado_3",
+       "role": "destacado",
+       "example": "Protección Integral de tu Vivienda:"
+      },
+      {
+       "id": "texto_4",
+       "role": "texto",
+       "example": "La mejor protección frente a daños y robos."
+      }
+     ],
+     "thumb": {
+      "catId": "2861:297",
+      "x": 48,
+      "y": 325,
+      "w": 620,
+      "h": 243
+     }
+    }
+   ]
+  },
+  {
+   "key": "myaprovecha-myaxa",
+   "name": "AXA/MyAXA/Aprovecha MyAXA",
+   "type": "COMPONENT",
+   "nodeId": "2861:513",
+   "category": "Bienvenida y MyAXA",
+   "kind": "fixed",
+   "source": "202609_cj_Nuevos-Productos_com_hogar_AXA (2839:69138)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2861:513",
+     "w": 620,
+     "h": 438,
+     "slots": [],
+     "thumb": {
+      "catId": "2861:297",
+      "x": 48,
+      "y": 632,
+      "w": 620,
+      "h": 438
+     }
+    }
+   ]
+  },
+  {
+   "key": "mytodo-esto-y-mas-en-myaxa",
+   "name": "AXA/MyAXA/Todo esto y más en MyAXA",
+   "type": "COMPONENT",
+   "nodeId": "2861:549",
+   "category": "Bienvenida y MyAXA",
+   "kind": "variable",
+   "source": "202607_CJ_onboarding-impactos-myaxa-auto_eng_general_axa (2839:71335)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2861:549",
+     "w": 620,
+     "h": 257,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "Todo esto y mucho más... en MyAXA"
+      },
+      {
+       "id": "imagen_1",
+       "role": "imagen",
+       "example": "144×100 px"
+      },
+      {
+       "id": "destacado_1",
+       "role": "destacado",
+       "example": "Talleres de confianza Localiza talleres AXA cercanos con prioridad de "
+      },
+      {
+       "id": "imagen_2",
+       "role": "imagen",
+       "example": "144×100 px"
+      },
+      {
+       "id": "destacado_2",
+       "role": "destacado",
+       "example": "Asistencia geolocalizada Solicita tu grúa desde la app para que te loc"
+      },
+      {
+       "id": "imagen_3",
+       "role": "imagen",
+       "example": "144×100 px"
+      },
+      {
+       "id": "destacado_3",
+       "role": "destacado",
+       "example": "Todo el detalle de tu poliza Accede a los datos de tu póliza, cobertur"
+      }
+     ],
+     "thumb": {
+      "catId": "2861:297",
+      "x": 48,
+      "y": 1134,
+      "w": 620,
+      "h": 257
+     }
+    }
+   ]
+  },
+  {
+   "key": "myapp-myaxa",
+   "name": "AXA/MyAXA/App MyAXA",
+   "type": "COMPONENT",
+   "nodeId": "2861:640",
+   "category": "Bienvenida y MyAXA",
+   "kind": "fixed",
+   "source": "202607_CJ_onboarding-impactos-myaxa-auto_eng_general_axa (2839:71411)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2861:640",
+     "w": 620,
+     "h": 200,
+     "slots": [],
+     "thumb": {
+      "catId": "2861:297",
+      "x": 48,
+      "y": 1455,
+      "w": 620,
+      "h": 200
+     }
+    }
+   ]
+  },
+  {
+   "key": "myvideo-myaxa",
+   "name": "AXA/MyAXA/Vídeo MyAXA",
+   "type": "COMPONENT",
+   "nodeId": "2861:686",
+   "category": "Bienvenida y MyAXA",
+   "kind": "variable",
+   "source": "202607_CJ_onboarding-impactos-myaxa-auto_eng_general_axa (2839:71501)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2861:686",
+     "w": 620,
+     "h": 233,
+     "slots": [
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "¿Quieres ver cómo funciona? "
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "En este breve vídeo te enseñamos lo fácil que es gestionar tu seguro d"
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "ver vídeo"
+      },
+      {
+       "id": "imagen_1",
+       "role": "imagen",
+       "example": "103×201 px"
+      }
+     ],
+     "thumb": {
+      "catId": "2861:297",
+      "x": 48,
+      "y": 1719,
+      "w": 620,
+      "h": 233
+     }
+    }
+   ]
+  },
+  {
+   "key": "promocion-codigo-regalo",
+   "name": "AXA/Promoción/Código regalo",
+   "type": "COMPONENT",
+   "nodeId": "2861:816",
+   "category": "Promoción",
+   "kind": "variable",
+   "source": "202609_mult_monopóliza-NP-particulares-2_com_general_axa (2839:65889)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2861:816",
+     "w": 620,
+     "h": 297,
+     "slots": [
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Y por eso, estamos encantados de obsequiarte con un cupón regalo de 50"
+      },
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "TU CÓDIGO REGALO:"
+      },
+      {
+       "id": "texto_2",
+       "role": "texto",
+       "example": "XXXXXXXX"
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "CANJEAR REGALO"
+      },
+      {
+       "id": "nota_1",
+       "role": "nota",
+       "example": "Recuerda: tienes 30 días para utilizar tu código desde la fecha en la"
+      }
+     ],
+     "thumb": {
+      "catId": "2861:687",
+      "x": 48,
+      "y": 151,
+      "w": 620,
+      "h": 297
+     }
+    }
+   ]
+  },
+  {
+   "key": "promocion-donde-canjear",
+   "name": "AXA/Promoción/Dónde canjear",
+   "type": "COMPONENT",
+   "nodeId": "2861:895",
+   "category": "Promoción",
+   "kind": "variable",
+   "source": "202609_mult_monopóliza-NP-particulares-2_com_general_axa (2839:66035)",
+   "notes": [],
+   "variants": [
+    {
+     "name": null,
+     "componentId": "2861:895",
+     "w": 620,
+     "h": 530,
+     "slots": [
+      {
+       "id": "imagen_1",
+       "role": "imagen",
+       "example": "165×530 px"
+      },
+      {
+       "id": "titulo_1",
+       "role": "titulo",
+       "example": "¿Dónde puedes canjear tu regalo?"
+      },
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": "Dispones de varias opciones para que elijas la que más te guste:"
+      },
+      {
+       "id": "texto_2",
+       "role": "texto",
+       "example": "Cheque regalo de Amazon.es"
+      },
+      {
+       "id": "texto_3",
+       "role": "texto",
+       "example": "Tarjeta Prepago Virtual"
+      },
+      {
+       "id": "texto_4",
+       "role": "texto",
+       "example": "Tarjeta IKEA"
+      },
+      {
+       "id": "texto_5",
+       "role": "texto",
+       "example": "Tarjeta El Corte Inglés"
+      },
+      {
+       "id": "texto_6",
+       "role": "texto",
+       "example": "Tarjeta Carrefour"
+      },
+      {
+       "id": "texto_7",
+       "role": "texto",
+       "example": "Bono Carburante Moeve"
+      },
+      {
+       "id": "cta_1",
+       "role": "cta",
+       "example": "CANJEAR REGALO"
+      }
+     ],
+     "thumb": {
+      "catId": "2861:687",
+      "x": 48,
+      "y": 512,
+      "w": 620,
+      "h": 530
+     }
+    }
+   ]
+  },
+  {
+   "key": "fijo-mediador",
+   "name": "AXA/Fijo/Mediador",
+   "type": "COMPONENT_SET",
+   "nodeId": "2862:550",
+   "category": "Fijos",
+   "kind": "fixed",
+   "source": null,
+   "notes": [
+    "Bloque FIJO. Canal «directo» = sin bloque mediador (se oculta). RACC solo en castellano en las referencias."
+   ],
+   "variants": [
+    {
+     "name": "Canal=AXA, Idioma=CAST",
+     "componentId": "2862:414",
+     "w": 620,
+     "h": 168,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 175,
+      "w": 620,
+      "h": 168
+     }
+    },
+    {
+     "name": "Canal=AXA, Idioma=CAT",
+     "componentId": "2862:455",
+     "w": 620,
+     "h": 168,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 375,
+      "w": 620,
+      "h": 168
+     }
+    },
+    {
+     "name": "Canal=AXA, Idioma=ENG",
+     "componentId": "2862:496",
+     "w": 620,
+     "h": 170,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 575,
+      "w": 620,
+      "h": 170
+     }
+    },
+    {
+     "name": "Canal=RACC, Idioma=CAST",
+     "componentId": "2862:549",
+     "w": 620,
+     "h": 225,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 777,
+      "w": 620,
+      "h": 225
+     }
+    }
+   ]
+  },
+  {
+   "key": "fijo-cierre",
+   "name": "AXA/Fijo/Cierre",
+   "type": "COMPONENT_SET",
+   "nodeId": "2862:563",
+   "category": "Fijos",
+   "kind": "fixed",
+   "source": null,
+   "notes": [
+    "Bloque FIJO por idioma; la variante Personalizado tiene el texto como hueco (visto en siniestros hogar)."
+   ],
+   "variants": [
+    {
+     "name": "Idioma=CAST",
+     "componentId": "2862:553",
+     "w": 620,
+     "h": 153,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 1114,
+      "w": 620,
+      "h": 153
+     }
+    },
+    {
+     "name": "Idioma=CAT",
+     "componentId": "2862:556",
+     "w": 620,
+     "h": 153,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 1299,
+      "w": 620,
+      "h": 153
+     }
+    },
+    {
+     "name": "Idioma=ENG",
+     "componentId": "2862:559",
+     "w": 620,
+     "h": 153,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 1484,
+      "w": 620,
+      "h": 153
+     }
+    },
+    {
+     "name": "Idioma=Personalizado",
+     "componentId": "2862:562",
+     "w": 620,
+     "h": 69,
+     "slots": [
+      {
+       "id": "texto_1",
+       "role": "texto",
+       "example": null
+      }
+     ],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 1669,
+      "w": 620,
+      "h": 69
+     }
+    }
+   ]
+  },
+  {
+   "key": "fijo-valoracion",
+   "name": "AXA/Fijo/Valoración",
+   "type": "COMPONENT_SET",
+   "nodeId": "2862:574",
+   "category": "Fijos",
+   "kind": "fixed",
+   "source": null,
+   "notes": [
+    "Bloque FIJO opcional («¿Te ha gustado la comunicación?»). Inglés: no hay referencia (pendiente)."
+   ],
+   "variants": [
+    {
+     "name": "Idioma=CAST",
+     "componentId": "2862:568",
+     "w": 620,
+     "h": 137,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 1850,
+      "w": 620,
+      "h": 137
+     }
+    },
+    {
+     "name": "Idioma=CAT",
+     "componentId": "2862:573",
+     "w": 620,
+     "h": 137,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 2019,
+      "w": 620,
+      "h": 137
+     }
+    }
+   ]
+  },
+  {
+   "key": "fijo-footer",
+   "name": "AXA/Fijo/Footer",
+   "type": "COMPONENT_SET",
+   "nodeId": "2862:733",
+   "category": "Fijos",
+   "kind": "fixed",
+   "source": null,
+   "notes": [
+    "Bloque FIJO. Comercial = Ponle Freno + AXA &amp; TÚ con baja + paralímpicos. Informativo = AXA &amp; TÚ sin ba"
+   ],
+   "variants": [
+    {
+     "name": "Tipo=Comercial, Idioma=CAST",
+     "componentId": "2862:616",
+     "w": 620,
+     "h": 310,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 2268,
+      "w": 620,
+      "h": 310
+     }
+    },
+    {
+     "name": "Tipo=Comercial, Idioma=CAT",
+     "componentId": "2862:658",
+     "w": 620,
+     "h": 310,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 2610,
+      "w": 620,
+      "h": 310
+     }
+    },
+    {
+     "name": "Tipo=Comercial, Idioma=ENG",
+     "componentId": "2862:700",
+     "w": 620,
+     "h": 310,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 2951,
+      "w": 620,
+      "h": 310
+     }
+    },
+    {
+     "name": "Tipo=Informativo, Idioma=CAST",
+     "componentId": "2862:732",
+     "w": 620,
+     "h": 142,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 3293,
+      "w": 620,
+      "h": 142
+     }
+    },
+    {
+     "name": "Tipo=Con baja sin Ponle Freno, Idioma=CAST",
+     "componentId": "2864:419",
+     "w": 620,
+     "h": 184,
+     "slots": [],
+     "thumb": {
+      "catId": "2862:372",
+      "x": 72,
+      "y": 3467,
+      "w": 620,
+      "h": 184
+     }
+    }
+   ]
+  },
+  {
+   "key": "legal",
+   "name": "AXA/Legal",
+   "type": "COMPONENT_SET",
+   "nodeId": "2862:754",
+   "category": "Legal",
+   "kind": "fixed",
+   "source": null,
+   "notes": [
+    "Variante legal = entidad emisora. Hueco slot:notas_1 para notas de campaña (se oculta si no hay). Textos liter"
+   ],
+   "variants": [
+    {
+     "name": "Entidad=AXA Seguros Generales",
+     "componentId": "2862:739",
+     "w": 620,
+     "h": 87,
+     "slots": [
+      {
+       "id": "notas_1",
+       "role": "notas",
+       "example": null
+      }
+     ],
+     "thumb": {
+      "catId": "2862:734",
+      "x": 72,
+      "y": 175,
+      "w": 620,
+      "h": 87
+     }
+    },
+    {
+     "name": "Entidad=Generales con condiciones",
+     "componentId": "2862:744",
+     "w": 620,
+     "h": 133,
+     "slots": [
+      {
+       "id": "notas_1",
+       "role": "notas",
+       "example": null
+      }
+     ],
+     "thumb": {
+      "catId": "2862:734",
+      "x": 72,
+      "y": 294,
+      "w": 620,
+      "h": 133
+     }
+    },
+    {
+     "name": "Entidad=AXA Aurora Vida",
+     "componentId": "2862:748",
+     "w": 620,
+     "h": 87,
+     "slots": [
+      {
+       "id": "notas_1",
+       "role": "notas",
+       "example": null
+      }
+     ],
+     "thumb": {
+      "catId": "2862:734",
+      "x": 72,
+      "y": 459,
+      "w": 620,
+      "h": 87
+     }
+    },
+    {
+     "name": "Entidad=Generales + Aurora Vida + Pensiones",
+     "componentId": "2862:753",
+     "w": 620,
+     "h": 167,
+     "slots": [
+      {
+       "id": "notas_1",
+       "role": "notas",
+       "example": null
+      }
+     ],
+     "thumb": {
+      "catId": "2862:734",
+      "x": 72,
+      "y": 578,
+      "w": 620,
+      "h": 167
+     }
+    }
+   ]
+  }
+ ],
+ "templates": [
+  {
+   "key": "bienvenida-nuevo-producto",
+   "name": "Bienvenida nuevo producto",
+   "figmaId": "2864:421",
+   "reference": "202609_cj_Nuevos-Productos_com_hogar_AXA (2839:69052) y 8 hermanos",
+   "blocks": [
+    {
+     "block": "AXA/Cabecera/Imagen + título",
+     "variant": null
+    },
+    {
+     "block": "AXA/Contenido/Saludo + texto",
+     "variant": null
+    },
+    {
+     "block": "AXA/Bienvenida/Póliza activada",
+     "variant": null
+    },
+    {
+     "block": "AXA/Bienvenida/Compromiso ×3 iconos",
+     "variant": null
+    },
+    {
+     "block": "AXA/MyAXA/Aprovecha MyAXA",
+     "variant": null
+    },
+    {
+     "block": "AXA/Fijo/Mediador",
+     "variant": "Canal=AXA, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Cierre",
+     "variant": "Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Footer",
+     "variant": "Tipo=Con baja sin Ponle Freno, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Legal",
+     "variant": "Entidad=Generales con condiciones"
+    }
+   ]
+  },
+  {
+   "key": "onboarding-myaxa",
+   "name": "Onboarding MyAXA",
+   "figmaId": "2864:749",
+   "reference": "202607_CJ_onboarding-impactos-myaxa-auto_eng_general_axa (2839:71303) y 8 hermanos",
+   "blocks": [
+    {
+     "block": "AXA/Cabecera/Imagen + título",
+     "variant": null
+    },
+    {
+     "block": "AXA/Contenido/Saludo + texto",
+     "variant": null
+    },
+    {
+     "block": "AXA/MyAXA/Todo esto y más en MyAXA",
+     "variant": null
+    },
+    {
+     "block": "AXA/MyAXA/App MyAXA",
+     "variant": null
+    },
+    {
+     "block": "AXA/MyAXA/Vídeo MyAXA",
+     "variant": null
+    },
+    {
+     "block": "AXA/Fijo/Mediador",
+     "variant": "Canal=AXA, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Cierre",
+     "variant": "Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Footer",
+     "variant": "Tipo=Con baja sin Ponle Freno, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Legal",
+     "variant": "Entidad=AXA Seguros Generales"
+    }
+   ]
+  },
+  {
+   "key": "comercial-salud",
+   "name": "Comercial salud",
+   "figmaId": "2864:956",
+   "reference": "202609_final-ano-salud_com_salud_axa (2839:58323) y 15 hermanos",
+   "blocks": [
+    {
+     "block": "AXA/Cabecera/Descuento",
+     "variant": null
+    },
+    {
+     "block": "AXA/Contenido/Saludo + texto",
+     "variant": null
+    },
+    {
+     "block": "AXA/Contenido/Aviso destacado",
+     "variant": null
+    },
+    {
+     "block": "AXA/Contenido/Lista con iconos + 2 CTA",
+     "variant": null
+    },
+    {
+     "block": "AXA/Contenido/Tarjetas de producto ×3 + CTA",
+     "variant": null
+    },
+    {
+     "block": "AXA/Contenido/Centro médico + CTA",
+     "variant": null
+    },
+    {
+     "block": "AXA/Fijo/Mediador",
+     "variant": "Canal=AXA, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Cierre",
+     "variant": "Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Footer",
+     "variant": "Tipo=Comercial, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Legal",
+     "variant": "Entidad=Generales con condiciones"
+    }
+   ]
+  },
+  {
+   "key": "informativo-servicio",
+   "name": "Informativo servicio",
+   "figmaId": "2864:1288",
+   "reference": "202609_nuevo-buscador-medico_con_salud_axa (2839:42157)",
+   "blocks": [
+    {
+     "block": "AXA/Cabecera/Imagen + título",
+     "variant": null
+    },
+    {
+     "block": "AXA/Contenido/Saludo + texto",
+     "variant": null
+    },
+    {
+     "block": "AXA/Contenido/Checks + imagen + CTA",
+     "variant": null
+    },
+    {
+     "block": "AXA/Contenido/Vídeo",
+     "variant": null
+    },
+    {
+     "block": "AXA/Fijo/Mediador",
+     "variant": "Canal=AXA, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Cierre",
+     "variant": "Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Footer",
+     "variant": "Tipo=Informativo, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Legal",
+     "variant": "Entidad=Generales con condiciones"
+    }
+   ]
+  },
+  {
+   "key": "evento",
+   "name": "Evento",
+   "figmaId": "2864:2192",
+   "reference": "202609_Santander-soledad-no-deseada-2_cor_salud_AXA (2839:7649)",
+   "blocks": [
+    {
+     "block": "AXA/Cabecera/Evento + saludo",
+     "variant": null
+    },
+    {
+     "block": "AXA/Evento/Detalles del encuentro",
+     "variant": null
+    },
+    {
+     "block": "AXA/Evento/Calendario",
+     "variant": null
+    },
+    {
+     "block": "AXA/Fijo/Cierre",
+     "variant": "Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Valoración",
+     "variant": "Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Footer",
+     "variant": "Tipo=Comercial, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Legal",
+     "variant": "Entidad=AXA Seguros Generales"
+    }
+   ]
+  },
+  {
+   "key": "promocion-regalo",
+   "name": "Promoción regalo",
+   "figmaId": "2864:2388",
+   "reference": "202609_mult_monopóliza-NP-particulares-2_com_general_axa (2839:65743)",
+   "blocks": [
+    {
+     "block": "AXA/Cabecera/Título + saludo",
+     "variant": null
+    },
+    {
+     "block": "AXA/Promoción/Código regalo",
+     "variant": null
+    },
+    {
+     "block": "AXA/Promoción/Dónde canjear",
+     "variant": null
+    },
+    {
+     "block": "AXA/Fijo/Mediador",
+     "variant": "Canal=AXA, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Cierre",
+     "variant": "Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Valoración",
+     "variant": "Idioma=CAST"
+    },
+    {
+     "block": "AXA/Fijo/Footer",
+     "variant": "Tipo=Con baja sin Ponle Freno, Idioma=CAST"
+    },
+    {
+     "block": "AXA/Legal",
+     "variant": "Entidad=AXA Seguros Generales"
+    }
+   ]
+  }
+ ],
+ "pending": [
+  "Valoración en inglés: sin referencia",
+  "Footer informativo y con-baja en CAT/ENG: sin referencia",
+  "Mediador RACC en CAT/ENG: sin referencia",
+  "Textos legales: observados, pendientes de validación de AXA (hay dos redacciones de la cláusula de condiciones: «documento» y «email»)",
+  "Cabeceras: el título va en Gelasio en lugar de Publico Headline (decisión 2026-11-05); fuente real solo en archivos de la org con Publico subida",
+  "Saludo CAT/ENG: el bloque Saludo + texto lleva «¡Hola, #Nombre!» fijo en castellano (Tahoma no editable por script)"
+ ]
+}

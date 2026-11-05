@@ -58,6 +58,22 @@ Pregunta **solo** lo que bloquea una decisión importante, **en una única ronda
 textos del pie que aporta el cliente, imágenes que aún no están en Figma, alt text (se propone), asunto/preheader
 (se proponen), orden de módulos (se propone y justifica), medidas no definidas (valores por defecto declarados).
 
+## Modo plantillas del cliente (si tiene catálogo de bloques)
+
+Si `client-knowledge/clients/C/channels/email-blocks.json` existe (hoy: AXA), el email **no se diseña desde cero**:
+se monta con instancias de los bloques del cliente y se rellena con el brief. Comandos `email-template-list|check|
+confirm|request|verify`; detalle en [plantillas del cliente](references/plantillas-cliente.md). La persona elige la
+estructura de una de tres formas, y lo dice ella (no se elige por ella):
+1. **Plantilla predefinida** (`email-template-list --client C`).
+2. **Compositor guiado**: página web con los bloques vacíos ya diseñados para seleccionarlos y ordenarlos; genera el
+   esqueleto del brief (`scripts/email-composer.py`).
+3. **Manual en Figma** con instancias de los bloques; la skill revisa y, si se pide, rellena con la secuencia transcrita.
+
+Con la estructura y un brief completo (copys, imágenes, variante legal, intención, asunto y preheader) sigue el flujo
+de la referencia. Invariantes, punto de validación único y entrega son los de este SKILL; los pasos 3 y 5–6 del modo
+general se sustituyen por `email-template-check`, `-request` y `-verify`. Solo existe el ancho que tiene el catálogo
+(AXA: 620), sin versión mobile propia salvo que el catálogo la defina.
+
 ## Flujo
 
 Variables: `K` fileKey destino, `P` página destino, `R` carpeta del encargo, `C` slug del cliente.
@@ -138,3 +154,5 @@ tokens, responsive, accesibilidad, dark mode y notas de desarrollo). Indicar qu�
 `node --test test/email.test.ts`: conocimiento real (UAX sin reglas de email, Mutualidad con
 reglas observadas), brief incompleto, borradores con datos comerciales, plan desktop/mobile, comprobaciones previas,
 generación del script y una simulación de la auditoría. Prueban el control de flujo, no la tipografía real de Figma.
+`node --test test/email-template.test.ts`: catálogo real de AXA, resolución de variantes por idioma/canal/legal,
+bloqueos del brief, script de relleno y verificación con las auditorías reales de la prueba en Figma (2026-11-05).
